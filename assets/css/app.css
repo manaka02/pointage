@@ -1,3 +1,10 @@
 body {
     background-color: lightgray;
 }
+
+.maincolor {
+    background:#431498 linear-gradient(180deg,#665d75,#595069) repeat-x!important;
+    color: white;
+    border: none !important;
+
+}

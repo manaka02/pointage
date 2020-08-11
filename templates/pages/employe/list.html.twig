@@ -1,0 +1,41 @@
+{% extends "base.html.twig" %}
+
+{% block nav %}
+{{ include ("modules/navbar.html.twig") }}
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <h3>Liste des employées</h3>
+            </div>
+            
+            <div class="col-md-4">
+            <h4>yeah</h4>
+            </div>
+
+            <div class="row col-md-12">
+                <div class="col-md-12">
+                    <h5>Utiliser des filtres </h5>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm">
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm">
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm">
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm">
+                </div>
+                
+            </div>
+            <div class="col-md-2 mt-4">
+                <button type="button" class="btn btn-block btn-primary maincolor btn-sm btn-flat"><i class="fas fa-search mr-2"></i>   Rechercher</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

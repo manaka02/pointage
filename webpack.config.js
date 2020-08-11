@@ -24,6 +24,26 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/js/app.js')
+    .addEntry('jquery', './assets/plugins/jquery/jquery.min.js')
+    .addEntry('jquery-ui', './assets/plugins/jquery-ui/jquery-ui.min.js')
+    .addEntry('bootstrap', './assets/plugins/bootstrap/js/bootstrap.bundle.min.js')
+    .addEntry('adminlte', './assets/dist/js/adminlte.js')
+    .addEntry('demo', './assets/dist/js/demo.js')
+    .addEntry('chart', './assets/plugins/chart.js/Chart.min.js')
+    .addEntry('moment', './assets/plugins/moment/moment.js')
+    .addEntry('jqvmap', './assets/plugins/jqvmap/jquery.vmap.min.js')
+    .addEntry('vmapusa', './assets/plugins/jqvmap/maps/jquery.vmap.usa.js')
+    .addEntry('jquery-knob', './assets/plugins/jquery-knob/jquery.knob.min.js')
+    .addEntry('sparklines', './assets/plugins/sparklines/sparkline.js')
+    .addEntry('daterangepicker', './assets/plugins/daterangepicker/daterangepicker.js')
+    .addEntry('tempusdominus', './assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')
+    .addEntry('summernote', './assets/plugins/summernote/summernote-bs4.min.js')
+    .addEntry('overlayScrollbars', './assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')
+    
+    .addEntry('dashboard', './assets/dist/js/pages/dashboard.js')
+    
+    .addEntry('darkmode', './assets/dist/js/dark-mode-switch.min.js')
+
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 

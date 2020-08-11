@@ -1,12 +1,79 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}a!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		{{ encore_entry_link_tags('app') }}
+		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+	</head>
+
+	<body>
+		<div class="wrapper"> {% block nav %}{% endblock %}
+			<!-- Content Wrapper. Contains page content -->
+			<div class="content-wrapper">
+				<!-- Content Header (Page header) -->
+
+				<!-- /.content-header -->
+					<div class="container pt-1"> {% if app.request.hasPreviousSession %}
+						{% for message in app.flashes('denied') %}
+							<div class="alert alert-danger">
+								{{message}}
+							</div>
+						{% endfor %}
+					{% endif %}
+
+					{% block body %}huhu{% endblock %}
+				</div>
+			</div>
+			<!-- /.content-wrapper -->
+
+			<footer class="main-footer">
+				<strong>Copyright &copy; 2020
+				</strong>
+				All rights reserved.
+				<div class="float-right d-none d-sm-inline-block">
+					<b>Version</b>
+					1.0.2
+				</div>
+			</footer>
+			{# {% block javascripts %}{% endblock %} #}
+			<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+            <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+			{{ encore_entry_script_tags('app') }}
+			{{ encore_entry_script_tags('bootstrap') }}
+			{{ encore_entry_script_tags('chart') }}
+			{# {{ encore_entry_script_tags('moment') }} #}
+			{{ encore_entry_script_tags('sparklines') }}
+			{{ encore_entry_script_tags('jqvmap') }}
+			{{ encore_entry_script_tags('vmapusa') }}
+			{# {{ encore_entry_script_tags('jquery-knob') }} #}
+			{{ encore_entry_script_tags('daterangepicker') }}
+			{{ encore_entry_script_tags('summernote')}}
+			{{ encore_entry_script_tags('overlayScrollbars') }}
+			{{ encore_entry_script_tags('adminlte') }}
+			
+			{{ encore_entry_script_tags('demo') }}
+            {{ encore_entry_script_tags('darkmode') }}
+            {{ encore_entry_script_tags('dashboard') }}
+			{# {{ encore_entry_script_tags('tempusdominus') }} #}
+		</div>
+		
+		
+		
+        {# <script>
+			$.widget.bridge('uibutton', $.ui.button)
+		</script> #}
+		{% block javascripts %}{% endblock %}
+	</body>
+
+
 </html>

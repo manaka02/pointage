@@ -22,7 +22,7 @@ class BoardController extends AbstractController
     {
         // formation
         // $countFormation = (new FormationOsc())->countOscPerFormationTheme($con);
-        return $this->render("base.html.twig");
+        return $this->render("pages/board.html.twig");
     }
 }
 
