@@ -1,0 +1,42 @@
+propel:
+    # runtime:
+    #     log:
+    #         defaultLogger:
+    #             type: stream
+    #             path: C:\wamp\logs\php_error.log
+    #             level: 300
+    paths:
+        # The directory where Propel expects to find your `schema.xml` file.
+        schemaDir: generated-reversed-database
+
+        # The directory where Propel should output generated object model classes.
+        phpDir: src\Models
+    database:
+        connections:
+            default:
+                adapter: mysql
+                dsn: mysql:host=localhost;port=3308;dbname=pointage
+                user: root
+                password: 
+                settings:
+                    charset: utf8
+    generator:
+        namespaceAutoPackage: false
+
+    # database:
+    #     connections:
+    #         default:
+    #             adapter: mysql
+    #             dsn: mysql:host=nnmeqdrilkem9ked.cbetxkdyhwsb.us-east-1.rds.amazonaws.com;port=3306;dbname=idsnj70cm593bpsa
+    #             user: ml8s3yqze5nn37o0
+    #             password: epb7ph3oqn6o5n07
+    #             settings:
+    #                 charset: utf8
+    # generator:
+    #     namespaceAutoPackage: false
+        # ./vendor/bin/propel reverse "mysql:host=localhost;dbname=osc;user=root;port=3308"
+        # namespace="App\Models"
+
+        # mysql -u ml8s3yqze5nn37o0 -p'epb7ph3oqn6o5n07' \
+        # -h nnmeqdrilkem9ked.cbetxkdyhwsb.us-east-1.rds.amazonaws.com -P 3306 \
+        # -D idsnj70cm593bpsa
