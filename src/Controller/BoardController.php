@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Services\BoardService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,11 +20,18 @@ class BoardController extends AbstractController
     /**
      * @Route("/", name="board")
      */
-    public function index($params = []) : Response
+    public function index(Request $request) : Response
     {
-        // formation
-        // $countFormation = (new FormationOsc())->countOscPerFormationTheme($con);
-        return $this->render("pages/board.html.twig");
+        error_log("boarrrd");
+        $params = $request->query->all();
+        $service = new BoardService();
+        $allData = $service->getData($params);
+
+        return $this->render("pages/board.html.twig",
+        [
+            "data" => $allData
+        ]    
+    );
     }
 }
 

@@ -106,13 +106,12 @@ class UploadService
                 $this->addLine($listLine, $extTarget, $keys);
                 $lastInserted = $extTarget->copy();
                 $indicator++;
-                // $extTarget->save($this->con);
             } catch (\Throwable $th) {
                 $indicator++;
             }
         }
         $sql .= implode(",", $listLine );
-        dump($sql);
+
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
     }
@@ -174,13 +173,13 @@ class UploadService
             }
             $setterFunction = "set" . GeneralService::getFieldName($column);
             if(method_exists($target,$setterFunction)){
-                
                 if (strpos($column, 'date') !== false) {
                     try {
-                        $date = DateTime::createFromFormat($format, 'd-m-Y H:i:s');
+                        $date = DateTime::createFromFormat('d/m/Y H:i:s',$value );
+
                         $value = $date;
                     } catch (\Throwable $th) {
-                       
+                        error_log($th);
                     }
                 }
                 if($value){

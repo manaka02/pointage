@@ -126,8 +126,8 @@
           <div class="card-tools">
             <ul class="pagination pagination-sm m-0 float-right">
               {% if actualpage != 1 %}
-              <li class="page-item"><a class="page-link" href="/targetlist?page={{1}}&{{oldparams}}">« début</a></li>
-              <li class="page-item"><a class="page-link" href="/targetlist?page={{actualpage - 1}}&{{oldparams}}">précédent</a></li>
+              <li class="page-item"><a class="page-link" href="/target-list?page={{1}}&{{oldparams}}">« début</a></li>
+              <li class="page-item"><a class="page-link" href="/target-list?page={{actualpage - 1}}&{{oldparams}}">précédent</a></li>
               {% endif %}
 
               
@@ -138,13 +138,13 @@
                   
                 {% else %}
                 <li class="page-item"><a class="page-link" http_build_query($params)
-                  href="/targetlist?page={{i}}&{{oldparams}}">{{ i }}</a></li>
+                  href="/target-list?page={{i}}&{{oldparams}}">{{ i }}</a></li>
                 {% endif %}
 
               {% endfor %}
               {% if actualpage != pagenumber %}
-              <li class="page-item"><a class="page-link" href="/targetlist?page={{actualpage + 1}}&{{oldparams}}">suivant</a>
-              <li class="page-item"><a class="page-link" href="/targetlist?page={{pagenumber}}&{{oldparams}}">fin »</a>
+              <li class="page-item"><a class="page-link" href="/target-list?page={{actualpage + 1}}&{{oldparams}}">suivant</a>
+              <li class="page-item"><a class="page-link" href="/target-list?page={{pagenumber}}&{{oldparams}}">fin »</a>
               </li>
               {% endif %}
             </ul>

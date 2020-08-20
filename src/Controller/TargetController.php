@@ -47,31 +47,27 @@ class TargetController extends AbstractController
             }
             $brochureFile = $form->get('data')->getData();
             if ($brochureFile) {
-                // try {
+                try {
                     $target = $params['target'];
                     $worksheet = $form->getData("worksheet")->getWorkSheet();
                     $uploadService = new UploadService();
                     $listReference = [];
-                    if($target == "pointage"){
-                        $listReference = EmployeQuery::create()
-                        ->withColumn("employe_id")
-                        ->withColumn("employe_pointage_id")
-                        ->select("employe_id", "employe_pointage_id")
-                        ->find();
-                    }
-                    $listReference = GeneralService::collectionToArray($listReference);
-                    // dump($listReference);
-                    
-                    
+                    // if($target == "pointage"){
+                    //     $listReference = EmployeQuery::create()
+                    //     ->withColumn("employe_id")
+                    //     ->withColumn("employe_pointage_id")
+                    //     ->select("employe_id", "employe_pointage_id")
+                    //     ->find();
+                    // }
+                    // $listReference = GeneralService::collectionToArray($listReference);
                     $targetData = $uploadService->importFile($brochureFile->getRealPath(), $target, $worksheet,$listReference);
-                    throw new Exception("Error Processing Request", 1);
                     $this->addFlash("success", "Succès de l'importation du fichier");
                     return $this->redirectToRoute("target-list", [
                         'target' =>$target
                     ]);
-                // } catch (\Throwable $th) {
-                    // $this->addFlash("error", "Une erreur est survenue lors de l'import :" . $th->getMessage());
-                // }
+                } catch (\Throwable $th) {
+                    $this->addFlash("error", "Une erreur est survenue lors de l'import :" . $th->getMessage());
+                }
             }
         }
 
