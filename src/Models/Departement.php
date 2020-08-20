@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Base\DepartementQuery;
 use App\Models\Base\Departement as BaseDepartement;
 
 /**
@@ -16,4 +17,25 @@ use App\Models\Base\Departement as BaseDepartement;
 class Departement extends BaseDepartement
 {
 
+    public function getAllDepartmentAsChoice()
+    {
+        $query = DepartementQuery::create()
+        ->withColumn("departement_id")
+        ->withColumn("designation")
+
+        ->orderBy("designation")
+        ->select("departement_id","designation");
+
+        
+        $referents = $query->find();
+
+        $response = [];
+        foreach ($referents as $key => $child) {
+            $k = $child['designation'];
+
+            $response[$k] = $child['departement_id'];
+        }
+        
+        return $response;
+    }
 }

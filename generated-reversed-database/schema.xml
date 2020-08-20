@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<database name="default" defaultIdMethod="native" namespace="App\Models" defaultPhpNamingMethod="underscore">
+<database name="default" defaultIdMethod="native"  namespace="App\Models" defaultPhpNamingMethod="underscore">
+  <table name="choice" idMethod="native" phpName="Choice">
+    <column name="choice_id" phpName="ChoiceId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="target" phpName="Target" type="VARCHAR" size="50"/>
+    <column name="column_name" phpName="ColumnName" type="VARCHAR" size="50"/>
+    <column name="value" phpName="Value" type="VARCHAR" size="1500"/>
+    <column name="label" phpName="Label" type="VARCHAR" size="50"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
   <table name="departement" idMethod="native" phpName="Departement">
     <column name="departement_id" phpName="DepartementId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="designation" phpName="Designation" type="VARCHAR" size="100"/>
@@ -10,7 +20,9 @@
   </table>
   <table name="employe" idMethod="native" phpName="Employe">
     <column name="employe_id" phpName="EmployeId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="departement_id" phpName="DepartementId" type="INTEGER" required="true"/>
+    <column name="employe_pointage_id" phpName="EmployePointageId" type="INTEGER"/>
+    <column name="ref_interne" phpName="RefInterne" type="INTEGER"/>
+    <column name="departement_id" phpName="DepartementId" type="INTEGER"/>
     <column name="nom_prenom" phpName="NomPrenom" type="VARCHAR" size="100"/>
     <column name="poste" phpName="Poste" type="VARCHAR" size="100"/>
     <column name="genre" phpName="Genre" type="VARCHAR" size="40"/>
@@ -20,6 +32,14 @@
     <index name="fk_fk_departement_employee">
       <index-column name="departement_id"/>
     </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="import" idMethod="native" phpName="Import">
+    <column name="import_id" phpName="ImportId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="target" phpName="Target" type="VARCHAR" size="50"/>
+    <column name="mapping" phpName="Mapping" type="VARCHAR" sqlType="json"/>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
@@ -35,6 +55,22 @@
     <index name="fk_fk_pointage_employee">
       <index-column name="employe_id"/>
     </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="utilisateur" idMethod="native" phpName="Utilisateur">
+    <column name="utilisateur_id" phpName="UtilisateurId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="mail" phpName="Mail" type="VARCHAR" size="100" required="true"/>
+    <column name="pass" phpName="Pass" type="VARCHAR" size="255" required="true"/>
+    <column name="name" phpName="Name" type="VARCHAR" size="200"/>
+    <column name="surname" phpName="Surname" type="VARCHAR" size="200"/>
+    <column name="status" phpName="Status" type="INTEGER" required="true" defaultValue="0"/>
+    <column name="last_login" phpName="LastLogin" type="TIMESTAMP"/>
+    <column name="email_activation_key" phpName="EmailActivationKey" type="VARCHAR" size="200"/>
+    <unique name="mail">
+      <unique-column name="mail"/>
+    </unique>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>

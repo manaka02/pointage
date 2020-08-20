@@ -68,11 +68,19 @@
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
-                    <a href="{{path("employe-list")}}" class="nav-link">
+                    <a href="{{path("target-list",{target:"employe"})}}" class="nav-link">
                         <i class="nav-icon fas fa-user-friends"></i>
                         <p>
                             Employé(e)s
                             
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="{{path("target-list",{target:"pointage"})}}" class="nav-link">
+                        <i class="nav-icon fas fa-hand-pointer"></i>
+                        <p>
+                            Pointages
                         </p>
                     </a>
                 </li>

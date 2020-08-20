@@ -1,0 +1,46 @@
+{% extends "base.html.twig" %}
+{% block title %}
+  Ajouter un nouveau
+{% endblock %}
+{% block nav %}
+	{{ include ("modules/navbar.html.twig") }}
+{% endblock %}
+{% block body %}
+	{% if app.request.hasPreviousSession %}
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success">
+				{{message}}
+			</div>
+		{% endfor %}
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger">
+				{{message}}
+			</div>
+		{% endfor %}
+	{% endif %}
+	<div class="container">
+
+		<h1>Ajouter/Modifier un(e)
+			{{title}}</h1>
+		<a href="{{mute['redirect']}}" class="btn btn-default mb-4">Annuler et revenir en arrière</a>
+		{{form_start(form)}}
+		{% for key in mute|keys %}
+			<input type="hidden" class="hidden" value="{{mute[key]}}" name="{{key}}">
+		{% endfor %}
+		{{form_end(form)}}
+		
+
+		{# {{ form(form_product) }} #}
+	</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	<script>
+		$(document).ready(function () {
+$("input").removeClass("custom-file-input");
+$("label").removeClass("custom-file-label");
+});
+	</script>
+
+{% endblock %}

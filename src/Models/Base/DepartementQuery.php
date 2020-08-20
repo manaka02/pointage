@@ -376,7 +376,7 @@ abstract class DepartementQuery extends ModelCriteria
      *
      * @return $this|ChildDepartementQuery The current query, for fluid interface
      */
-    public function joinEmploye($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinEmploye($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Employe');
@@ -411,7 +411,7 @@ abstract class DepartementQuery extends ModelCriteria
      *
      * @return \App\Models\EmployeQuery A secondary query class using the current class as primary query
      */
-    public function useEmployeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useEmployeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinEmploye($relationAlias, $joinType)

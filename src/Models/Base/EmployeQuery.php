@@ -21,12 +21,16 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildEmployeQuery orderByEmployeId($order = Criteria::ASC) Order by the employe_id column
+ * @method     ChildEmployeQuery orderByEmployePointageId($order = Criteria::ASC) Order by the employe_pointage_id column
+ * @method     ChildEmployeQuery orderByRefInterne($order = Criteria::ASC) Order by the ref_interne column
  * @method     ChildEmployeQuery orderByDepartementId($order = Criteria::ASC) Order by the departement_id column
  * @method     ChildEmployeQuery orderByNomPrenom($order = Criteria::ASC) Order by the nom_prenom column
  * @method     ChildEmployeQuery orderByPoste($order = Criteria::ASC) Order by the poste column
  * @method     ChildEmployeQuery orderByGenre($order = Criteria::ASC) Order by the genre column
  *
  * @method     ChildEmployeQuery groupByEmployeId() Group by the employe_id column
+ * @method     ChildEmployeQuery groupByEmployePointageId() Group by the employe_pointage_id column
+ * @method     ChildEmployeQuery groupByRefInterne() Group by the ref_interne column
  * @method     ChildEmployeQuery groupByDepartementId() Group by the departement_id column
  * @method     ChildEmployeQuery groupByNomPrenom() Group by the nom_prenom column
  * @method     ChildEmployeQuery groupByPoste() Group by the poste column
@@ -66,6 +70,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmploye findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEmploye matching the query, or a new ChildEmploye object populated from the query conditions when no match is found
  *
  * @method     ChildEmploye findOneByEmployeId(int $employe_id) Return the first ChildEmploye filtered by the employe_id column
+ * @method     ChildEmploye findOneByEmployePointageId(int $employe_pointage_id) Return the first ChildEmploye filtered by the employe_pointage_id column
+ * @method     ChildEmploye findOneByRefInterne(int $ref_interne) Return the first ChildEmploye filtered by the ref_interne column
  * @method     ChildEmploye findOneByDepartementId(int $departement_id) Return the first ChildEmploye filtered by the departement_id column
  * @method     ChildEmploye findOneByNomPrenom(string $nom_prenom) Return the first ChildEmploye filtered by the nom_prenom column
  * @method     ChildEmploye findOneByPoste(string $poste) Return the first ChildEmploye filtered by the poste column
@@ -75,6 +81,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmploye requireOne(ConnectionInterface $con = null) Return the first ChildEmploye matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildEmploye requireOneByEmployeId(int $employe_id) Return the first ChildEmploye filtered by the employe_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEmploye requireOneByEmployePointageId(int $employe_pointage_id) Return the first ChildEmploye filtered by the employe_pointage_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEmploye requireOneByRefInterne(int $ref_interne) Return the first ChildEmploye filtered by the ref_interne column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByDepartementId(int $departement_id) Return the first ChildEmploye filtered by the departement_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByNomPrenom(string $nom_prenom) Return the first ChildEmploye filtered by the nom_prenom column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByPoste(string $poste) Return the first ChildEmploye filtered by the poste column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -82,6 +90,8 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildEmploye[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildEmploye objects based on current ModelCriteria
  * @method     ChildEmploye[]|ObjectCollection findByEmployeId(int $employe_id) Return ChildEmploye objects filtered by the employe_id column
+ * @method     ChildEmploye[]|ObjectCollection findByEmployePointageId(int $employe_pointage_id) Return ChildEmploye objects filtered by the employe_pointage_id column
+ * @method     ChildEmploye[]|ObjectCollection findByRefInterne(int $ref_interne) Return ChildEmploye objects filtered by the ref_interne column
  * @method     ChildEmploye[]|ObjectCollection findByDepartementId(int $departement_id) Return ChildEmploye objects filtered by the departement_id column
  * @method     ChildEmploye[]|ObjectCollection findByNomPrenom(string $nom_prenom) Return ChildEmploye objects filtered by the nom_prenom column
  * @method     ChildEmploye[]|ObjectCollection findByPoste(string $poste) Return ChildEmploye objects filtered by the poste column
@@ -184,7 +194,7 @@ abstract class EmployeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT employe_id, departement_id, nom_prenom, poste, genre FROM employe WHERE employe_id = :p0';
+        $sql = 'SELECT employe_id, employe_pointage_id, ref_interne, departement_id, nom_prenom, poste, genre FROM employe WHERE employe_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -313,6 +323,88 @@ abstract class EmployeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(EmployeTableMap::COL_EMPLOYE_ID, $employeId, $comparison);
+    }
+
+    /**
+     * Filter the query on the employe_pointage_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByEmployePointageId(1234); // WHERE employe_pointage_id = 1234
+     * $query->filterByEmployePointageId(array(12, 34)); // WHERE employe_pointage_id IN (12, 34)
+     * $query->filterByEmployePointageId(array('min' => 12)); // WHERE employe_pointage_id > 12
+     * </code>
+     *
+     * @param     mixed $employePointageId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildEmployeQuery The current query, for fluid interface
+     */
+    public function filterByEmployePointageId($employePointageId = null, $comparison = null)
+    {
+        if (is_array($employePointageId)) {
+            $useMinMax = false;
+            if (isset($employePointageId['min'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_EMPLOYE_POINTAGE_ID, $employePointageId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($employePointageId['max'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_EMPLOYE_POINTAGE_ID, $employePointageId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(EmployeTableMap::COL_EMPLOYE_POINTAGE_ID, $employePointageId, $comparison);
+    }
+
+    /**
+     * Filter the query on the ref_interne column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByRefInterne(1234); // WHERE ref_interne = 1234
+     * $query->filterByRefInterne(array(12, 34)); // WHERE ref_interne IN (12, 34)
+     * $query->filterByRefInterne(array('min' => 12)); // WHERE ref_interne > 12
+     * </code>
+     *
+     * @param     mixed $refInterne The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildEmployeQuery The current query, for fluid interface
+     */
+    public function filterByRefInterne($refInterne = null, $comparison = null)
+    {
+        if (is_array($refInterne)) {
+            $useMinMax = false;
+            if (isset($refInterne['min'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_REF_INTERNE, $refInterne['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($refInterne['max'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_REF_INTERNE, $refInterne['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(EmployeTableMap::COL_REF_INTERNE, $refInterne, $comparison);
     }
 
     /**
@@ -468,7 +560,7 @@ abstract class EmployeQuery extends ModelCriteria
      *
      * @return $this|ChildEmployeQuery The current query, for fluid interface
      */
-    public function joinDepartement($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinDepartement($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Departement');
@@ -503,7 +595,7 @@ abstract class EmployeQuery extends ModelCriteria
      *
      * @return \App\Models\DepartementQuery A secondary query class using the current class as primary query
      */
-    public function useDepartementQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useDepartementQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinDepartement($relationAlias, $joinType)

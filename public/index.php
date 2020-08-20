@@ -36,7 +36,7 @@ $serviceContainer->setAdapterClass('default', 'mysql');
 $serviceContainer->setConnectionManager('default', $manager);
 $serviceContainer->setDefaultDatasource('default');
 Propel::getConnection()->useDebug(true);
-
+// 
 date_default_timezone_set('Indian/Antananarivo');
 
 $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);

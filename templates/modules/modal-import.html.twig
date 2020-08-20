@@ -1,0 +1,34 @@
+<div class="modal fade mt-5" id="modal-lg">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content rounded-0">
+            <div class="modal-body">
+                <h2>Importer un Fichier</h2>
+                {{form_start(form)}}
+                <div class="row">
+                    <div class="form-group col-sm-8">
+                        {{form_row(form.worksheet)}}
+                    </div>
+
+                    <div class="form-group col-sm-8">
+                        <!-- <label for="customFile">Custom File</label> -->
+                        {{form_row(form.data)}}
+                    </div>
+                </div>
+                <input type="hidden" name="target" value="{{target}}">
+                <div class="row ml-2">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default btn-sm btn-flat mr-3"
+                        data-dismiss="modal">Annuler</button>
+                    </div>
+                    
+                        {{form_row(form.Importer)}}
+                </div>
+
+                {{form_end(form)}}
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

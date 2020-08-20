@@ -4,18 +4,13 @@ namespace App\Models\Base;
 
 use \Exception;
 use \PDO;
-use App\Models\Departement as ChildDepartement;
-use App\Models\DepartementQuery as ChildDepartementQuery;
-use App\Models\Employe as ChildEmploye;
-use App\Models\EmployeQuery as ChildEmployeQuery;
-use App\Models\Map\DepartementTableMap;
-use App\Models\Map\EmployeTableMap;
+use App\Models\ImportQuery as ChildImportQuery;
+use App\Models\Map\ImportTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -24,18 +19,18 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
 /**
- * Base class that represents a row from the 'departement' table.
+ * Base class that represents a row from the 'import' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Departement implements ActiveRecordInterface
+abstract class Import implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\App\\Models\\Map\\DepartementTableMap';
+    const TABLE_MAP = '\\App\\Models\\Map\\ImportTableMap';
 
 
     /**
@@ -65,31 +60,25 @@ abstract class Departement implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the departement_id field.
+     * The value for the import_id field.
      *
      * @var        int
      */
-    protected $departement_id;
+    protected $import_id;
 
     /**
-     * The value for the designation field.
+     * The value for the target field.
      *
      * @var        string
      */
-    protected $designation;
+    protected $target;
 
     /**
-     * The value for the description field.
+     * The value for the mapping field.
      *
      * @var        string
      */
-    protected $description;
-
-    /**
-     * @var        ObjectCollection|ChildEmploye[] Collection to store aggregation of ChildEmploye objects.
-     */
-    protected $collEmployes;
-    protected $collEmployesPartial;
+    protected $mapping;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -100,13 +89,7 @@ abstract class Departement implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildEmploye[]
-     */
-    protected $employesScheduledForDeletion = null;
-
-    /**
-     * Initializes internal state of App\Models\Base\Departement object.
+     * Initializes internal state of App\Models\Base\Import object.
      */
     public function __construct()
     {
@@ -201,9 +184,9 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Departement</code> instance.  If
-     * <code>obj</code> is an instance of <code>Departement</code>, delegates to
-     * <code>equals(Departement)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Import</code> instance.  If
+     * <code>obj</code> is an instance of <code>Import</code>, delegates to
+     * <code>equals(Import)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -331,94 +314,94 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * Get the [departement_id] column value.
+     * Get the [import_id] column value.
      *
      * @return int
      */
-    public function getDepartementId()
+    public function getImportId()
     {
-        return $this->departement_id;
+        return $this->import_id;
     }
 
     /**
-     * Get the [designation] column value.
+     * Get the [target] column value.
      *
      * @return string
      */
-    public function getDesignation()
+    public function getTarget()
     {
-        return $this->designation;
+        return $this->target;
     }
 
     /**
-     * Get the [description] column value.
+     * Get the [mapping] column value.
      *
      * @return string
      */
-    public function getDescription()
+    public function getMapping()
     {
-        return $this->description;
+        return $this->mapping;
     }
 
     /**
-     * Set the value of [departement_id] column.
+     * Set the value of [import_id] column.
      *
      * @param int $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @return $this|\App\Models\Import The current object (for fluent API support)
      */
-    public function setDepartementId($v)
+    public function setImportId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->departement_id !== $v) {
-            $this->departement_id = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DEPARTEMENT_ID] = true;
+        if ($this->import_id !== $v) {
+            $this->import_id = $v;
+            $this->modifiedColumns[ImportTableMap::COL_IMPORT_ID] = true;
         }
 
         return $this;
-    } // setDepartementId()
+    } // setImportId()
 
     /**
-     * Set the value of [designation] column.
+     * Set the value of [target] column.
      *
      * @param string|null $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @return $this|\App\Models\Import The current object (for fluent API support)
      */
-    public function setDesignation($v)
+    public function setTarget($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->designation !== $v) {
-            $this->designation = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DESIGNATION] = true;
+        if ($this->target !== $v) {
+            $this->target = $v;
+            $this->modifiedColumns[ImportTableMap::COL_TARGET] = true;
         }
 
         return $this;
-    } // setDesignation()
+    } // setTarget()
 
     /**
-     * Set the value of [description] column.
+     * Set the value of [mapping] column.
      *
      * @param string|null $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @return $this|\App\Models\Import The current object (for fluent API support)
      */
-    public function setDescription($v)
+    public function setMapping($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->description !== $v) {
-            $this->description = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DESCRIPTION] = true;
+        if ($this->mapping !== $v) {
+            $this->mapping = $v;
+            $this->modifiedColumns[ImportTableMap::COL_MAPPING] = true;
         }
 
         return $this;
-    } // setDescription()
+    } // setMapping()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -456,14 +439,14 @@ abstract class Departement implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : DepartementTableMap::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->departement_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ImportTableMap::translateFieldName('ImportId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->import_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DepartementTableMap::translateFieldName('Designation', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->designation = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ImportTableMap::translateFieldName('Target', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->target = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DepartementTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->description = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ImportTableMap::translateFieldName('Mapping', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->mapping = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -472,10 +455,10 @@ abstract class Departement implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = DepartementTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = ImportTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Departement'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Import'), 0, $e);
         }
     }
 
@@ -517,13 +500,13 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ImportTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildDepartementQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildImportQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -532,8 +515,6 @@ abstract class Departement implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
-            $this->collEmployes = null;
 
         } // if (deep)
     }
@@ -544,8 +525,8 @@ abstract class Departement implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Departement::setDeleted()
-     * @see Departement::isDeleted()
+     * @see Import::setDeleted()
+     * @see Import::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -554,11 +535,11 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ImportTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildDepartementQuery::create()
+            $deleteQuery = ChildImportQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -593,7 +574,7 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ImportTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -612,7 +593,7 @@ abstract class Departement implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                DepartementTableMap::addInstanceToPool($this);
+                ImportTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -649,23 +630,6 @@ abstract class Departement implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->employesScheduledForDeletion !== null) {
-                if (!$this->employesScheduledForDeletion->isEmpty()) {
-                    \App\Models\EmployeQuery::create()
-                        ->filterByPrimaryKeys($this->employesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->employesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collEmployes !== null) {
-                foreach ($this->collEmployes as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
             $this->alreadyInSave = false;
 
         }
@@ -686,24 +650,24 @@ abstract class Departement implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[DepartementTableMap::COL_DEPARTEMENT_ID] = true;
-        if (null !== $this->departement_id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . DepartementTableMap::COL_DEPARTEMENT_ID . ')');
+        $this->modifiedColumns[ImportTableMap::COL_IMPORT_ID] = true;
+        if (null !== $this->import_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ImportTableMap::COL_IMPORT_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(DepartementTableMap::COL_DEPARTEMENT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'departement_id';
+        if ($this->isColumnModified(ImportTableMap::COL_IMPORT_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'import_id';
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESIGNATION)) {
-            $modifiedColumns[':p' . $index++]  = 'designation';
+        if ($this->isColumnModified(ImportTableMap::COL_TARGET)) {
+            $modifiedColumns[':p' . $index++]  = 'target';
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++]  = 'description';
+        if ($this->isColumnModified(ImportTableMap::COL_MAPPING)) {
+            $modifiedColumns[':p' . $index++]  = 'mapping';
         }
 
         $sql = sprintf(
-            'INSERT INTO departement (%s) VALUES (%s)',
+            'INSERT INTO import (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -712,14 +676,14 @@ abstract class Departement implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'departement_id':
-                        $stmt->bindValue($identifier, $this->departement_id, PDO::PARAM_INT);
+                    case 'import_id':
+                        $stmt->bindValue($identifier, $this->import_id, PDO::PARAM_INT);
                         break;
-                    case 'designation':
-                        $stmt->bindValue($identifier, $this->designation, PDO::PARAM_STR);
+                    case 'target':
+                        $stmt->bindValue($identifier, $this->target, PDO::PARAM_STR);
                         break;
-                    case 'description':
-                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+                    case 'mapping':
+                        $stmt->bindValue($identifier, $this->mapping, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -734,7 +698,7 @@ abstract class Departement implements ActiveRecordInterface
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', 0, $e);
         }
-        $this->setDepartementId($pk);
+        $this->setImportId($pk);
 
         $this->setNew(false);
     }
@@ -767,7 +731,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = DepartementTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ImportTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -784,13 +748,13 @@ abstract class Departement implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getDepartementId();
+                return $this->getImportId();
                 break;
             case 1:
-                return $this->getDesignation();
+                return $this->getTarget();
                 break;
             case 2:
-                return $this->getDescription();
+                return $this->getMapping();
                 break;
             default:
                 return null;
@@ -809,45 +773,27 @@ abstract class Departement implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['Departement'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Import'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Departement'][$this->hashCode()] = true;
-        $keys = DepartementTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Import'][$this->hashCode()] = true;
+        $keys = ImportTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getDepartementId(),
-            $keys[1] => $this->getDesignation(),
-            $keys[2] => $this->getDescription(),
+            $keys[0] => $this->getImportId(),
+            $keys[1] => $this->getTarget(),
+            $keys[2] => $this->getMapping(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->collEmployes) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'employes';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'employes';
-                        break;
-                    default:
-                        $key = 'Employes';
-                }
-
-                $result[$key] = $this->collEmployes->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-        }
 
         return $result;
     }
@@ -861,11 +807,11 @@ abstract class Departement implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\App\Models\Departement
+     * @return $this|\App\Models\Import
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = DepartementTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ImportTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -876,19 +822,19 @@ abstract class Departement implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\App\Models\Departement
+     * @return $this|\App\Models\Import
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setDepartementId($value);
+                $this->setImportId($value);
                 break;
             case 1:
-                $this->setDesignation($value);
+                $this->setTarget($value);
                 break;
             case 2:
-                $this->setDescription($value);
+                $this->setMapping($value);
                 break;
         } // switch()
 
@@ -914,16 +860,16 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = DepartementTableMap::getFieldNames($keyType);
+        $keys = ImportTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setDepartementId($arr[$keys[0]]);
+            $this->setImportId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setDesignation($arr[$keys[1]]);
+            $this->setTarget($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setDescription($arr[$keys[2]]);
+            $this->setMapping($arr[$keys[2]]);
         }
     }
 
@@ -944,7 +890,7 @@ abstract class Departement implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\App\Models\Departement The current object, for fluid interface
+     * @return $this|\App\Models\Import The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -964,16 +910,16 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(DepartementTableMap::DATABASE_NAME);
+        $criteria = new Criteria(ImportTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(DepartementTableMap::COL_DEPARTEMENT_ID)) {
-            $criteria->add(DepartementTableMap::COL_DEPARTEMENT_ID, $this->departement_id);
+        if ($this->isColumnModified(ImportTableMap::COL_IMPORT_ID)) {
+            $criteria->add(ImportTableMap::COL_IMPORT_ID, $this->import_id);
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESIGNATION)) {
-            $criteria->add(DepartementTableMap::COL_DESIGNATION, $this->designation);
+        if ($this->isColumnModified(ImportTableMap::COL_TARGET)) {
+            $criteria->add(ImportTableMap::COL_TARGET, $this->target);
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESCRIPTION)) {
-            $criteria->add(DepartementTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(ImportTableMap::COL_MAPPING)) {
+            $criteria->add(ImportTableMap::COL_MAPPING, $this->mapping);
         }
 
         return $criteria;
@@ -991,8 +937,8 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildDepartementQuery::create();
-        $criteria->add(DepartementTableMap::COL_DEPARTEMENT_ID, $this->departement_id);
+        $criteria = ChildImportQuery::create();
+        $criteria->add(ImportTableMap::COL_IMPORT_ID, $this->import_id);
 
         return $criteria;
     }
@@ -1005,7 +951,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getDepartementId();
+        $validPk = null !== $this->getImportId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1025,18 +971,18 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function getPrimaryKey()
     {
-        return $this->getDepartementId();
+        return $this->getImportId();
     }
 
     /**
-     * Generic method to set the primary key (departement_id column).
+     * Generic method to set the primary key (import_id column).
      *
      * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setDepartementId($key);
+        $this->setImportId($key);
     }
 
     /**
@@ -1045,7 +991,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getDepartementId();
+        return null === $this->getImportId();
     }
 
     /**
@@ -1054,32 +1000,18 @@ abstract class Departement implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \App\Models\Departement (or compatible) type.
+     * @param      object $copyObj An object of \App\Models\Import (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setDesignation($this->getDesignation());
-        $copyObj->setDescription($this->getDescription());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getEmployes() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addEmploye($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setTarget($this->getTarget());
+        $copyObj->setMapping($this->getMapping());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setDepartementId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setImportId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1092,7 +1024,7 @@ abstract class Departement implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \App\Models\Departement Clone of current object.
+     * @return \App\Models\Import Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1105,257 +1037,6 @@ abstract class Departement implements ActiveRecordInterface
         return $copyObj;
     }
 
-
-    /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
-     *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Employe' === $relationName) {
-            $this->initEmployes();
-            return;
-        }
-    }
-
-    /**
-     * Clears out the collEmployes collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addEmployes()
-     */
-    public function clearEmployes()
-    {
-        $this->collEmployes = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collEmployes collection loaded partially.
-     */
-    public function resetPartialEmployes($v = true)
-    {
-        $this->collEmployesPartial = $v;
-    }
-
-    /**
-     * Initializes the collEmployes collection.
-     *
-     * By default this just sets the collEmployes collection to an empty array (like clearcollEmployes());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initEmployes($overrideExisting = true)
-    {
-        if (null !== $this->collEmployes && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = EmployeTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collEmployes = new $collectionClassName;
-        $this->collEmployes->setModel('\App\Models\Employe');
-    }
-
-    /**
-     * Gets an array of ChildEmploye objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildDepartement is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildEmploye[] List of ChildEmploye objects
-     * @throws PropelException
-     */
-    public function getEmployes(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collEmployesPartial && !$this->isNew();
-        if (null === $this->collEmployes || null !== $criteria || $partial) {
-            if ($this->isNew()) {
-                // return empty collection
-                if (null === $this->collEmployes) {
-                    $this->initEmployes();
-                } else {
-                    $collectionClassName = EmployeTableMap::getTableMap()->getCollectionClassName();
-
-                    $collEmployes = new $collectionClassName;
-                    $collEmployes->setModel('\App\Models\Employe');
-
-                    return $collEmployes;
-                }
-            } else {
-                $collEmployes = ChildEmployeQuery::create(null, $criteria)
-                    ->filterByDepartement($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collEmployesPartial && count($collEmployes)) {
-                        $this->initEmployes(false);
-
-                        foreach ($collEmployes as $obj) {
-                            if (false == $this->collEmployes->contains($obj)) {
-                                $this->collEmployes->append($obj);
-                            }
-                        }
-
-                        $this->collEmployesPartial = true;
-                    }
-
-                    return $collEmployes;
-                }
-
-                if ($partial && $this->collEmployes) {
-                    foreach ($this->collEmployes as $obj) {
-                        if ($obj->isNew()) {
-                            $collEmployes[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collEmployes = $collEmployes;
-                $this->collEmployesPartial = false;
-            }
-        }
-
-        return $this->collEmployes;
-    }
-
-    /**
-     * Sets a collection of ChildEmploye objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $employes A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildDepartement The current object (for fluent API support)
-     */
-    public function setEmployes(Collection $employes, ConnectionInterface $con = null)
-    {
-        /** @var ChildEmploye[] $employesToDelete */
-        $employesToDelete = $this->getEmployes(new Criteria(), $con)->diff($employes);
-
-
-        $this->employesScheduledForDeletion = $employesToDelete;
-
-        foreach ($employesToDelete as $employeRemoved) {
-            $employeRemoved->setDepartement(null);
-        }
-
-        $this->collEmployes = null;
-        foreach ($employes as $employe) {
-            $this->addEmploye($employe);
-        }
-
-        $this->collEmployes = $employes;
-        $this->collEmployesPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Employe objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Employe objects.
-     * @throws PropelException
-     */
-    public function countEmployes(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collEmployesPartial && !$this->isNew();
-        if (null === $this->collEmployes || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collEmployes) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getEmployes());
-            }
-
-            $query = ChildEmployeQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByDepartement($this)
-                ->count($con);
-        }
-
-        return count($this->collEmployes);
-    }
-
-    /**
-     * Method called to associate a ChildEmploye object to this object
-     * through the ChildEmploye foreign key attribute.
-     *
-     * @param  ChildEmploye $l ChildEmploye
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
-     */
-    public function addEmploye(ChildEmploye $l)
-    {
-        if ($this->collEmployes === null) {
-            $this->initEmployes();
-            $this->collEmployesPartial = true;
-        }
-
-        if (!$this->collEmployes->contains($l)) {
-            $this->doAddEmploye($l);
-
-            if ($this->employesScheduledForDeletion and $this->employesScheduledForDeletion->contains($l)) {
-                $this->employesScheduledForDeletion->remove($this->employesScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildEmploye $employe The ChildEmploye object to add.
-     */
-    protected function doAddEmploye(ChildEmploye $employe)
-    {
-        $this->collEmployes[]= $employe;
-        $employe->setDepartement($this);
-    }
-
-    /**
-     * @param  ChildEmploye $employe The ChildEmploye object to remove.
-     * @return $this|ChildDepartement The current object (for fluent API support)
-     */
-    public function removeEmploye(ChildEmploye $employe)
-    {
-        if ($this->getEmployes()->contains($employe)) {
-            $pos = $this->collEmployes->search($employe);
-            $this->collEmployes->remove($pos);
-            if (null === $this->employesScheduledForDeletion) {
-                $this->employesScheduledForDeletion = clone $this->collEmployes;
-                $this->employesScheduledForDeletion->clear();
-            }
-            $this->employesScheduledForDeletion[]= $employe;
-            $employe->setDepartement(null);
-        }
-
-        return $this;
-    }
-
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1363,9 +1044,9 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->departement_id = null;
-        $this->designation = null;
-        $this->description = null;
+        $this->import_id = null;
+        $this->target = null;
+        $this->mapping = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1384,14 +1065,8 @@ abstract class Departement implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collEmployes) {
-                foreach ($this->collEmployes as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collEmployes = null;
     }
 
     /**
@@ -1401,7 +1076,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(DepartementTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ImportTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
