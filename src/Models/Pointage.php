@@ -37,6 +37,7 @@ class Pointage extends BasePointage
     public $samedi;
     public $night;
     public $day;
+    public $jourPresence = 0;
     public $manque;
     private $addmore = true;
     public $extraPerWeek = [];
@@ -59,33 +60,20 @@ class Pointage extends BasePointage
         return false; 
     }
 
-    public function addExtra(DateInterval $interval, $target, $week)
+    public function isValid()
     {
-        $this->addInterval($interval,$this->totalExtra);
-
-        if(!array_key_exists($week,$this->extraPerWeek)){
-            $this->extraPerWeek[$week] = [];
-            $this->extraPerWeek[$week]["firstExtra"] = 0;
-            $this->extraPerWeek[$week]["others"] = 0;
+        if($this->status != self::OUT && $this->status != self::IN){
+            return false;
         }
-        $intervalInSeconds = ($interval->h * 60 * 60) + ($interval->i * 60) + ($interval->s);
-
-        if($this->extraPerWeek[$week]["firstExtra"] > self::EIGHT_EXTRA){
-            $this->extraPerWeek[$week]["others"] += $intervalInSeconds;
-        }elseif (($this->extraPerWeek[$week]["firstExtra"] + $intervalInSeconds) > self::EIGHT_EXTRA) {
-            $surplus = ($this->extraPerWeek[$week]["firstExtra"] + $intervalInSeconds) - self::EIGHT_EXTRA;
-            $this->extraPerWeek[$week]["firstExtra"] = self::EIGHT_EXTRA;
-            $this->extraPerWeek[$week]["others"] += $surplus;
-        }else{
-            $this->extraPerWeek[$week]["firstExtra"]+= $intervalInSeconds;
-        }
+        return true;
     }
 
-    public function addInterval(DateInterval $interval, $target)
+    
+
+    public function addInterval(DateInterval $interval, &$target)
     {
-        $target->h += $interval->h; 
-        $target->i += $interval->i; 
-        $target->s += $interval->s; 
+        
+        $target->s += $interval->s + ($interval->i * 60) + ($interval->h * 3600); 
     }
 
     public function isIn()

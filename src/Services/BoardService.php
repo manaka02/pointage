@@ -11,16 +11,17 @@ class BoardService
 {
     public $generalExtraPerWeek = [];
 
+    private $data = [];
+
     public function getData(Array $params)
     {
         error_log("get Data");
         $listBasique = $this->getListBasique($params);
-        
-        $listGrouped = $this->groupListByUser($listBasique);
-        $data = $this->calculate($listGrouped);
-        dump($data);
+        // dump($listBasique);
+        // $listGrouped = $this->groupListByUser($listBasique);
+        $this->calculate($listBasique);
         return [
-            "data" =>$data ,
+            "data" =>$this->data ,
             "extraPerWeek" => $this->generalExtraPerWeek
         ];
     }
@@ -39,6 +40,7 @@ class BoardService
         $query = PointageQuery::create()
         ->filterByDatePointage(array('min' => $date_debut, 'max' => $date_fin))
         ->orderByDatePointage("asc")
+        // ->filterByEmployeId(16)
         ->joinEmploye()
         ->withColumn("nom_prenom")
         ->withColumn("employe_pointage_id")
@@ -50,177 +52,179 @@ class BoardService
         return $query->find();
     }
 
-    public function groupListByUser($listBasique)
+    public function calculate($listPointage)
     {
-        error_log("get list grouped");
-        $grouped = [];
-        foreach ($listBasique as $key => $pointage) {
-            if(!array_key_exists($pointage->getEmployeId(), $grouped)){
-                $grouped[$pointage->getEmployeId()] = [];
+        // dump("begin calculate");
+
+        foreach ($listPointage as $key => $pointage) {
+            $employe_id = $pointage->getEmployeId();
+            if(!array_key_exists($employe_id,$this->data)){
+                
+                $this->data[$employe_id] = [];
+                $this->data[$employe_id]['last'] = $pointage;
+                $this->data[$employe_id]['result'] = $pointage;
+                $this->data[$employe_id]['error'] = 0;
+                $this->data[$employe_id]['warning'] = 0;
+                continue;
             }
-            array_push($grouped[$pointage->getEmployeId()],$pointage);
-        }
+            if(!$this->data[$employe_id]['last']){
+                $this->data[$employe_id]['last'] = $pointage;
+                continue;
+            } 
 
-        return $grouped;
-    }
-
-    public function calculate($listGrouped)
-    {
-        dump("begin calculate");
-        $results = [];
-        foreach ($listGrouped as $key => $oneUserList) {
-            $recap = $this->calculateForOneUser($oneUserList);
-            array_push($results,$recap);
-        }
-        return $results;
-    }
-
-    public function calculateForOneUser($userList)
-    {
-        $result = $userList[0];
-        $lastPointage = null;
-        
-        foreach ($userList as $key => $pointage) {
-            $ok = null;
-            $ok = $this->checkError($result,$lastPointage,$pointage);
+            $diff = $this->data[$employe_id]['last']->getDatePointage()->diff($pointage->getDatePointage());
+            
+            $ok = $this->checkError($employe_id,$pointage,$diff);
             if(!$ok) {
-                $this->checkIfSaturdayDayWork($result,$lastPointage,$pointage);
+                
+                $ok = $this->checkIfSaturdayDayWork($employe_id,$pointage,$diff);
             }
             if(!$ok) {
-                $this->checkIfNightDayWork($result,$lastPointage,$pointage);
+                $ok = $this->checkIfNightDayWork($employe_id,$pointage,$diff);
             }
             if(!$ok){
-                $ok = $this->checkIfDayWork($result,$lastPointage,$pointage);
-            }
-        }
-        return $result;
-    }
-
-    public function checkError(&$result, &$lastPointage,$newPointage)
-    {
-        if(!$lastPointage){
-            $lastPointage = $newPointage;
-            return;
-        } 
-        $diff = $lastPointage->getDatePointage()->diff($newPointage->getDatePointage());
-        if($diff->d > 0 || $diff->m > 0 || $diff->y > 0 || $diff->h > 23){
-            array_push($result->dateErrorList, $lastPointage);
-            $lastPointage = null;
-            return true;
-        }
-        if($lastPointage->getStatus() == $newPointage->getStatus()){
-            if($diff->h == 0) {
-                $lastPointage = $newPointage;
-                return true;
-            }else{
-                array_push($result->dateErrorList, $lastPointage);
-                $lastPointage = null;
-                return true;
+                $this->checkIfDayWork($employe_id,$pointage,$diff);     
             }
         }
         return;
     }
 
-    public function checkIfSaturdayDayWork(&$result, &$lastPointage,$newPointage)
+    public function checkError($employe_id,$newPointage,$diff)
     {
-        if(!$lastPointage) return;
-        if($newPointage->getDatePointage()->format('N') < 6 || $lastPointage->getDatePointage()->format('N') < 6) return;
-        if($newPointage->isIn()) return;
+        // error_log("check error Debut");
+        
+        if(!$newPointage->isValid()){
+            $this->data[$employe_id]['error'] ++;
+            return true;
+        }
+        if($diff->d || $diff->m || $diff->y || $diff->h > 23){
+            $this->data[$employe_id]['error'] ++;
+            $this->data[$employe_id]['last'] = null;
+            return true;
+        }
+        if($this->data[$employe_id]['last']->getStatus() == $newPointage->getStatus()){
+            if($diff->h == 0) {
+                $this->data[$employe_id]['warning'] ++;
+                return true;
+            }else{
+                $this->data[$employe_id]['error'] ++;
+                $this->data[$employe_id]['last'] = $newPointage;
+                return true;
+            }
+        }
 
-        $diff = $lastPointage->getDatePointage()->diff($newPointage->getDatePointage());
-        $result->addInterval($diff, $result->totalWork);
-        $result->addInterval($diff, $result->samedi);
-        $lastPointage = $newPointage;
+        if($newPointage->isIn()){
+            $this->data[$employe_id]['last'] = $newPointage;
+            return true;
+        }
+        // error_log("check error Fin");
+        return;
+    }
+
+    public function checkIfSaturdayDayWork($employe_id,$newPointage,$diff)
+    {
+        // error_log("check saturday Debut");
+        if($newPointage->getDatePointage()->format('N') < 6 || $this->data[$employe_id]['last']->getDatePointage()->format('N') < 6) return;
+
+        $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->totalWork);
+        $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->samedi);
+        $this->data[$employe_id]['last'] = null;
+        $this->data[$employe_id]['result']->jourPresence++;
+        // error_log("check saturday fin");
         return true;
     }
 
-    public function checkIfNightDayWork(&$result,&$lastPointage, $newPointage)
+    public function checkIfNightDayWork($employe_id, $newPointage,$diff)
     {
-        if(!$lastPointage) return;
-        if($newPointage->getDatePointage()->format('N') == $lastPointage->getDatePointage()->format('N')) return;
-        if($newPointage->isIn()) return;
-        $diff = $lastPointage->getDatePointage()->diff($newPointage->getDatePointage());
-        $result->addInterval($diff, $result->totalWork);
-        $result->addInterval($diff, $result->night);
+        // error_log("check checkIfNightDayWork debut");
+        if(!$newPointage){
+            error_log("new pointage null");
+        }
+        if(!$this->data[$employe_id]['last']){
+            error_log("last null");
+        }
+        if($newPointage->getDatePointage()->format('N') == $this->data[$employe_id]['last']->getDatePointage()->format('N')) return;
 
-        $this->addDifference($result,$lastPointage, $newPointage, false);
-        $lastPointage = $newPointage;
+        $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->totalWork);
+        $this->addDifference($employe_id, $newPointage,$diff, false);
+        $this->data[$employe_id]['result']->jourPresence++;
+        // error_log("check checkIfNightDayWork fin");
+        $this->data[$employe_id]['last'] = null;
         return true;
     }   
 
     
 
-    public function checkIfDayWork(&$result,&$lastPointage, $newPointage)
+    public function checkIfDayWork($employe_id, $newPointage,$diff)
     {
-        if(!$lastPointage) return;
-        $heureDePointe = $newPointage->getDatePointage()->format('H');
 
-        if($newPointage->isIn()) return;
-        if($newPointage->getDatePointage()->format('N') != $lastPointage->getDatePointage()->format('N')) return;
-        
-        $this->addDifference($result,$lastPointage, $newPointage);
-        $lastPointage = $newPointage;
+        if($newPointage->getDatePointage()->format('N') != $this->data[$employe_id]['last']->getDatePointage()->format('N')) return;
+        // dump("isDay");
+        $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->totalWork);
+        $this->addDifference($employe_id, $newPointage,$diff);
+        $this->data[$employe_id]['last'] = null;
+        $this->data[$employe_id]['result']->jourPresence++;
         return true;
 
     }
 
-    public function addDifference(&$result, $lastPointage, $newPointage, $isDay = true)
-    {
-        $week = $lastPointage->getDatePointage()->format("W");
-        $totalWork = $lastPointage->getDatePointage()->diff($newPointage->getDatePointage());
-        $totalWork->h -= $isDay ? $result::DAY_PAUSE : $result::NIGHT_PAUSE;
+    public function addDifference($employe_id, $newPointage,$diff, $isDay = true)
+    {   
+        // error_log("check addDifference debut");
+        $week = $this->data[$employe_id]['last']->getDatePointage()->format("W");
+        $diff->h -= $isDay ? $newPointage::DAY_PAUSE : $newPointage::NIGHT_PAUSE;
         if($isDay){
-            $result->addInterval($totalWork, $result->day);
+            $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->day);
         }else {
-            $result->addInterval($totalWork, $result->night);
+            $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->night);
         }
-        $keyNormal = "PT".$result::NORMAL_HOUR."H";
-        $keyWithPause = "PT".($result::NORMAL_HOUR + ($isDay ? $result::DAY_PAUSE : $result::NIGHT_PAUSE))."H";
+        $keyNormal = "PT".$newPointage::NORMAL_HOUR."H";
+        $keyWithPause = "PT".($newPointage::NORMAL_HOUR + ($isDay ? $newPointage::DAY_PAUSE : $newPointage::NIGHT_PAUSE))."H";
         
         $intervalNormalWork = new DateInterval($keyNormal);
         $intervalNormalWorkWithPause = new DateInterval($keyWithPause);
-        $lastDateWithNormalHours = $lastPointage->getDatePointage()->add($intervalNormalWorkWithPause);
+        $lastDateWithNormalHours = $this->data[$employe_id]['last']->getDatePointage()->add($intervalNormalWorkWithPause);
 
         $diff = $newPointage->getDatePointage()->diff($lastDateWithNormalHours);
 
         
-
-        $result->addInterval($totalWork, $result->totalWork);
-        $result->addInterval($intervalNormalWork, $result->totalNormal);
+        
+        $this->data[$employe_id]['result']->addInterval($intervalNormalWork, $this->data[$employe_id]['result']->totalNormal);
         if($diff->invert){
-            $result->addInterval($diff, $result->totalExtra);
-            $this->addExtra($diff, $result, $week);
+            $this->addExtra($diff,$employe_id, $week);
         }else{
-            $result->addInterval($diff, $result->manque);
-            
+            $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->manque);
         }
+        // error_log("check addDifference fin");
     }
 
-    public function addExtra(DateInterval $interval, $target, $week)
+    public function addExtra(DateInterval $interval, $employe_id, $week)
     {
-        $target->addInterval($interval,$target->totalExtra);
+        error_log("check addExtra debut");
+        $this->data[$employe_id]['result']->addInterval($interval,$this->data[$employe_id]['result']->totalExtra);
 
-        if(!array_key_exists($week,$target->extraPerWeek)){
-            $target->extraPerWeek[$week] = [];
-            $target->extraPerWeek[$week]["firstExtra"] = 0;
-            $target->extraPerWeek[$week]["others"] = 0;
+        if(!array_key_exists($week,$this->data[$employe_id]['result']->extraPerWeek)){
+            $this->data[$employe_id]['result']->extraPerWeek[$week] = [];
+            $this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"] = 0;
+            $this->data[$employe_id]['result']->extraPerWeek[$week]["others"] = 0;
         }
 
         if(!array_key_exists($week,$this->generalExtraPerWeek)){
-            array_push($this->generalExtraPerWeek, $week);
+            $this->generalExtraPerWeek[$week] = true;
         }
 
         $intervalInSeconds = ($interval->h * 60 * 60) + ($interval->i * 60) + ($interval->s);
 
-        if($target->extraPerWeek[$week]["firstExtra"] > $target::EIGHT_EXTRA){
-            $target->extraPerWeek[$week]["others"] += $intervalInSeconds;
-        }elseif (($target->extraPerWeek[$week]["firstExtra"] + $intervalInSeconds) > $target::EIGHT_EXTRA) {
-            $surplus = ($target->extraPerWeek[$week]["firstExtra"] + $intervalInSeconds) - $target::EIGHT_EXTRA;
-            $target->extraPerWeek[$week]["firstExtra"] = $target::EIGHT_EXTRA;
-            $target->extraPerWeek[$week]["others"] += $surplus;
+        if($this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"] > $this->data[$employe_id]['result']::EIGHT_EXTRA){
+            $this->data[$employe_id]['result']->extraPerWeek[$week]["others"] += $intervalInSeconds;
+        }elseif (($this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"] + $intervalInSeconds) > $this->data[$employe_id]['result']::EIGHT_EXTRA) {
+            $surplus = ($this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"] + $intervalInSeconds) - $this->data[$employe_id]['result']::EIGHT_EXTRA;
+            $this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"] = $this->data[$employe_id]['result']::EIGHT_EXTRA;
+            $this->data[$employe_id]['result']->extraPerWeek[$week]["others"] += $surplus;
         }else{
-            $target->extraPerWeek[$week]["firstExtra"]+= $intervalInSeconds;
+            $this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"]+= $intervalInSeconds;
         }
+        error_log("check addExtra end");
     }
 
 

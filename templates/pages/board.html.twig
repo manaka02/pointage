@@ -89,6 +89,7 @@
                 <th>Nom et prénoms</th>
                 <th>Poste</th>
                 <th>Numéro</th>
+                <th>Jour de présence</th>
                 <th>Total heure de présence</th>
                 <th>Total Heure normale de travail</th>
                 <th>Total Heure jour</th>
@@ -97,11 +98,12 @@
                 <th>Total Manque</th>
                 <th>Total Extra</th>
 
-                {% for key,value in data['extraPerWeek'] %}
+                {% for key in data['extraPerWeek']|keys %}
                 <th>semaine {{key}} (Extra 8h)</th>
                 <th>semaine {{key}} (Extra Surplus)</th>
                 {% endfor %}
-
+                <th>Erreur trouvée</th>
+                <th>Warning trouvé</th>
               </tr>
             </thead>
             <tbody>
@@ -109,16 +111,31 @@
 
               {% for line in data['data'] %}
               <tr>
-                <td>{{line.virtualcolumns.nom_prenom}}</td>
-                <td>{{line.virtualcolumns.poste}}</td>
-                <td>{{line.virtualcolumns.employe_pointage_id}}</td>
-                <td>{{line.totalWork|date("%H:%I:%S") }}</td>
-                <td>{{line.totalNormal|date("%H:%I:%S")}}</td>
-                <td>{{line.day|date("%H:%I:%S")}}</td>
-                <td>{{line.night|date("%H:%I:%S")}}</td>
-                <td>{{line.samedi|date("%H:%I:%S")}}</td>
+                {% set value = line['result'] %}
+                <td>{{value.virtualcolumns.nom_prenom}}</td>
+                <td>{{value.virtualcolumns.poste}}</td>
+                <td>{{value.virtualcolumns.employe_pointage_id}}</td>
+                <td>{{value.jourPresence}}</td>
+                <td>{{(value.totalWork.s|date("H", '+00:00 GMT') +  (value.totalWork.d|date("d", '+00:00 GMT'))*24) ~":"~ value.totalWork.s|date("i:s", '+00:00 GMT') }}</td>
+                <td>{{value.totalNormal.s|date("H:i:s", '+00:00 GMT')}}</td>
+                <td>{{value.day.s|date("H:i:s", '+00:00 GMT')}}</td>
+                <td>{{value.night.s|date("H:i:s", '+00:00 GMT')}}</td>
+                <td>{{value.samedi.s|date("H:i:s", '+00:00 GMT')}}</td>
 
-                <td>{{line.totalWork|date("%H:%I:%S")}}</td>
+                <td>{{value.manque.s|date("H:i:s", '+00:00 GMT')}}</td>
+                <td>{{value.totalExtra.s|date("H:i:s", '+00:00 GMT')}}</td>
+                {% for key in data['extraPerWeek'] %}
+                  {% if line.extraPerWeek[key] is defined %}
+                    <td>{{line.extraPerWeek[key]['firstExtra']|date("H:i:s", '+00:00 GMT')}}</td>
+                    <td>{{line.extraPerWeek[key]["others"]|date("H:i:s", '+00:00 GMT')}}</td>
+                  {% else %}
+                    
+                    <td></td>
+                    <td></td>
+                  {% endif %}
+                {% endfor %}
+                <td class="{{line['error'] ==  0 ? null : "bg-danger"}}">{{line['error']}}</td>
+                <td class="{{line['warning'] ==  0 ? null : "bg-warning"}}">{{line['warning']}}</td>
               </tr>
               {% endfor %}
 
