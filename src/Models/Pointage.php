@@ -72,7 +72,6 @@ class Pointage extends BasePointage
 
     public function addInterval(DateInterval $interval, &$target)
     {
-        
         $target->s += $interval->s + ($interval->i * 60) + ($interval->h * 3600); 
     }
 

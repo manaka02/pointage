@@ -20,10 +20,34 @@ class BoardService
         // dump($listBasique);
         // $listGrouped = $this->groupListByUser($listBasique);
         $this->calculate($listBasique);
+        // dump($this->data);
+        $this->formatData();
         return [
             "data" =>$this->data ,
             "extraPerWeek" => $this->generalExtraPerWeek
         ];
+    }
+
+    public function formatData()
+    {
+        foreach ($this->data as $key => $oneUser) {
+            $this->formatOneDateInterval($this->data[$key]['result']->totalWork);
+            $this->formatOneDateInterval($this->data[$key]['result']->totalNormal);
+            $this->formatOneDateInterval($this->data[$key]['result']->totalExtra);
+            $this->formatOneDateInterval($this->data[$key]['result']->samedi);
+            $this->formatOneDateInterval($this->data[$key]['result']->day);
+            $this->formatOneDateInterval($this->data[$key]['result']->night);
+            $this->formatOneDateInterval($this->data[$key]['result']->manque);
+        }
+    }
+
+    public function formatOneDateInterval(DateInterval &$interval)
+    {
+        // dump($interval);
+        $interval->h += $interval->s / 3600;
+        
+        $interval->i += ($interval->s - ($interval->h * 3600)) / 60;
+        $interval->s  = $interval->s - (($interval->h * 3600) + ($interval->i * 60));
     }
 
     public function getListBasique(Array $params)
@@ -40,7 +64,7 @@ class BoardService
         $query = PointageQuery::create()
         ->filterByDatePointage(array('min' => $date_debut, 'max' => $date_fin))
         ->orderByDatePointage("asc")
-        // ->filterByEmployeId(16)
+        // ->filterByEmployeId(15)
         ->joinEmploye()
         ->withColumn("nom_prenom")
         ->withColumn("employe_pointage_id")
@@ -57,6 +81,8 @@ class BoardService
         // dump("begin calculate");
 
         foreach ($listPointage as $key => $pointage) {
+            // dump($pointage->getStatus());
+            // dump($pointage->getDatePointage());
             $employe_id = $pointage->getEmployeId();
             if(!array_key_exists($employe_id,$this->data)){
                 
@@ -102,6 +128,7 @@ class BoardService
             $this->data[$employe_id]['last'] = null;
             return true;
         }
+        
         if($this->data[$employe_id]['last']->getStatus() == $newPointage->getStatus()){
             if($diff->h == 0) {
                 $this->data[$employe_id]['warning'] ++;
@@ -117,7 +144,13 @@ class BoardService
             $this->data[$employe_id]['last'] = $newPointage;
             return true;
         }
-        // error_log("check error Fin");
+
+        if(!$this->data[$employe_id]['last']->isIn()){
+            $this->data[$employe_id]['error'] ++;
+            $this->data[$employe_id]['last'] = null;
+            return true;
+        }
+        
         return;
     }
 
@@ -145,7 +178,6 @@ class BoardService
         }
         if($newPointage->getDatePointage()->format('N') == $this->data[$employe_id]['last']->getDatePointage()->format('N')) return;
 
-        $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->totalWork);
         $this->addDifference($employe_id, $newPointage,$diff, false);
         $this->data[$employe_id]['result']->jourPresence++;
         // error_log("check checkIfNightDayWork fin");
@@ -160,7 +192,6 @@ class BoardService
 
         if($newPointage->getDatePointage()->format('N') != $this->data[$employe_id]['last']->getDatePointage()->format('N')) return;
         // dump("isDay");
-        $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->totalWork);
         $this->addDifference($employe_id, $newPointage,$diff);
         $this->data[$employe_id]['last'] = null;
         $this->data[$employe_id]['result']->jourPresence++;
@@ -173,6 +204,7 @@ class BoardService
         // error_log("check addDifference debut");
         $week = $this->data[$employe_id]['last']->getDatePointage()->format("W");
         $diff->h -= $isDay ? $newPointage::DAY_PAUSE : $newPointage::NIGHT_PAUSE;
+        $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->totalWork);
         if($isDay){
             $this->data[$employe_id]['result']->addInterval($diff, $this->data[$employe_id]['result']->day);
         }else {
@@ -183,6 +215,9 @@ class BoardService
         
         $intervalNormalWork = new DateInterval($keyNormal);
         $intervalNormalWorkWithPause = new DateInterval($keyWithPause);
+
+        
+
         $lastDateWithNormalHours = $this->data[$employe_id]['last']->getDatePointage()->add($intervalNormalWorkWithPause);
 
         $diff = $newPointage->getDatePointage()->diff($lastDateWithNormalHours);
@@ -214,8 +249,10 @@ class BoardService
         }
 
         $intervalInSeconds = ($interval->h * 60 * 60) + ($interval->i * 60) + ($interval->s);
-
+        error_log("interval in seconds : " . $intervalInSeconds);
+        error_log($this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"]);
         if($this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"] > $this->data[$employe_id]['result']::EIGHT_EXTRA){
+            
             $this->data[$employe_id]['result']->extraPerWeek[$week]["others"] += $intervalInSeconds;
         }elseif (($this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"] + $intervalInSeconds) > $this->data[$employe_id]['result']::EIGHT_EXTRA) {
             $surplus = ($this->data[$employe_id]['result']->extraPerWeek[$week]["firstExtra"] + $intervalInSeconds) - $this->data[$employe_id]['result']::EIGHT_EXTRA;
