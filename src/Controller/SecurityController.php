@@ -14,19 +14,6 @@ use Symfony\Component\Security\Http\Authorization\AccessDeniedHandlerInterface;
 class SecurityController extends AbstractController  implements AccessDeniedHandlerInterface
 {
 
-    // /**
-    //  * @Route("/login", name="login")
-    //  */
-    // public function login(AuthenticationUtils $utils)
-    // {
-    //     $lastLogin = $utils->getLastUsername();
-    //     $lastError = $utils->getLastAuthenticationError();
-    //     return $this->render("pages/modules/security/login.html.twig", [
-    //         "login" => $lastLogin,
-    //         "error" => $lastError
-    //     ]);
-    // }
-
     public function handle(Request $request, AccessDeniedException $accessDeniedException)
     {
         $this->addFlash("denied", "Désolé, votre profil ne vous permet pas d'accéder à ce contenu ou de faire cette action");
