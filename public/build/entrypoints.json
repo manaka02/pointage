@@ -1,0 +1,143 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/app.76cddc64.js"
+      ],
+      "css": [
+        "/build/app.f6b44820.css"
+      ]
+    },
+    "jquery": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/jquery.fce6fbe7.js"
+      ]
+    },
+    "jquery-ui": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/jquery-ui.cc1bee60.js"
+      ]
+    },
+    "bootstrap": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/bootstrap.5adfd22b.js"
+      ]
+    },
+    "adminlte": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/adminlte.482bdb79.js"
+      ]
+    },
+    "demo": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/demo.a633f46c.js"
+      ]
+    },
+    "chart": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/chart.4af0e27c.js"
+      ]
+    },
+    "moment": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/moment.3367fc82.js"
+      ]
+    },
+    "jqvmap": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/2.cfe5591d.js",
+        "/build/jqvmap.ee2dec2d.js"
+      ]
+    },
+    "vmapusa": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/vmapusa.e9dc8240.js"
+      ]
+    },
+    "jquery-knob": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/3.65530e91.js",
+        "/build/jquery-knob.b3652eb2.js"
+      ]
+    },
+    "sparklines": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/sparklines.a154f92a.js"
+      ]
+    },
+    "daterangepicker": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/daterangepicker.78064202.js"
+      ]
+    },
+    "tempusdominus": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/tempusdominus.4123d84e.js"
+      ]
+    },
+    "summernote": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/summernote.477a814b.js"
+      ]
+    },
+    "overlayScrollbars": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/0.65bab6af.js",
+        "/build/1.02040da2.js",
+        "/build/overlayScrollbars.650d3fe8.js"
+      ]
+    },
+    "dashboard": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/dashboard.e86dce1c.js"
+      ]
+    },
+    "darkmode": {
+      "js": [
+        "/build/runtime.d94b3b43.js",
+        "/build/darkmode.516487d5.js"
+      ]
+    }
+  }
+}
