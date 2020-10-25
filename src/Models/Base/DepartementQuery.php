@@ -21,10 +21,12 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildDepartementQuery orderByDepartementId($order = Criteria::ASC) Order by the departement_id column
+ * @method     ChildDepartementQuery orderByDirectionId($order = Criteria::ASC) Order by the direction_id column
  * @method     ChildDepartementQuery orderByDesignation($order = Criteria::ASC) Order by the designation column
  * @method     ChildDepartementQuery orderByDescription($order = Criteria::ASC) Order by the description column
  *
  * @method     ChildDepartementQuery groupByDepartementId() Group by the departement_id column
+ * @method     ChildDepartementQuery groupByDirectionId() Group by the direction_id column
  * @method     ChildDepartementQuery groupByDesignation() Group by the designation column
  * @method     ChildDepartementQuery groupByDescription() Group by the description column
  *
@@ -36,22 +38,33 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDepartementQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildDepartementQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildDepartementQuery leftJoinEmploye($relationAlias = null) Adds a LEFT JOIN clause to the query using the Employe relation
- * @method     ChildDepartementQuery rightJoinEmploye($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Employe relation
- * @method     ChildDepartementQuery innerJoinEmploye($relationAlias = null) Adds a INNER JOIN clause to the query using the Employe relation
+ * @method     ChildDepartementQuery leftJoinDirection($relationAlias = null) Adds a LEFT JOIN clause to the query using the Direction relation
+ * @method     ChildDepartementQuery rightJoinDirection($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Direction relation
+ * @method     ChildDepartementQuery innerJoinDirection($relationAlias = null) Adds a INNER JOIN clause to the query using the Direction relation
  *
- * @method     ChildDepartementQuery joinWithEmploye($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Employe relation
+ * @method     ChildDepartementQuery joinWithDirection($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Direction relation
  *
- * @method     ChildDepartementQuery leftJoinWithEmploye() Adds a LEFT JOIN clause and with to the query using the Employe relation
- * @method     ChildDepartementQuery rightJoinWithEmploye() Adds a RIGHT JOIN clause and with to the query using the Employe relation
- * @method     ChildDepartementQuery innerJoinWithEmploye() Adds a INNER JOIN clause and with to the query using the Employe relation
+ * @method     ChildDepartementQuery leftJoinWithDirection() Adds a LEFT JOIN clause and with to the query using the Direction relation
+ * @method     ChildDepartementQuery rightJoinWithDirection() Adds a RIGHT JOIN clause and with to the query using the Direction relation
+ * @method     ChildDepartementQuery innerJoinWithDirection() Adds a INNER JOIN clause and with to the query using the Direction relation
  *
- * @method     \App\Models\EmployeQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildDepartementQuery leftJoinService($relationAlias = null) Adds a LEFT JOIN clause to the query using the Service relation
+ * @method     ChildDepartementQuery rightJoinService($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Service relation
+ * @method     ChildDepartementQuery innerJoinService($relationAlias = null) Adds a INNER JOIN clause to the query using the Service relation
+ *
+ * @method     ChildDepartementQuery joinWithService($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Service relation
+ *
+ * @method     ChildDepartementQuery leftJoinWithService() Adds a LEFT JOIN clause and with to the query using the Service relation
+ * @method     ChildDepartementQuery rightJoinWithService() Adds a RIGHT JOIN clause and with to the query using the Service relation
+ * @method     ChildDepartementQuery innerJoinWithService() Adds a INNER JOIN clause and with to the query using the Service relation
+ *
+ * @method     \App\Models\DirectionQuery|\App\Models\ServiceQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildDepartement findOne(ConnectionInterface $con = null) Return the first ChildDepartement matching the query
  * @method     ChildDepartement findOneOrCreate(ConnectionInterface $con = null) Return the first ChildDepartement matching the query, or a new ChildDepartement object populated from the query conditions when no match is found
  *
  * @method     ChildDepartement findOneByDepartementId(int $departement_id) Return the first ChildDepartement filtered by the departement_id column
+ * @method     ChildDepartement findOneByDirectionId(int $direction_id) Return the first ChildDepartement filtered by the direction_id column
  * @method     ChildDepartement findOneByDesignation(string $designation) Return the first ChildDepartement filtered by the designation column
  * @method     ChildDepartement findOneByDescription(string $description) Return the first ChildDepartement filtered by the description column *
 
@@ -59,11 +72,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDepartement requireOne(ConnectionInterface $con = null) Return the first ChildDepartement matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildDepartement requireOneByDepartementId(int $departement_id) Return the first ChildDepartement filtered by the departement_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildDepartement requireOneByDirectionId(int $direction_id) Return the first ChildDepartement filtered by the direction_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDepartement requireOneByDesignation(string $designation) Return the first ChildDepartement filtered by the designation column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildDepartement requireOneByDescription(string $description) Return the first ChildDepartement filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildDepartement[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildDepartement objects based on current ModelCriteria
  * @method     ChildDepartement[]|ObjectCollection findByDepartementId(int $departement_id) Return ChildDepartement objects filtered by the departement_id column
+ * @method     ChildDepartement[]|ObjectCollection findByDirectionId(int $direction_id) Return ChildDepartement objects filtered by the direction_id column
  * @method     ChildDepartement[]|ObjectCollection findByDesignation(string $designation) Return ChildDepartement objects filtered by the designation column
  * @method     ChildDepartement[]|ObjectCollection findByDescription(string $description) Return ChildDepartement objects filtered by the description column
  * @method     ChildDepartement[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -164,7 +179,7 @@ abstract class DepartementQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT departement_id, designation, description FROM departement WHERE departement_id = :p0';
+        $sql = 'SELECT departement_id, direction_id, designation, description FROM departement WHERE departement_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -296,6 +311,49 @@ abstract class DepartementQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the direction_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDirectionId(1234); // WHERE direction_id = 1234
+     * $query->filterByDirectionId(array(12, 34)); // WHERE direction_id IN (12, 34)
+     * $query->filterByDirectionId(array('min' => 12)); // WHERE direction_id > 12
+     * </code>
+     *
+     * @see       filterByDirection()
+     *
+     * @param     mixed $directionId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildDepartementQuery The current query, for fluid interface
+     */
+    public function filterByDirectionId($directionId = null, $comparison = null)
+    {
+        if (is_array($directionId)) {
+            $useMinMax = false;
+            if (isset($directionId['min'])) {
+                $this->addUsingAlias(DepartementTableMap::COL_DIRECTION_ID, $directionId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($directionId['max'])) {
+                $this->addUsingAlias(DepartementTableMap::COL_DIRECTION_ID, $directionId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(DepartementTableMap::COL_DIRECTION_ID, $directionId, $comparison);
+    }
+
+    /**
      * Filter the query on the designation column
      *
      * Example usage:
@@ -346,40 +404,44 @@ abstract class DepartementQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \App\Models\Employe object
+     * Filter the query by a related \App\Models\Direction object
      *
-     * @param \App\Models\Employe|ObjectCollection $employe the related object to use as filter
+     * @param \App\Models\Direction|ObjectCollection $direction The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildDepartementQuery The current query, for fluid interface
      */
-    public function filterByEmploye($employe, $comparison = null)
+    public function filterByDirection($direction, $comparison = null)
     {
-        if ($employe instanceof \App\Models\Employe) {
+        if ($direction instanceof \App\Models\Direction) {
             return $this
-                ->addUsingAlias(DepartementTableMap::COL_DEPARTEMENT_ID, $employe->getDepartementId(), $comparison);
-        } elseif ($employe instanceof ObjectCollection) {
+                ->addUsingAlias(DepartementTableMap::COL_DIRECTION_ID, $direction->getDirectionId(), $comparison);
+        } elseif ($direction instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
             return $this
-                ->useEmployeQuery()
-                ->filterByPrimaryKeys($employe->getPrimaryKeys())
-                ->endUse();
+                ->addUsingAlias(DepartementTableMap::COL_DIRECTION_ID, $direction->toKeyValue('PrimaryKey', 'DirectionId'), $comparison);
         } else {
-            throw new PropelException('filterByEmploye() only accepts arguments of type \App\Models\Employe or Collection');
+            throw new PropelException('filterByDirection() only accepts arguments of type \App\Models\Direction or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Employe relation
+     * Adds a JOIN clause to the query using the Direction relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildDepartementQuery The current query, for fluid interface
      */
-    public function joinEmploye($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinDirection($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Employe');
+        $relationMap = $tableMap->getRelation('Direction');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -394,14 +456,14 @@ abstract class DepartementQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Employe');
+            $this->addJoinObject($join, 'Direction');
         }
 
         return $this;
     }
 
     /**
-     * Use the Employe relation Employe object
+     * Use the Direction relation Direction object
      *
      * @see useQuery()
      *
@@ -409,13 +471,86 @@ abstract class DepartementQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \App\Models\EmployeQuery A secondary query class using the current class as primary query
+     * @return \App\Models\DirectionQuery A secondary query class using the current class as primary query
      */
-    public function useEmployeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useDirectionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinEmploye($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Employe', '\App\Models\EmployeQuery');
+            ->joinDirection($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Direction', '\App\Models\DirectionQuery');
+    }
+
+    /**
+     * Filter the query by a related \App\Models\Service object
+     *
+     * @param \App\Models\Service|ObjectCollection $service the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDepartementQuery The current query, for fluid interface
+     */
+    public function filterByService($service, $comparison = null)
+    {
+        if ($service instanceof \App\Models\Service) {
+            return $this
+                ->addUsingAlias(DepartementTableMap::COL_DEPARTEMENT_ID, $service->getDepartementId(), $comparison);
+        } elseif ($service instanceof ObjectCollection) {
+            return $this
+                ->useServiceQuery()
+                ->filterByPrimaryKeys($service->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByService() only accepts arguments of type \App\Models\Service or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Service relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDepartementQuery The current query, for fluid interface
+     */
+    public function joinService($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Service');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Service');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Service relation Service object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \App\Models\ServiceQuery A secondary query class using the current class as primary query
+     */
+    public function useServiceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinService($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Service', '\App\Models\ServiceQuery');
     }
 
     /**

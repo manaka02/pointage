@@ -2,42 +2,37 @@
 
 namespace App\Models\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
-use App\Models\Departement as ChildDepartement;
-use App\Models\DepartementQuery as ChildDepartementQuery;
-use App\Models\Direction as ChildDirection;
-use App\Models\DirectionQuery as ChildDirectionQuery;
-use App\Models\Service as ChildService;
-use App\Models\ServiceQuery as ChildServiceQuery;
-use App\Models\Map\DepartementTableMap;
-use App\Models\Map\ServiceTableMap;
+use App\Models\PermissionQuery as ChildPermissionQuery;
+use App\Models\Map\PermissionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'departement' table.
+ * Base class that represents a row from the 'permission' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Departement implements ActiveRecordInterface
+abstract class Permission implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\App\\Models\\Map\\DepartementTableMap';
+    const TABLE_MAP = '\\App\\Models\\Map\\PermissionTableMap';
 
 
     /**
@@ -67,43 +62,53 @@ abstract class Departement implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the departement_id field.
+     * The value for the permission_id field.
      *
      * @var        int
      */
-    protected $departement_id;
+    protected $permission_id;
 
     /**
-     * The value for the direction_id field.
+     * The value for the employe_id field.
      *
      * @var        int
      */
-    protected $direction_id;
+    protected $employe_id;
 
     /**
-     * The value for the designation field.
+     * The value for the date_permission field.
      *
-     * @var        string
+     * @var        DateTime
      */
-    protected $designation;
+    protected $date_permission;
 
     /**
-     * The value for the description field.
+     * The value for the heure_entree field.
      *
-     * @var        string
+     * @var        DateTime
      */
-    protected $description;
+    protected $heure_entree;
 
     /**
-     * @var        ChildDirection
+     * The value for the heure_sortie field.
+     *
+     * @var        DateTime
      */
-    protected $aDirection;
+    protected $heure_sortie;
 
     /**
-     * @var        ObjectCollection|ChildService[] Collection to store aggregation of ChildService objects.
+     * The value for the heure_travail field.
+     *
+     * @var        DateTime
      */
-    protected $collServices;
-    protected $collServicesPartial;
+    protected $heure_travail;
+
+    /**
+     * The value for the heure_manque field.
+     *
+     * @var        DateTime
+     */
+    protected $heure_manque;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -114,13 +119,7 @@ abstract class Departement implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildService[]
-     */
-    protected $servicesScheduledForDeletion = null;
-
-    /**
-     * Initializes internal state of App\Models\Base\Departement object.
+     * Initializes internal state of App\Models\Base\Permission object.
      */
     public function __construct()
     {
@@ -215,9 +214,9 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Departement</code> instance.  If
-     * <code>obj</code> is an instance of <code>Departement</code>, delegates to
-     * <code>equals(Departement)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Permission</code> instance.  If
+     * <code>obj</code> is an instance of <code>Permission</code>, delegates to
+     * <code>equals(Permission)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -345,128 +344,264 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * Get the [departement_id] column value.
+     * Get the [permission_id] column value.
      *
      * @return int
      */
-    public function getDepartementId()
+    public function getPermissionId()
     {
-        return $this->departement_id;
+        return $this->permission_id;
     }
 
     /**
-     * Get the [direction_id] column value.
+     * Get the [employe_id] column value.
      *
      * @return int
      */
-    public function getDirectionId()
+    public function getEmployeId()
     {
-        return $this->direction_id;
+        return $this->employe_id;
     }
 
     /**
-     * Get the [designation] column value.
+     * Get the [optionally formatted] temporal [date_permission] column value.
      *
-     * @return string
-     */
-    public function getDesignation()
-    {
-        return $this->designation;
-    }
-
-    /**
-     * Get the [description] column value.
      *
-     * @return string
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getDescription()
+    public function getDatePermission($format = NULL)
     {
-        return $this->description;
+        if ($format === null) {
+            return $this->date_permission;
+        } else {
+            return $this->date_permission instanceof \DateTimeInterface ? $this->date_permission->format($format) : null;
+        }
     }
 
     /**
-     * Set the value of [departement_id] column.
+     * Get the [optionally formatted] temporal [heure_entree] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getHeureEntree($format = NULL)
+    {
+        if ($format === null) {
+            return $this->heure_entree;
+        } else {
+            return $this->heure_entree instanceof \DateTimeInterface ? $this->heure_entree->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [heure_sortie] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getHeureSortie($format = NULL)
+    {
+        if ($format === null) {
+            return $this->heure_sortie;
+        } else {
+            return $this->heure_sortie instanceof \DateTimeInterface ? $this->heure_sortie->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [heure_travail] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getHeureTravail($format = NULL)
+    {
+        if ($format === null) {
+            return $this->heure_travail;
+        } else {
+            return $this->heure_travail instanceof \DateTimeInterface ? $this->heure_travail->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [heure_manque] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getHeureManque($format = NULL)
+    {
+        if ($format === null) {
+            return $this->heure_manque;
+        } else {
+            return $this->heure_manque instanceof \DateTimeInterface ? $this->heure_manque->format($format) : null;
+        }
+    }
+
+    /**
+     * Set the value of [permission_id] column.
      *
      * @param int $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @return $this|\App\Models\Permission The current object (for fluent API support)
      */
-    public function setDepartementId($v)
+    public function setPermissionId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->departement_id !== $v) {
-            $this->departement_id = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DEPARTEMENT_ID] = true;
+        if ($this->permission_id !== $v) {
+            $this->permission_id = $v;
+            $this->modifiedColumns[PermissionTableMap::COL_PERMISSION_ID] = true;
         }
 
         return $this;
-    } // setDepartementId()
+    } // setPermissionId()
 
     /**
-     * Set the value of [direction_id] column.
+     * Set the value of [employe_id] column.
      *
      * @param int $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @return $this|\App\Models\Permission The current object (for fluent API support)
      */
-    public function setDirectionId($v)
+    public function setEmployeId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->direction_id !== $v) {
-            $this->direction_id = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DIRECTION_ID] = true;
-        }
-
-        if ($this->aDirection !== null && $this->aDirection->getDirectionId() !== $v) {
-            $this->aDirection = null;
+        if ($this->employe_id !== $v) {
+            $this->employe_id = $v;
+            $this->modifiedColumns[PermissionTableMap::COL_EMPLOYE_ID] = true;
         }
 
         return $this;
-    } // setDirectionId()
+    } // setEmployeId()
 
     /**
-     * Set the value of [designation] column.
+     * Sets the value of [date_permission] column to a normalized version of the date/time value specified.
      *
-     * @param string|null $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\App\Models\Permission The current object (for fluent API support)
      */
-    public function setDesignation($v)
+    public function setDatePermission($v)
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->designation !== $v) {
-            $this->designation = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DESIGNATION] = true;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->date_permission !== null || $dt !== null) {
+            if ($this->date_permission === null || $dt === null || $dt->format("Y-m-d") !== $this->date_permission->format("Y-m-d")) {
+                $this->date_permission = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[PermissionTableMap::COL_DATE_PERMISSION] = true;
+            }
+        } // if either are not null
 
         return $this;
-    } // setDesignation()
+    } // setDatePermission()
 
     /**
-     * Set the value of [description] column.
+     * Sets the value of [heure_entree] column to a normalized version of the date/time value specified.
      *
-     * @param string|null $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\App\Models\Permission The current object (for fluent API support)
      */
-    public function setDescription($v)
+    public function setHeureEntree($v)
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->description !== $v) {
-            $this->description = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DESCRIPTION] = true;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->heure_entree !== null || $dt !== null) {
+            if ($this->heure_entree === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_entree->format("H:i:s.u")) {
+                $this->heure_entree = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[PermissionTableMap::COL_HEURE_ENTREE] = true;
+            }
+        } // if either are not null
 
         return $this;
-    } // setDescription()
+    } // setHeureEntree()
+
+    /**
+     * Sets the value of [heure_sortie] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     */
+    public function setHeureSortie($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->heure_sortie !== null || $dt !== null) {
+            if ($this->heure_sortie === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_sortie->format("H:i:s.u")) {
+                $this->heure_sortie = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[PermissionTableMap::COL_HEURE_SORTIE] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setHeureSortie()
+
+    /**
+     * Sets the value of [heure_travail] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     */
+    public function setHeureTravail($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->heure_travail !== null || $dt !== null) {
+            if ($this->heure_travail === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_travail->format("H:i:s.u")) {
+                $this->heure_travail = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[PermissionTableMap::COL_HEURE_TRAVAIL] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setHeureTravail()
+
+    /**
+     * Sets the value of [heure_manque] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     */
+    public function setHeureManque($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->heure_manque !== null || $dt !== null) {
+            if ($this->heure_manque === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_manque->format("H:i:s.u")) {
+                $this->heure_manque = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[PermissionTableMap::COL_HEURE_MANQUE] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setHeureManque()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -504,17 +639,29 @@ abstract class Departement implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : DepartementTableMap::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->departement_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PermissionTableMap::translateFieldName('PermissionId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->permission_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DepartementTableMap::translateFieldName('DirectionId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->direction_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PermissionTableMap::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->employe_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DepartementTableMap::translateFieldName('Designation', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->designation = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PermissionTableMap::translateFieldName('DatePermission', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00') {
+                $col = null;
+            }
+            $this->date_permission = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DepartementTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->description = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PermissionTableMap::translateFieldName('HeureEntree', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->heure_entree = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PermissionTableMap::translateFieldName('HeureSortie', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->heure_sortie = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PermissionTableMap::translateFieldName('HeureTravail', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->heure_travail = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PermissionTableMap::translateFieldName('HeureManque', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->heure_manque = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -523,10 +670,10 @@ abstract class Departement implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = DepartementTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = PermissionTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Departement'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Permission'), 0, $e);
         }
     }
 
@@ -545,9 +692,6 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aDirection !== null && $this->direction_id !== $this->aDirection->getDirectionId()) {
-            $this->aDirection = null;
-        }
     } // ensureConsistency
 
     /**
@@ -571,13 +715,13 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(PermissionTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildDepartementQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildPermissionQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -586,9 +730,6 @@ abstract class Departement implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
-            $this->aDirection = null;
-            $this->collServices = null;
 
         } // if (deep)
     }
@@ -599,8 +740,8 @@ abstract class Departement implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Departement::setDeleted()
-     * @see Departement::isDeleted()
+     * @see Permission::setDeleted()
+     * @see Permission::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -609,11 +750,11 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PermissionTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildDepartementQuery::create()
+            $deleteQuery = ChildPermissionQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -648,7 +789,7 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PermissionTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -667,7 +808,7 @@ abstract class Departement implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                DepartementTableMap::addInstanceToPool($this);
+                PermissionTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -693,18 +834,6 @@ abstract class Departement implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aDirection !== null) {
-                if ($this->aDirection->isModified() || $this->aDirection->isNew()) {
-                    $affectedRows += $this->aDirection->save($con);
-                }
-                $this->setDirection($this->aDirection);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -714,23 +843,6 @@ abstract class Departement implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->servicesScheduledForDeletion !== null) {
-                if (!$this->servicesScheduledForDeletion->isEmpty()) {
-                    \App\Models\ServiceQuery::create()
-                        ->filterByPrimaryKeys($this->servicesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->servicesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collServices !== null) {
-                foreach ($this->collServices as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -753,27 +865,36 @@ abstract class Departement implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[DepartementTableMap::COL_DEPARTEMENT_ID] = true;
-        if (null !== $this->departement_id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . DepartementTableMap::COL_DEPARTEMENT_ID . ')');
+        $this->modifiedColumns[PermissionTableMap::COL_PERMISSION_ID] = true;
+        if (null !== $this->permission_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . PermissionTableMap::COL_PERMISSION_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(DepartementTableMap::COL_DEPARTEMENT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'departement_id';
+        if ($this->isColumnModified(PermissionTableMap::COL_PERMISSION_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'permission_id';
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DIRECTION_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'direction_id';
+        if ($this->isColumnModified(PermissionTableMap::COL_EMPLOYE_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'employe_id';
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESIGNATION)) {
-            $modifiedColumns[':p' . $index++]  = 'designation';
+        if ($this->isColumnModified(PermissionTableMap::COL_DATE_PERMISSION)) {
+            $modifiedColumns[':p' . $index++]  = 'date_permission';
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++]  = 'description';
+        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_ENTREE)) {
+            $modifiedColumns[':p' . $index++]  = 'heure_entree';
+        }
+        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_SORTIE)) {
+            $modifiedColumns[':p' . $index++]  = 'heure_sortie';
+        }
+        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_TRAVAIL)) {
+            $modifiedColumns[':p' . $index++]  = 'heure_travail';
+        }
+        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_MANQUE)) {
+            $modifiedColumns[':p' . $index++]  = 'heure_manque';
         }
 
         $sql = sprintf(
-            'INSERT INTO departement (%s) VALUES (%s)',
+            'INSERT INTO permission (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -782,17 +903,26 @@ abstract class Departement implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'departement_id':
-                        $stmt->bindValue($identifier, $this->departement_id, PDO::PARAM_INT);
+                    case 'permission_id':
+                        $stmt->bindValue($identifier, $this->permission_id, PDO::PARAM_INT);
                         break;
-                    case 'direction_id':
-                        $stmt->bindValue($identifier, $this->direction_id, PDO::PARAM_INT);
+                    case 'employe_id':
+                        $stmt->bindValue($identifier, $this->employe_id, PDO::PARAM_INT);
                         break;
-                    case 'designation':
-                        $stmt->bindValue($identifier, $this->designation, PDO::PARAM_STR);
+                    case 'date_permission':
+                        $stmt->bindValue($identifier, $this->date_permission ? $this->date_permission->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
-                    case 'description':
-                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+                    case 'heure_entree':
+                        $stmt->bindValue($identifier, $this->heure_entree ? $this->heure_entree->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'heure_sortie':
+                        $stmt->bindValue($identifier, $this->heure_sortie ? $this->heure_sortie->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'heure_travail':
+                        $stmt->bindValue($identifier, $this->heure_travail ? $this->heure_travail->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'heure_manque':
+                        $stmt->bindValue($identifier, $this->heure_manque ? $this->heure_manque->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -807,7 +937,7 @@ abstract class Departement implements ActiveRecordInterface
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', 0, $e);
         }
-        $this->setDepartementId($pk);
+        $this->setPermissionId($pk);
 
         $this->setNew(false);
     }
@@ -840,7 +970,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = DepartementTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = PermissionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -857,16 +987,25 @@ abstract class Departement implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getDepartementId();
+                return $this->getPermissionId();
                 break;
             case 1:
-                return $this->getDirectionId();
+                return $this->getEmployeId();
                 break;
             case 2:
-                return $this->getDesignation();
+                return $this->getDatePermission();
                 break;
             case 3:
-                return $this->getDescription();
+                return $this->getHeureEntree();
+                break;
+            case 4:
+                return $this->getHeureSortie();
+                break;
+            case 5:
+                return $this->getHeureTravail();
+                break;
+            case 6:
+                return $this->getHeureManque();
                 break;
             default:
                 return null;
@@ -885,61 +1024,51 @@ abstract class Departement implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['Departement'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Permission'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Departement'][$this->hashCode()] = true;
-        $keys = DepartementTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Permission'][$this->hashCode()] = true;
+        $keys = PermissionTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getDepartementId(),
-            $keys[1] => $this->getDirectionId(),
-            $keys[2] => $this->getDesignation(),
-            $keys[3] => $this->getDescription(),
+            $keys[0] => $this->getPermissionId(),
+            $keys[1] => $this->getEmployeId(),
+            $keys[2] => $this->getDatePermission(),
+            $keys[3] => $this->getHeureEntree(),
+            $keys[4] => $this->getHeureSortie(),
+            $keys[5] => $this->getHeureTravail(),
+            $keys[6] => $this->getHeureManque(),
         );
+        if ($result[$keys[2]] instanceof \DateTimeInterface) {
+            $result[$keys[2]] = $result[$keys[2]]->format('c');
+        }
+
+        if ($result[$keys[3]] instanceof \DateTimeInterface) {
+            $result[$keys[3]] = $result[$keys[3]]->format('c');
+        }
+
+        if ($result[$keys[4]] instanceof \DateTimeInterface) {
+            $result[$keys[4]] = $result[$keys[4]]->format('c');
+        }
+
+        if ($result[$keys[5]] instanceof \DateTimeInterface) {
+            $result[$keys[5]] = $result[$keys[5]]->format('c');
+        }
+
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aDirection) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'direction';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'direction';
-                        break;
-                    default:
-                        $key = 'Direction';
-                }
-
-                $result[$key] = $this->aDirection->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->collServices) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'services';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'services';
-                        break;
-                    default:
-                        $key = 'Services';
-                }
-
-                $result[$key] = $this->collServices->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-        }
 
         return $result;
     }
@@ -953,11 +1082,11 @@ abstract class Departement implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\App\Models\Departement
+     * @return $this|\App\Models\Permission
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = DepartementTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = PermissionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -968,22 +1097,31 @@ abstract class Departement implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\App\Models\Departement
+     * @return $this|\App\Models\Permission
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setDepartementId($value);
+                $this->setPermissionId($value);
                 break;
             case 1:
-                $this->setDirectionId($value);
+                $this->setEmployeId($value);
                 break;
             case 2:
-                $this->setDesignation($value);
+                $this->setDatePermission($value);
                 break;
             case 3:
-                $this->setDescription($value);
+                $this->setHeureEntree($value);
+                break;
+            case 4:
+                $this->setHeureSortie($value);
+                break;
+            case 5:
+                $this->setHeureTravail($value);
+                break;
+            case 6:
+                $this->setHeureManque($value);
                 break;
         } // switch()
 
@@ -1009,19 +1147,28 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = DepartementTableMap::getFieldNames($keyType);
+        $keys = PermissionTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setDepartementId($arr[$keys[0]]);
+            $this->setPermissionId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setDirectionId($arr[$keys[1]]);
+            $this->setEmployeId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setDesignation($arr[$keys[2]]);
+            $this->setDatePermission($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setDescription($arr[$keys[3]]);
+            $this->setHeureEntree($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setHeureSortie($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setHeureTravail($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setHeureManque($arr[$keys[6]]);
         }
     }
 
@@ -1042,7 +1189,7 @@ abstract class Departement implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\App\Models\Departement The current object, for fluid interface
+     * @return $this|\App\Models\Permission The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1062,19 +1209,28 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(DepartementTableMap::DATABASE_NAME);
+        $criteria = new Criteria(PermissionTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(DepartementTableMap::COL_DEPARTEMENT_ID)) {
-            $criteria->add(DepartementTableMap::COL_DEPARTEMENT_ID, $this->departement_id);
+        if ($this->isColumnModified(PermissionTableMap::COL_PERMISSION_ID)) {
+            $criteria->add(PermissionTableMap::COL_PERMISSION_ID, $this->permission_id);
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DIRECTION_ID)) {
-            $criteria->add(DepartementTableMap::COL_DIRECTION_ID, $this->direction_id);
+        if ($this->isColumnModified(PermissionTableMap::COL_EMPLOYE_ID)) {
+            $criteria->add(PermissionTableMap::COL_EMPLOYE_ID, $this->employe_id);
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESIGNATION)) {
-            $criteria->add(DepartementTableMap::COL_DESIGNATION, $this->designation);
+        if ($this->isColumnModified(PermissionTableMap::COL_DATE_PERMISSION)) {
+            $criteria->add(PermissionTableMap::COL_DATE_PERMISSION, $this->date_permission);
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESCRIPTION)) {
-            $criteria->add(DepartementTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_ENTREE)) {
+            $criteria->add(PermissionTableMap::COL_HEURE_ENTREE, $this->heure_entree);
+        }
+        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_SORTIE)) {
+            $criteria->add(PermissionTableMap::COL_HEURE_SORTIE, $this->heure_sortie);
+        }
+        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_TRAVAIL)) {
+            $criteria->add(PermissionTableMap::COL_HEURE_TRAVAIL, $this->heure_travail);
+        }
+        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_MANQUE)) {
+            $criteria->add(PermissionTableMap::COL_HEURE_MANQUE, $this->heure_manque);
         }
 
         return $criteria;
@@ -1092,8 +1248,8 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildDepartementQuery::create();
-        $criteria->add(DepartementTableMap::COL_DEPARTEMENT_ID, $this->departement_id);
+        $criteria = ChildPermissionQuery::create();
+        $criteria->add(PermissionTableMap::COL_PERMISSION_ID, $this->permission_id);
 
         return $criteria;
     }
@@ -1106,7 +1262,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getDepartementId();
+        $validPk = null !== $this->getPermissionId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1126,18 +1282,18 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function getPrimaryKey()
     {
-        return $this->getDepartementId();
+        return $this->getPermissionId();
     }
 
     /**
-     * Generic method to set the primary key (departement_id column).
+     * Generic method to set the primary key (permission_id column).
      *
      * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setDepartementId($key);
+        $this->setPermissionId($key);
     }
 
     /**
@@ -1146,7 +1302,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getDepartementId();
+        return null === $this->getPermissionId();
     }
 
     /**
@@ -1155,33 +1311,22 @@ abstract class Departement implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \App\Models\Departement (or compatible) type.
+     * @param      object $copyObj An object of \App\Models\Permission (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setDirectionId($this->getDirectionId());
-        $copyObj->setDesignation($this->getDesignation());
-        $copyObj->setDescription($this->getDescription());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getServices() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addService($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setEmployeId($this->getEmployeId());
+        $copyObj->setDatePermission($this->getDatePermission());
+        $copyObj->setHeureEntree($this->getHeureEntree());
+        $copyObj->setHeureSortie($this->getHeureSortie());
+        $copyObj->setHeureTravail($this->getHeureTravail());
+        $copyObj->setHeureManque($this->getHeureManque());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setDepartementId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setPermissionId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1194,7 +1339,7 @@ abstract class Departement implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \App\Models\Departement Clone of current object.
+     * @return \App\Models\Permission Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1208,321 +1353,19 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildDirection object.
-     *
-     * @param  ChildDirection $v
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setDirection(ChildDirection $v = null)
-    {
-        if ($v === null) {
-            $this->setDirectionId(NULL);
-        } else {
-            $this->setDirectionId($v->getDirectionId());
-        }
-
-        $this->aDirection = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildDirection object, it will not be re-added.
-        if ($v !== null) {
-            $v->addDepartement($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildDirection object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildDirection The associated ChildDirection object.
-     * @throws PropelException
-     */
-    public function getDirection(ConnectionInterface $con = null)
-    {
-        if ($this->aDirection === null && ($this->direction_id != 0)) {
-            $this->aDirection = ChildDirectionQuery::create()->findPk($this->direction_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aDirection->addDepartements($this);
-             */
-        }
-
-        return $this->aDirection;
-    }
-
-
-    /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
-     *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Service' === $relationName) {
-            $this->initServices();
-            return;
-        }
-    }
-
-    /**
-     * Clears out the collServices collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addServices()
-     */
-    public function clearServices()
-    {
-        $this->collServices = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collServices collection loaded partially.
-     */
-    public function resetPartialServices($v = true)
-    {
-        $this->collServicesPartial = $v;
-    }
-
-    /**
-     * Initializes the collServices collection.
-     *
-     * By default this just sets the collServices collection to an empty array (like clearcollServices());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initServices($overrideExisting = true)
-    {
-        if (null !== $this->collServices && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = ServiceTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collServices = new $collectionClassName;
-        $this->collServices->setModel('\App\Models\Service');
-    }
-
-    /**
-     * Gets an array of ChildService objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildDepartement is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildService[] List of ChildService objects
-     * @throws PropelException
-     */
-    public function getServices(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collServicesPartial && !$this->isNew();
-        if (null === $this->collServices || null !== $criteria || $partial) {
-            if ($this->isNew()) {
-                // return empty collection
-                if (null === $this->collServices) {
-                    $this->initServices();
-                } else {
-                    $collectionClassName = ServiceTableMap::getTableMap()->getCollectionClassName();
-
-                    $collServices = new $collectionClassName;
-                    $collServices->setModel('\App\Models\Service');
-
-                    return $collServices;
-                }
-            } else {
-                $collServices = ChildServiceQuery::create(null, $criteria)
-                    ->filterByDepartement($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collServicesPartial && count($collServices)) {
-                        $this->initServices(false);
-
-                        foreach ($collServices as $obj) {
-                            if (false == $this->collServices->contains($obj)) {
-                                $this->collServices->append($obj);
-                            }
-                        }
-
-                        $this->collServicesPartial = true;
-                    }
-
-                    return $collServices;
-                }
-
-                if ($partial && $this->collServices) {
-                    foreach ($this->collServices as $obj) {
-                        if ($obj->isNew()) {
-                            $collServices[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collServices = $collServices;
-                $this->collServicesPartial = false;
-            }
-        }
-
-        return $this->collServices;
-    }
-
-    /**
-     * Sets a collection of ChildService objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $services A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildDepartement The current object (for fluent API support)
-     */
-    public function setServices(Collection $services, ConnectionInterface $con = null)
-    {
-        /** @var ChildService[] $servicesToDelete */
-        $servicesToDelete = $this->getServices(new Criteria(), $con)->diff($services);
-
-
-        $this->servicesScheduledForDeletion = $servicesToDelete;
-
-        foreach ($servicesToDelete as $serviceRemoved) {
-            $serviceRemoved->setDepartement(null);
-        }
-
-        $this->collServices = null;
-        foreach ($services as $service) {
-            $this->addService($service);
-        }
-
-        $this->collServices = $services;
-        $this->collServicesPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Service objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Service objects.
-     * @throws PropelException
-     */
-    public function countServices(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collServicesPartial && !$this->isNew();
-        if (null === $this->collServices || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collServices) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getServices());
-            }
-
-            $query = ChildServiceQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByDepartement($this)
-                ->count($con);
-        }
-
-        return count($this->collServices);
-    }
-
-    /**
-     * Method called to associate a ChildService object to this object
-     * through the ChildService foreign key attribute.
-     *
-     * @param  ChildService $l ChildService
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
-     */
-    public function addService(ChildService $l)
-    {
-        if ($this->collServices === null) {
-            $this->initServices();
-            $this->collServicesPartial = true;
-        }
-
-        if (!$this->collServices->contains($l)) {
-            $this->doAddService($l);
-
-            if ($this->servicesScheduledForDeletion and $this->servicesScheduledForDeletion->contains($l)) {
-                $this->servicesScheduledForDeletion->remove($this->servicesScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildService $service The ChildService object to add.
-     */
-    protected function doAddService(ChildService $service)
-    {
-        $this->collServices[]= $service;
-        $service->setDepartement($this);
-    }
-
-    /**
-     * @param  ChildService $service The ChildService object to remove.
-     * @return $this|ChildDepartement The current object (for fluent API support)
-     */
-    public function removeService(ChildService $service)
-    {
-        if ($this->getServices()->contains($service)) {
-            $pos = $this->collServices->search($service);
-            $this->collServices->remove($pos);
-            if (null === $this->servicesScheduledForDeletion) {
-                $this->servicesScheduledForDeletion = clone $this->collServices;
-                $this->servicesScheduledForDeletion->clear();
-            }
-            $this->servicesScheduledForDeletion[]= clone $service;
-            $service->setDepartement(null);
-        }
-
-        return $this;
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aDirection) {
-            $this->aDirection->removeDepartement($this);
-        }
-        $this->departement_id = null;
-        $this->direction_id = null;
-        $this->designation = null;
-        $this->description = null;
+        $this->permission_id = null;
+        $this->employe_id = null;
+        $this->date_permission = null;
+        $this->heure_entree = null;
+        $this->heure_sortie = null;
+        $this->heure_travail = null;
+        $this->heure_manque = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1541,15 +1384,8 @@ abstract class Departement implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collServices) {
-                foreach ($this->collServices as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collServices = null;
-        $this->aDirection = null;
     }
 
     /**
@@ -1559,7 +1395,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(DepartementTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(PermissionTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

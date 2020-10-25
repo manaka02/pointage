@@ -25,27 +25,6 @@
 							</a>
 					</td>
 				{% endfor %}
-				{% if oldparamsArray["no_action"] is not defined %}
-					<td>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default">
-								<a href="{{actionLink['pageedit']}}">
-									<i class="fas fa-edit"></i>
-								</a>
-							</button>
-							<form method="POST" action="{{actionLink['pagedelete']}}" onsubmit="return confirm('Cette action supprimera tous les données relatives à ce donnée')">
-								<input type="hidden" name="_method" value="DELETE">
-								<input type="hidden" name="mode" value="{{mode}}">
-								<input type="hidden" name="_token" value="{{csrf_token(result[target_id])}}">
-								<button type="submit" class="btn btn-danger">
-									<i class="fas fa-trash text-light"></i>
-								</button>
-							</form>
-
-						</div>
-
-					</td>
-				{% endif %}
 
 
 			</tr>

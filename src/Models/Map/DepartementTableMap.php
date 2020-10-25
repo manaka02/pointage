@@ -58,7 +58,7 @@ class DepartementTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -68,12 +68,17 @@ class DepartementTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the departement_id field
      */
     const COL_DEPARTEMENT_ID = 'departement.departement_id';
+
+    /**
+     * the column name for the direction_id field
+     */
+    const COL_DIRECTION_ID = 'departement.direction_id';
 
     /**
      * the column name for the designation field
@@ -97,11 +102,11 @@ class DepartementTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('DepartementId', 'Designation', 'Description', ),
-        self::TYPE_CAMELNAME     => array('departementId', 'designation', 'description', ),
-        self::TYPE_COLNAME       => array(DepartementTableMap::COL_DEPARTEMENT_ID, DepartementTableMap::COL_DESIGNATION, DepartementTableMap::COL_DESCRIPTION, ),
-        self::TYPE_FIELDNAME     => array('departement_id', 'designation', 'description', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('DepartementId', 'DirectionId', 'Designation', 'Description', ),
+        self::TYPE_CAMELNAME     => array('departementId', 'directionId', 'designation', 'description', ),
+        self::TYPE_COLNAME       => array(DepartementTableMap::COL_DEPARTEMENT_ID, DepartementTableMap::COL_DIRECTION_ID, DepartementTableMap::COL_DESIGNATION, DepartementTableMap::COL_DESCRIPTION, ),
+        self::TYPE_FIELDNAME     => array('departement_id', 'direction_id', 'designation', 'description', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -111,11 +116,11 @@ class DepartementTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('DepartementId' => 0, 'Designation' => 1, 'Description' => 2, ),
-        self::TYPE_CAMELNAME     => array('departementId' => 0, 'designation' => 1, 'description' => 2, ),
-        self::TYPE_COLNAME       => array(DepartementTableMap::COL_DEPARTEMENT_ID => 0, DepartementTableMap::COL_DESIGNATION => 1, DepartementTableMap::COL_DESCRIPTION => 2, ),
-        self::TYPE_FIELDNAME     => array('departement_id' => 0, 'designation' => 1, 'description' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('DepartementId' => 0, 'DirectionId' => 1, 'Designation' => 2, 'Description' => 3, ),
+        self::TYPE_CAMELNAME     => array('departementId' => 0, 'directionId' => 1, 'designation' => 2, 'description' => 3, ),
+        self::TYPE_COLNAME       => array(DepartementTableMap::COL_DEPARTEMENT_ID => 0, DepartementTableMap::COL_DIRECTION_ID => 1, DepartementTableMap::COL_DESIGNATION => 2, DepartementTableMap::COL_DESCRIPTION => 3, ),
+        self::TYPE_FIELDNAME     => array('departement_id' => 0, 'direction_id' => 1, 'designation' => 2, 'description' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -136,6 +141,7 @@ class DepartementTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('departement_id', 'DepartementId', 'INTEGER', true, null, null);
+        $this->addForeignKey('direction_id', 'DirectionId', 'INTEGER', 'direction', 'direction_id', true, null, null);
         $this->addColumn('designation', 'Designation', 'VARCHAR', false, 100, null);
         $this->addColumn('description', 'Description', 'VARCHAR', false, 100, null);
     } // initialize()
@@ -145,13 +151,20 @@ class DepartementTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Employe', '\\App\\Models\\Employe', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Direction', '\\App\\Models\\Direction', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':direction_id',
+    1 => ':direction_id',
+  ),
+), 'CASCADE', null, null, false);
+        $this->addRelation('Service', '\\App\\Models\\Service', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
     0 => ':departement_id',
     1 => ':departement_id',
   ),
-), 'CASCADE', null, 'Employes', false);
+), 'CASCADE', null, 'Services', false);
     } // buildRelations()
     /**
      * Method to invalidate the instance pool of all tables related to departement     * by a foreign key with ON DELETE CASCADE
@@ -160,7 +173,7 @@ class DepartementTableMap extends TableMap
     {
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        EmployeTableMap::clearInstancePool();
+        ServiceTableMap::clearInstancePool();
     }
 
     /**
@@ -305,10 +318,12 @@ class DepartementTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(DepartementTableMap::COL_DEPARTEMENT_ID);
+            $criteria->addSelectColumn(DepartementTableMap::COL_DIRECTION_ID);
             $criteria->addSelectColumn(DepartementTableMap::COL_DESIGNATION);
             $criteria->addSelectColumn(DepartementTableMap::COL_DESCRIPTION);
         } else {
             $criteria->addSelectColumn($alias . '.departement_id');
+            $criteria->addSelectColumn($alias . '.direction_id');
             $criteria->addSelectColumn($alias . '.designation');
             $criteria->addSelectColumn($alias . '.description');
         }

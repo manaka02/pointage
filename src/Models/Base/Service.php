@@ -6,12 +6,12 @@ use \Exception;
 use \PDO;
 use App\Models\Departement as ChildDepartement;
 use App\Models\DepartementQuery as ChildDepartementQuery;
-use App\Models\Direction as ChildDirection;
-use App\Models\DirectionQuery as ChildDirectionQuery;
 use App\Models\Service as ChildService;
 use App\Models\ServiceQuery as ChildServiceQuery;
-use App\Models\Map\DepartementTableMap;
+use App\Models\Unite as ChildUnite;
+use App\Models\UniteQuery as ChildUniteQuery;
 use App\Models\Map\ServiceTableMap;
+use App\Models\Map\UniteTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -26,18 +26,18 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
 /**
- * Base class that represents a row from the 'departement' table.
+ * Base class that represents a row from the 'service' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Departement implements ActiveRecordInterface
+abstract class Service implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\App\\Models\\Map\\DepartementTableMap';
+    const TABLE_MAP = '\\App\\Models\\Map\\ServiceTableMap';
 
 
     /**
@@ -67,18 +67,11 @@ abstract class Departement implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the departement_id field.
+     * The value for the service_id field.
      *
      * @var        int
      */
-    protected $departement_id;
-
-    /**
-     * The value for the direction_id field.
-     *
-     * @var        int
-     */
-    protected $direction_id;
+    protected $service_id;
 
     /**
      * The value for the designation field.
@@ -95,15 +88,22 @@ abstract class Departement implements ActiveRecordInterface
     protected $description;
 
     /**
-     * @var        ChildDirection
+     * The value for the departement_id field.
+     *
+     * @var        int
      */
-    protected $aDirection;
+    protected $departement_id;
 
     /**
-     * @var        ObjectCollection|ChildService[] Collection to store aggregation of ChildService objects.
+     * @var        ChildDepartement
      */
-    protected $collServices;
-    protected $collServicesPartial;
+    protected $aDepartement;
+
+    /**
+     * @var        ObjectCollection|ChildUnite[] Collection to store aggregation of ChildUnite objects.
+     */
+    protected $collUnites;
+    protected $collUnitesPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -115,12 +115,12 @@ abstract class Departement implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildService[]
+     * @var ObjectCollection|ChildUnite[]
      */
-    protected $servicesScheduledForDeletion = null;
+    protected $unitesScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of App\Models\Base\Departement object.
+     * Initializes internal state of App\Models\Base\Service object.
      */
     public function __construct()
     {
@@ -215,9 +215,9 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Departement</code> instance.  If
-     * <code>obj</code> is an instance of <code>Departement</code>, delegates to
-     * <code>equals(Departement)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Service</code> instance.  If
+     * <code>obj</code> is an instance of <code>Service</code>, delegates to
+     * <code>equals(Service)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -345,23 +345,13 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * Get the [departement_id] column value.
+     * Get the [service_id] column value.
      *
      * @return int
      */
-    public function getDepartementId()
+    public function getServiceId()
     {
-        return $this->departement_id;
-    }
-
-    /**
-     * Get the [direction_id] column value.
-     *
-     * @return int
-     */
-    public function getDirectionId()
-    {
-        return $this->direction_id;
+        return $this->service_id;
     }
 
     /**
@@ -385,54 +375,40 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * Set the value of [departement_id] column.
+     * Get the [departement_id] column value.
      *
-     * @param int $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @return int
      */
-    public function setDepartementId($v)
+    public function getDepartementId()
     {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->departement_id !== $v) {
-            $this->departement_id = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DEPARTEMENT_ID] = true;
-        }
-
-        return $this;
-    } // setDepartementId()
+        return $this->departement_id;
+    }
 
     /**
-     * Set the value of [direction_id] column.
+     * Set the value of [service_id] column.
      *
      * @param int $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @return $this|\App\Models\Service The current object (for fluent API support)
      */
-    public function setDirectionId($v)
+    public function setServiceId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->direction_id !== $v) {
-            $this->direction_id = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DIRECTION_ID] = true;
-        }
-
-        if ($this->aDirection !== null && $this->aDirection->getDirectionId() !== $v) {
-            $this->aDirection = null;
+        if ($this->service_id !== $v) {
+            $this->service_id = $v;
+            $this->modifiedColumns[ServiceTableMap::COL_SERVICE_ID] = true;
         }
 
         return $this;
-    } // setDirectionId()
+    } // setServiceId()
 
     /**
      * Set the value of [designation] column.
      *
-     * @param string|null $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @param string $v New value
+     * @return $this|\App\Models\Service The current object (for fluent API support)
      */
     public function setDesignation($v)
     {
@@ -442,7 +418,7 @@ abstract class Departement implements ActiveRecordInterface
 
         if ($this->designation !== $v) {
             $this->designation = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DESIGNATION] = true;
+            $this->modifiedColumns[ServiceTableMap::COL_DESIGNATION] = true;
         }
 
         return $this;
@@ -452,7 +428,7 @@ abstract class Departement implements ActiveRecordInterface
      * Set the value of [description] column.
      *
      * @param string|null $v New value
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @return $this|\App\Models\Service The current object (for fluent API support)
      */
     public function setDescription($v)
     {
@@ -462,11 +438,35 @@ abstract class Departement implements ActiveRecordInterface
 
         if ($this->description !== $v) {
             $this->description = $v;
-            $this->modifiedColumns[DepartementTableMap::COL_DESCRIPTION] = true;
+            $this->modifiedColumns[ServiceTableMap::COL_DESCRIPTION] = true;
         }
 
         return $this;
     } // setDescription()
+
+    /**
+     * Set the value of [departement_id] column.
+     *
+     * @param int $v New value
+     * @return $this|\App\Models\Service The current object (for fluent API support)
+     */
+    public function setDepartementId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->departement_id !== $v) {
+            $this->departement_id = $v;
+            $this->modifiedColumns[ServiceTableMap::COL_DEPARTEMENT_ID] = true;
+        }
+
+        if ($this->aDepartement !== null && $this->aDepartement->getDepartementId() !== $v) {
+            $this->aDepartement = null;
+        }
+
+        return $this;
+    } // setDepartementId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -504,17 +504,17 @@ abstract class Departement implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : DepartementTableMap::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->departement_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ServiceTableMap::translateFieldName('ServiceId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->service_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DepartementTableMap::translateFieldName('DirectionId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->direction_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DepartementTableMap::translateFieldName('Designation', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ServiceTableMap::translateFieldName('Designation', TableMap::TYPE_PHPNAME, $indexType)];
             $this->designation = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DepartementTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ServiceTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
             $this->description = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ServiceTableMap::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->departement_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -523,10 +523,10 @@ abstract class Departement implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = DepartementTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = ServiceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Departement'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Service'), 0, $e);
         }
     }
 
@@ -545,8 +545,8 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aDirection !== null && $this->direction_id !== $this->aDirection->getDirectionId()) {
-            $this->aDirection = null;
+        if ($this->aDepartement !== null && $this->departement_id !== $this->aDepartement->getDepartementId()) {
+            $this->aDepartement = null;
         }
     } // ensureConsistency
 
@@ -571,13 +571,13 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ServiceTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildDepartementQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildServiceQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -587,8 +587,8 @@ abstract class Departement implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aDirection = null;
-            $this->collServices = null;
+            $this->aDepartement = null;
+            $this->collUnites = null;
 
         } // if (deep)
     }
@@ -599,8 +599,8 @@ abstract class Departement implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Departement::setDeleted()
-     * @see Departement::isDeleted()
+     * @see Service::setDeleted()
+     * @see Service::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -609,11 +609,11 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ServiceTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildDepartementQuery::create()
+            $deleteQuery = ChildServiceQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -648,7 +648,7 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ServiceTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -667,7 +667,7 @@ abstract class Departement implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                DepartementTableMap::addInstanceToPool($this);
+                ServiceTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -698,11 +698,11 @@ abstract class Departement implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aDirection !== null) {
-                if ($this->aDirection->isModified() || $this->aDirection->isNew()) {
-                    $affectedRows += $this->aDirection->save($con);
+            if ($this->aDepartement !== null) {
+                if ($this->aDepartement->isModified() || $this->aDepartement->isNew()) {
+                    $affectedRows += $this->aDepartement->save($con);
                 }
-                $this->setDirection($this->aDirection);
+                $this->setDepartement($this->aDepartement);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -716,17 +716,17 @@ abstract class Departement implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->servicesScheduledForDeletion !== null) {
-                if (!$this->servicesScheduledForDeletion->isEmpty()) {
-                    \App\Models\ServiceQuery::create()
-                        ->filterByPrimaryKeys($this->servicesScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->unitesScheduledForDeletion !== null) {
+                if (!$this->unitesScheduledForDeletion->isEmpty()) {
+                    \App\Models\UniteQuery::create()
+                        ->filterByPrimaryKeys($this->unitesScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->servicesScheduledForDeletion = null;
+                    $this->unitesScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collServices !== null) {
-                foreach ($this->collServices as $referrerFK) {
+            if ($this->collUnites !== null) {
+                foreach ($this->collUnites as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -753,27 +753,27 @@ abstract class Departement implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[DepartementTableMap::COL_DEPARTEMENT_ID] = true;
-        if (null !== $this->departement_id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . DepartementTableMap::COL_DEPARTEMENT_ID . ')');
+        $this->modifiedColumns[ServiceTableMap::COL_SERVICE_ID] = true;
+        if (null !== $this->service_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ServiceTableMap::COL_SERVICE_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(DepartementTableMap::COL_DEPARTEMENT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'departement_id';
+        if ($this->isColumnModified(ServiceTableMap::COL_SERVICE_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'service_id';
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DIRECTION_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'direction_id';
-        }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESIGNATION)) {
+        if ($this->isColumnModified(ServiceTableMap::COL_DESIGNATION)) {
             $modifiedColumns[':p' . $index++]  = 'designation';
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESCRIPTION)) {
+        if ($this->isColumnModified(ServiceTableMap::COL_DESCRIPTION)) {
             $modifiedColumns[':p' . $index++]  = 'description';
+        }
+        if ($this->isColumnModified(ServiceTableMap::COL_DEPARTEMENT_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'departement_id';
         }
 
         $sql = sprintf(
-            'INSERT INTO departement (%s) VALUES (%s)',
+            'INSERT INTO service (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -782,17 +782,17 @@ abstract class Departement implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'departement_id':
-                        $stmt->bindValue($identifier, $this->departement_id, PDO::PARAM_INT);
-                        break;
-                    case 'direction_id':
-                        $stmt->bindValue($identifier, $this->direction_id, PDO::PARAM_INT);
+                    case 'service_id':
+                        $stmt->bindValue($identifier, $this->service_id, PDO::PARAM_INT);
                         break;
                     case 'designation':
                         $stmt->bindValue($identifier, $this->designation, PDO::PARAM_STR);
                         break;
                     case 'description':
                         $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+                        break;
+                    case 'departement_id':
+                        $stmt->bindValue($identifier, $this->departement_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -807,7 +807,7 @@ abstract class Departement implements ActiveRecordInterface
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', 0, $e);
         }
-        $this->setDepartementId($pk);
+        $this->setServiceId($pk);
 
         $this->setNew(false);
     }
@@ -840,7 +840,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = DepartementTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ServiceTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -857,16 +857,16 @@ abstract class Departement implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getDepartementId();
+                return $this->getServiceId();
                 break;
             case 1:
-                return $this->getDirectionId();
-                break;
-            case 2:
                 return $this->getDesignation();
                 break;
-            case 3:
+            case 2:
                 return $this->getDescription();
+                break;
+            case 3:
+                return $this->getDepartementId();
                 break;
             default:
                 return null;
@@ -892,16 +892,16 @@ abstract class Departement implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Departement'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Service'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Departement'][$this->hashCode()] = true;
-        $keys = DepartementTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Service'][$this->hashCode()] = true;
+        $keys = ServiceTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getDepartementId(),
-            $keys[1] => $this->getDirectionId(),
-            $keys[2] => $this->getDesignation(),
-            $keys[3] => $this->getDescription(),
+            $keys[0] => $this->getServiceId(),
+            $keys[1] => $this->getDesignation(),
+            $keys[2] => $this->getDescription(),
+            $keys[3] => $this->getDepartementId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -909,35 +909,35 @@ abstract class Departement implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aDirection) {
+            if (null !== $this->aDepartement) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'direction';
+                        $key = 'departement';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'direction';
+                        $key = 'departement';
                         break;
                     default:
-                        $key = 'Direction';
+                        $key = 'Departement';
                 }
 
-                $result[$key] = $this->aDirection->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aDepartement->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->collServices) {
+            if (null !== $this->collUnites) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'services';
+                        $key = 'unites';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'services';
+                        $key = 'unites';
                         break;
                     default:
-                        $key = 'Services';
+                        $key = 'Unites';
                 }
 
-                $result[$key] = $this->collServices->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collUnites->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -953,11 +953,11 @@ abstract class Departement implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\App\Models\Departement
+     * @return $this|\App\Models\Service
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = DepartementTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ServiceTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -968,22 +968,22 @@ abstract class Departement implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\App\Models\Departement
+     * @return $this|\App\Models\Service
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setDepartementId($value);
+                $this->setServiceId($value);
                 break;
             case 1:
-                $this->setDirectionId($value);
-                break;
-            case 2:
                 $this->setDesignation($value);
                 break;
-            case 3:
+            case 2:
                 $this->setDescription($value);
+                break;
+            case 3:
+                $this->setDepartementId($value);
                 break;
         } // switch()
 
@@ -1009,19 +1009,19 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = DepartementTableMap::getFieldNames($keyType);
+        $keys = ServiceTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setDepartementId($arr[$keys[0]]);
+            $this->setServiceId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setDirectionId($arr[$keys[1]]);
+            $this->setDesignation($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setDesignation($arr[$keys[2]]);
+            $this->setDescription($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setDescription($arr[$keys[3]]);
+            $this->setDepartementId($arr[$keys[3]]);
         }
     }
 
@@ -1042,7 +1042,7 @@ abstract class Departement implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\App\Models\Departement The current object, for fluid interface
+     * @return $this|\App\Models\Service The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1062,19 +1062,19 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(DepartementTableMap::DATABASE_NAME);
+        $criteria = new Criteria(ServiceTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(DepartementTableMap::COL_DEPARTEMENT_ID)) {
-            $criteria->add(DepartementTableMap::COL_DEPARTEMENT_ID, $this->departement_id);
+        if ($this->isColumnModified(ServiceTableMap::COL_SERVICE_ID)) {
+            $criteria->add(ServiceTableMap::COL_SERVICE_ID, $this->service_id);
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DIRECTION_ID)) {
-            $criteria->add(DepartementTableMap::COL_DIRECTION_ID, $this->direction_id);
+        if ($this->isColumnModified(ServiceTableMap::COL_DESIGNATION)) {
+            $criteria->add(ServiceTableMap::COL_DESIGNATION, $this->designation);
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESIGNATION)) {
-            $criteria->add(DepartementTableMap::COL_DESIGNATION, $this->designation);
+        if ($this->isColumnModified(ServiceTableMap::COL_DESCRIPTION)) {
+            $criteria->add(ServiceTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(DepartementTableMap::COL_DESCRIPTION)) {
-            $criteria->add(DepartementTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(ServiceTableMap::COL_DEPARTEMENT_ID)) {
+            $criteria->add(ServiceTableMap::COL_DEPARTEMENT_ID, $this->departement_id);
         }
 
         return $criteria;
@@ -1092,8 +1092,8 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildDepartementQuery::create();
-        $criteria->add(DepartementTableMap::COL_DEPARTEMENT_ID, $this->departement_id);
+        $criteria = ChildServiceQuery::create();
+        $criteria->add(ServiceTableMap::COL_SERVICE_ID, $this->service_id);
 
         return $criteria;
     }
@@ -1106,7 +1106,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getDepartementId();
+        $validPk = null !== $this->getServiceId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1126,18 +1126,18 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function getPrimaryKey()
     {
-        return $this->getDepartementId();
+        return $this->getServiceId();
     }
 
     /**
-     * Generic method to set the primary key (departement_id column).
+     * Generic method to set the primary key (service_id column).
      *
      * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setDepartementId($key);
+        $this->setServiceId($key);
     }
 
     /**
@@ -1146,7 +1146,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getDepartementId();
+        return null === $this->getServiceId();
     }
 
     /**
@@ -1155,25 +1155,25 @@ abstract class Departement implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \App\Models\Departement (or compatible) type.
+     * @param      object $copyObj An object of \App\Models\Service (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setDirectionId($this->getDirectionId());
         $copyObj->setDesignation($this->getDesignation());
         $copyObj->setDescription($this->getDescription());
+        $copyObj->setDepartementId($this->getDepartementId());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getServices() as $relObj) {
+            foreach ($this->getUnites() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addService($relObj->copy($deepCopy));
+                    $copyObj->addUnite($relObj->copy($deepCopy));
                 }
             }
 
@@ -1181,7 +1181,7 @@ abstract class Departement implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setDepartementId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setServiceId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1194,7 +1194,7 @@ abstract class Departement implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \App\Models\Departement Clone of current object.
+     * @return \App\Models\Service Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1208,26 +1208,26 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildDirection object.
+     * Declares an association between this object and a ChildDepartement object.
      *
-     * @param  ChildDirection $v
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @param  ChildDepartement $v
+     * @return $this|\App\Models\Service The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setDirection(ChildDirection $v = null)
+    public function setDepartement(ChildDepartement $v = null)
     {
         if ($v === null) {
-            $this->setDirectionId(NULL);
+            $this->setDepartementId(NULL);
         } else {
-            $this->setDirectionId($v->getDirectionId());
+            $this->setDepartementId($v->getDepartementId());
         }
 
-        $this->aDirection = $v;
+        $this->aDepartement = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildDirection object, it will not be re-added.
+        // If this object has already been added to the ChildDepartement object, it will not be re-added.
         if ($v !== null) {
-            $v->addDepartement($this);
+            $v->addService($this);
         }
 
 
@@ -1236,26 +1236,26 @@ abstract class Departement implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildDirection object
+     * Get the associated ChildDepartement object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildDirection The associated ChildDirection object.
+     * @return ChildDepartement The associated ChildDepartement object.
      * @throws PropelException
      */
-    public function getDirection(ConnectionInterface $con = null)
+    public function getDepartement(ConnectionInterface $con = null)
     {
-        if ($this->aDirection === null && ($this->direction_id != 0)) {
-            $this->aDirection = ChildDirectionQuery::create()->findPk($this->direction_id, $con);
+        if ($this->aDepartement === null && ($this->departement_id != 0)) {
+            $this->aDepartement = ChildDepartementQuery::create()->findPk($this->departement_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aDirection->addDepartements($this);
+                $this->aDepartement->addServices($this);
              */
         }
 
-        return $this->aDirection;
+        return $this->aDepartement;
     }
 
 
@@ -1269,38 +1269,38 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('Service' === $relationName) {
-            $this->initServices();
+        if ('Unite' === $relationName) {
+            $this->initUnites();
             return;
         }
     }
 
     /**
-     * Clears out the collServices collection
+     * Clears out the collUnites collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addServices()
+     * @see        addUnites()
      */
-    public function clearServices()
+    public function clearUnites()
     {
-        $this->collServices = null; // important to set this to NULL since that means it is uninitialized
+        $this->collUnites = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collServices collection loaded partially.
+     * Reset is the collUnites collection loaded partially.
      */
-    public function resetPartialServices($v = true)
+    public function resetPartialUnites($v = true)
     {
-        $this->collServicesPartial = $v;
+        $this->collUnitesPartial = $v;
     }
 
     /**
-     * Initializes the collServices collection.
+     * Initializes the collUnites collection.
      *
-     * By default this just sets the collServices collection to an empty array (like clearcollServices());
+     * By default this just sets the collUnites collection to an empty array (like clearcollUnites());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1309,171 +1309,171 @@ abstract class Departement implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initServices($overrideExisting = true)
+    public function initUnites($overrideExisting = true)
     {
-        if (null !== $this->collServices && !$overrideExisting) {
+        if (null !== $this->collUnites && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = ServiceTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = UniteTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collServices = new $collectionClassName;
-        $this->collServices->setModel('\App\Models\Service');
+        $this->collUnites = new $collectionClassName;
+        $this->collUnites->setModel('\App\Models\Unite');
     }
 
     /**
-     * Gets an array of ChildService objects which contain a foreign key that references this object.
+     * Gets an array of ChildUnite objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildDepartement is new, it will return
+     * If this ChildService is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildService[] List of ChildService objects
+     * @return ObjectCollection|ChildUnite[] List of ChildUnite objects
      * @throws PropelException
      */
-    public function getServices(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getUnites(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collServicesPartial && !$this->isNew();
-        if (null === $this->collServices || null !== $criteria || $partial) {
+        $partial = $this->collUnitesPartial && !$this->isNew();
+        if (null === $this->collUnites || null !== $criteria || $partial) {
             if ($this->isNew()) {
                 // return empty collection
-                if (null === $this->collServices) {
-                    $this->initServices();
+                if (null === $this->collUnites) {
+                    $this->initUnites();
                 } else {
-                    $collectionClassName = ServiceTableMap::getTableMap()->getCollectionClassName();
+                    $collectionClassName = UniteTableMap::getTableMap()->getCollectionClassName();
 
-                    $collServices = new $collectionClassName;
-                    $collServices->setModel('\App\Models\Service');
+                    $collUnites = new $collectionClassName;
+                    $collUnites->setModel('\App\Models\Unite');
 
-                    return $collServices;
+                    return $collUnites;
                 }
             } else {
-                $collServices = ChildServiceQuery::create(null, $criteria)
-                    ->filterByDepartement($this)
+                $collUnites = ChildUniteQuery::create(null, $criteria)
+                    ->filterByService($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collServicesPartial && count($collServices)) {
-                        $this->initServices(false);
+                    if (false !== $this->collUnitesPartial && count($collUnites)) {
+                        $this->initUnites(false);
 
-                        foreach ($collServices as $obj) {
-                            if (false == $this->collServices->contains($obj)) {
-                                $this->collServices->append($obj);
+                        foreach ($collUnites as $obj) {
+                            if (false == $this->collUnites->contains($obj)) {
+                                $this->collUnites->append($obj);
                             }
                         }
 
-                        $this->collServicesPartial = true;
+                        $this->collUnitesPartial = true;
                     }
 
-                    return $collServices;
+                    return $collUnites;
                 }
 
-                if ($partial && $this->collServices) {
-                    foreach ($this->collServices as $obj) {
+                if ($partial && $this->collUnites) {
+                    foreach ($this->collUnites as $obj) {
                         if ($obj->isNew()) {
-                            $collServices[] = $obj;
+                            $collUnites[] = $obj;
                         }
                     }
                 }
 
-                $this->collServices = $collServices;
-                $this->collServicesPartial = false;
+                $this->collUnites = $collUnites;
+                $this->collUnitesPartial = false;
             }
         }
 
-        return $this->collServices;
+        return $this->collUnites;
     }
 
     /**
-     * Sets a collection of ChildService objects related by a one-to-many relationship
+     * Sets a collection of ChildUnite objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $services A Propel collection.
+     * @param      Collection $unites A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildDepartement The current object (for fluent API support)
+     * @return $this|ChildService The current object (for fluent API support)
      */
-    public function setServices(Collection $services, ConnectionInterface $con = null)
+    public function setUnites(Collection $unites, ConnectionInterface $con = null)
     {
-        /** @var ChildService[] $servicesToDelete */
-        $servicesToDelete = $this->getServices(new Criteria(), $con)->diff($services);
+        /** @var ChildUnite[] $unitesToDelete */
+        $unitesToDelete = $this->getUnites(new Criteria(), $con)->diff($unites);
 
 
-        $this->servicesScheduledForDeletion = $servicesToDelete;
+        $this->unitesScheduledForDeletion = $unitesToDelete;
 
-        foreach ($servicesToDelete as $serviceRemoved) {
-            $serviceRemoved->setDepartement(null);
+        foreach ($unitesToDelete as $uniteRemoved) {
+            $uniteRemoved->setService(null);
         }
 
-        $this->collServices = null;
-        foreach ($services as $service) {
-            $this->addService($service);
+        $this->collUnites = null;
+        foreach ($unites as $unite) {
+            $this->addUnite($unite);
         }
 
-        $this->collServices = $services;
-        $this->collServicesPartial = false;
+        $this->collUnites = $unites;
+        $this->collUnitesPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Service objects.
+     * Returns the number of related Unite objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Service objects.
+     * @return int             Count of related Unite objects.
      * @throws PropelException
      */
-    public function countServices(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countUnites(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collServicesPartial && !$this->isNew();
-        if (null === $this->collServices || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collServices) {
+        $partial = $this->collUnitesPartial && !$this->isNew();
+        if (null === $this->collUnites || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUnites) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getServices());
+                return count($this->getUnites());
             }
 
-            $query = ChildServiceQuery::create(null, $criteria);
+            $query = ChildUniteQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByDepartement($this)
+                ->filterByService($this)
                 ->count($con);
         }
 
-        return count($this->collServices);
+        return count($this->collUnites);
     }
 
     /**
-     * Method called to associate a ChildService object to this object
-     * through the ChildService foreign key attribute.
+     * Method called to associate a ChildUnite object to this object
+     * through the ChildUnite foreign key attribute.
      *
-     * @param  ChildService $l ChildService
-     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     * @param  ChildUnite $l ChildUnite
+     * @return $this|\App\Models\Service The current object (for fluent API support)
      */
-    public function addService(ChildService $l)
+    public function addUnite(ChildUnite $l)
     {
-        if ($this->collServices === null) {
-            $this->initServices();
-            $this->collServicesPartial = true;
+        if ($this->collUnites === null) {
+            $this->initUnites();
+            $this->collUnitesPartial = true;
         }
 
-        if (!$this->collServices->contains($l)) {
-            $this->doAddService($l);
+        if (!$this->collUnites->contains($l)) {
+            $this->doAddUnite($l);
 
-            if ($this->servicesScheduledForDeletion and $this->servicesScheduledForDeletion->contains($l)) {
-                $this->servicesScheduledForDeletion->remove($this->servicesScheduledForDeletion->search($l));
+            if ($this->unitesScheduledForDeletion and $this->unitesScheduledForDeletion->contains($l)) {
+                $this->unitesScheduledForDeletion->remove($this->unitesScheduledForDeletion->search($l));
             }
         }
 
@@ -1481,29 +1481,29 @@ abstract class Departement implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildService $service The ChildService object to add.
+     * @param ChildUnite $unite The ChildUnite object to add.
      */
-    protected function doAddService(ChildService $service)
+    protected function doAddUnite(ChildUnite $unite)
     {
-        $this->collServices[]= $service;
-        $service->setDepartement($this);
+        $this->collUnites[]= $unite;
+        $unite->setService($this);
     }
 
     /**
-     * @param  ChildService $service The ChildService object to remove.
-     * @return $this|ChildDepartement The current object (for fluent API support)
+     * @param  ChildUnite $unite The ChildUnite object to remove.
+     * @return $this|ChildService The current object (for fluent API support)
      */
-    public function removeService(ChildService $service)
+    public function removeUnite(ChildUnite $unite)
     {
-        if ($this->getServices()->contains($service)) {
-            $pos = $this->collServices->search($service);
-            $this->collServices->remove($pos);
-            if (null === $this->servicesScheduledForDeletion) {
-                $this->servicesScheduledForDeletion = clone $this->collServices;
-                $this->servicesScheduledForDeletion->clear();
+        if ($this->getUnites()->contains($unite)) {
+            $pos = $this->collUnites->search($unite);
+            $this->collUnites->remove($pos);
+            if (null === $this->unitesScheduledForDeletion) {
+                $this->unitesScheduledForDeletion = clone $this->collUnites;
+                $this->unitesScheduledForDeletion->clear();
             }
-            $this->servicesScheduledForDeletion[]= clone $service;
-            $service->setDepartement(null);
+            $this->unitesScheduledForDeletion[]= clone $unite;
+            $unite->setService(null);
         }
 
         return $this;
@@ -1516,13 +1516,13 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aDirection) {
-            $this->aDirection->removeDepartement($this);
+        if (null !== $this->aDepartement) {
+            $this->aDepartement->removeService($this);
         }
-        $this->departement_id = null;
-        $this->direction_id = null;
+        $this->service_id = null;
         $this->designation = null;
         $this->description = null;
+        $this->departement_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1541,15 +1541,15 @@ abstract class Departement implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collServices) {
-                foreach ($this->collServices as $o) {
+            if ($this->collUnites) {
+                foreach ($this->collUnites as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collServices = null;
-        $this->aDirection = null;
+        $this->collUnites = null;
+        $this->aDepartement = null;
     }
 
     /**
@@ -1559,7 +1559,7 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(DepartementTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ServiceTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

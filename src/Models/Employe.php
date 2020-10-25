@@ -54,12 +54,27 @@ class Employe extends BaseEmploye
         return "Employé";
     }
 
+    public function joinOtherColummns(&$query)
+    {
+        $query->useUniteQuery()
+        ->withColumn('Unite.designation', 'unite')
+            ->useServiceQuery()
+            ->withColumn('Service.designation','service')
+                ->useDepartementQuery()
+                ->withColumn('Departement.designation','departement')
+                    ->useDirectionQuery()
+                    ->withColumn('Direction.designation', 'direction')
+                    ->endUse()
+                ->endUse()
+            ->endUse()
+        ->endUse();
+    }
+
     public function getAllEmployeAsChoice()
     {
         $query = EmployeQuery::create()
         ->withColumn("employe_id")
         ->withColumn("nom_prenom")
-
         ->orderBy("nom_prenom")
         ->select("employe_id","nom_prenom");
 
@@ -89,9 +104,9 @@ class Employe extends BaseEmploye
                 "key" => "Nom et prénoms"
             ],
             [
-                "path" => "departement_id",
-                "key" => "Nom du département",
-                "value" => $departement,
+                "path" => "unite_id",
+                "key" => "Nom de l'unite",
+                "value" => [],
                 "type" => 'select',
             ],
             [
@@ -109,16 +124,19 @@ class Employe extends BaseEmploye
 
 
     private $keyToShow =[
-         "ref_interne", "genre", "nom_prenom", "poste","date_embauche","presence"
+         "ref_interne", "nom_prenom", "poste","unite","service","departement","direction"
     ];
 
     private $keyText = [
         "Réf Interne",
-        "Genre",
         "Nom et prénoms",
         "Fonction",
-        "Date d'embauche",
-        "Présence"
+        "Unité",
+        "Service",
+        "Département",
+        "Diréction",
+
+
     ];
     /**
      * Get the value of keySearch

@@ -177,7 +177,7 @@ class TargetController extends AbstractController
             $mode = $params['mode'];
         }
         if (method_exists($target, "joinOtherColummns")) {
-            $target->joinOtherColummns($query, $mode);
+            $target->joinOtherColummns($query);
         }
         $keys = !method_exists($target, "getKeyToShow")? array_keys($target->toArray(TableMap::TYPE_FIELDNAME)) : $target->getKeyToShow($mode);
         $keyText = !method_exists($target, "getKeyText")? $keys : $target->getKeyText($mode);

@@ -22,21 +22,23 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildEmployeQuery orderByEmployeId($order = Criteria::ASC) Order by the employe_id column
  * @method     ChildEmployeQuery orderByRefInterne($order = Criteria::ASC) Order by the ref_interne column
- * @method     ChildEmployeQuery orderByDepartementId($order = Criteria::ASC) Order by the departement_id column
+ * @method     ChildEmployeQuery orderByUniteId($order = Criteria::ASC) Order by the unite_id column
  * @method     ChildEmployeQuery orderByNomPrenom($order = Criteria::ASC) Order by the nom_prenom column
  * @method     ChildEmployeQuery orderByPoste($order = Criteria::ASC) Order by the poste column
  * @method     ChildEmployeQuery orderByGenre($order = Criteria::ASC) Order by the genre column
  * @method     ChildEmployeQuery orderByDateEmbauche($order = Criteria::ASC) Order by the date_embauche column
  * @method     ChildEmployeQuery orderByPresence($order = Criteria::ASC) Order by the presence column
+ * @method     ChildEmployeQuery orderByStatus($order = Criteria::ASC) Order by the status column
  *
  * @method     ChildEmployeQuery groupByEmployeId() Group by the employe_id column
  * @method     ChildEmployeQuery groupByRefInterne() Group by the ref_interne column
- * @method     ChildEmployeQuery groupByDepartementId() Group by the departement_id column
+ * @method     ChildEmployeQuery groupByUniteId() Group by the unite_id column
  * @method     ChildEmployeQuery groupByNomPrenom() Group by the nom_prenom column
  * @method     ChildEmployeQuery groupByPoste() Group by the poste column
  * @method     ChildEmployeQuery groupByGenre() Group by the genre column
  * @method     ChildEmployeQuery groupByDateEmbauche() Group by the date_embauche column
  * @method     ChildEmployeQuery groupByPresence() Group by the presence column
+ * @method     ChildEmployeQuery groupByStatus() Group by the status column
  *
  * @method     ChildEmployeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildEmployeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -46,15 +48,35 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmployeQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildEmployeQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildEmployeQuery leftJoinDepartement($relationAlias = null) Adds a LEFT JOIN clause to the query using the Departement relation
- * @method     ChildEmployeQuery rightJoinDepartement($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Departement relation
- * @method     ChildEmployeQuery innerJoinDepartement($relationAlias = null) Adds a INNER JOIN clause to the query using the Departement relation
+ * @method     ChildEmployeQuery leftJoinUnite($relationAlias = null) Adds a LEFT JOIN clause to the query using the Unite relation
+ * @method     ChildEmployeQuery rightJoinUnite($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Unite relation
+ * @method     ChildEmployeQuery innerJoinUnite($relationAlias = null) Adds a INNER JOIN clause to the query using the Unite relation
  *
- * @method     ChildEmployeQuery joinWithDepartement($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Departement relation
+ * @method     ChildEmployeQuery joinWithUnite($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Unite relation
  *
- * @method     ChildEmployeQuery leftJoinWithDepartement() Adds a LEFT JOIN clause and with to the query using the Departement relation
- * @method     ChildEmployeQuery rightJoinWithDepartement() Adds a RIGHT JOIN clause and with to the query using the Departement relation
- * @method     ChildEmployeQuery innerJoinWithDepartement() Adds a INNER JOIN clause and with to the query using the Departement relation
+ * @method     ChildEmployeQuery leftJoinWithUnite() Adds a LEFT JOIN clause and with to the query using the Unite relation
+ * @method     ChildEmployeQuery rightJoinWithUnite() Adds a RIGHT JOIN clause and with to the query using the Unite relation
+ * @method     ChildEmployeQuery innerJoinWithUnite() Adds a INNER JOIN clause and with to the query using the Unite relation
+ *
+ * @method     ChildEmployeQuery leftJoinAbsence($relationAlias = null) Adds a LEFT JOIN clause to the query using the Absence relation
+ * @method     ChildEmployeQuery rightJoinAbsence($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Absence relation
+ * @method     ChildEmployeQuery innerJoinAbsence($relationAlias = null) Adds a INNER JOIN clause to the query using the Absence relation
+ *
+ * @method     ChildEmployeQuery joinWithAbsence($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Absence relation
+ *
+ * @method     ChildEmployeQuery leftJoinWithAbsence() Adds a LEFT JOIN clause and with to the query using the Absence relation
+ * @method     ChildEmployeQuery rightJoinWithAbsence() Adds a RIGHT JOIN clause and with to the query using the Absence relation
+ * @method     ChildEmployeQuery innerJoinWithAbsence() Adds a INNER JOIN clause and with to the query using the Absence relation
+ *
+ * @method     ChildEmployeQuery leftJoinConge($relationAlias = null) Adds a LEFT JOIN clause to the query using the Conge relation
+ * @method     ChildEmployeQuery rightJoinConge($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Conge relation
+ * @method     ChildEmployeQuery innerJoinConge($relationAlias = null) Adds a INNER JOIN clause to the query using the Conge relation
+ *
+ * @method     ChildEmployeQuery joinWithConge($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Conge relation
+ *
+ * @method     ChildEmployeQuery leftJoinWithConge() Adds a LEFT JOIN clause and with to the query using the Conge relation
+ * @method     ChildEmployeQuery rightJoinWithConge() Adds a RIGHT JOIN clause and with to the query using the Conge relation
+ * @method     ChildEmployeQuery innerJoinWithConge() Adds a INNER JOIN clause and with to the query using the Conge relation
  *
  * @method     ChildEmployeQuery leftJoinPointage($relationAlias = null) Adds a LEFT JOIN clause to the query using the Pointage relation
  * @method     ChildEmployeQuery rightJoinPointage($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pointage relation
@@ -66,41 +88,54 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmployeQuery rightJoinWithPointage() Adds a RIGHT JOIN clause and with to the query using the Pointage relation
  * @method     ChildEmployeQuery innerJoinWithPointage() Adds a INNER JOIN clause and with to the query using the Pointage relation
  *
- * @method     \App\Models\DepartementQuery|\App\Models\PointageQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildEmployeQuery leftJoinRetard($relationAlias = null) Adds a LEFT JOIN clause to the query using the Retard relation
+ * @method     ChildEmployeQuery rightJoinRetard($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Retard relation
+ * @method     ChildEmployeQuery innerJoinRetard($relationAlias = null) Adds a INNER JOIN clause to the query using the Retard relation
+ *
+ * @method     ChildEmployeQuery joinWithRetard($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Retard relation
+ *
+ * @method     ChildEmployeQuery leftJoinWithRetard() Adds a LEFT JOIN clause and with to the query using the Retard relation
+ * @method     ChildEmployeQuery rightJoinWithRetard() Adds a RIGHT JOIN clause and with to the query using the Retard relation
+ * @method     ChildEmployeQuery innerJoinWithRetard() Adds a INNER JOIN clause and with to the query using the Retard relation
+ *
+ * @method     \App\Models\UniteQuery|\App\Models\AbsenceQuery|\App\Models\CongeQuery|\App\Models\PointageQuery|\App\Models\RetardQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildEmploye findOne(ConnectionInterface $con = null) Return the first ChildEmploye matching the query
  * @method     ChildEmploye findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEmploye matching the query, or a new ChildEmploye object populated from the query conditions when no match is found
  *
  * @method     ChildEmploye findOneByEmployeId(int $employe_id) Return the first ChildEmploye filtered by the employe_id column
  * @method     ChildEmploye findOneByRefInterne(int $ref_interne) Return the first ChildEmploye filtered by the ref_interne column
- * @method     ChildEmploye findOneByDepartementId(int $departement_id) Return the first ChildEmploye filtered by the departement_id column
+ * @method     ChildEmploye findOneByUniteId(int $unite_id) Return the first ChildEmploye filtered by the unite_id column
  * @method     ChildEmploye findOneByNomPrenom(string $nom_prenom) Return the first ChildEmploye filtered by the nom_prenom column
  * @method     ChildEmploye findOneByPoste(string $poste) Return the first ChildEmploye filtered by the poste column
  * @method     ChildEmploye findOneByGenre(string $genre) Return the first ChildEmploye filtered by the genre column
  * @method     ChildEmploye findOneByDateEmbauche(string $date_embauche) Return the first ChildEmploye filtered by the date_embauche column
- * @method     ChildEmploye findOneByPresence(boolean $presence) Return the first ChildEmploye filtered by the presence column *
+ * @method     ChildEmploye findOneByPresence(boolean $presence) Return the first ChildEmploye filtered by the presence column
+ * @method     ChildEmploye findOneByStatus(int $status) Return the first ChildEmploye filtered by the status column *
 
  * @method     ChildEmploye requirePk($key, ConnectionInterface $con = null) Return the ChildEmploye by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOne(ConnectionInterface $con = null) Return the first ChildEmploye matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildEmploye requireOneByEmployeId(int $employe_id) Return the first ChildEmploye filtered by the employe_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByRefInterne(int $ref_interne) Return the first ChildEmploye filtered by the ref_interne column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildEmploye requireOneByDepartementId(int $departement_id) Return the first ChildEmploye filtered by the departement_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEmploye requireOneByUniteId(int $unite_id) Return the first ChildEmploye filtered by the unite_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByNomPrenom(string $nom_prenom) Return the first ChildEmploye filtered by the nom_prenom column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByPoste(string $poste) Return the first ChildEmploye filtered by the poste column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByGenre(string $genre) Return the first ChildEmploye filtered by the genre column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByDateEmbauche(string $date_embauche) Return the first ChildEmploye filtered by the date_embauche column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByPresence(boolean $presence) Return the first ChildEmploye filtered by the presence column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEmploye requireOneByStatus(int $status) Return the first ChildEmploye filtered by the status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildEmploye[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildEmploye objects based on current ModelCriteria
  * @method     ChildEmploye[]|ObjectCollection findByEmployeId(int $employe_id) Return ChildEmploye objects filtered by the employe_id column
  * @method     ChildEmploye[]|ObjectCollection findByRefInterne(int $ref_interne) Return ChildEmploye objects filtered by the ref_interne column
- * @method     ChildEmploye[]|ObjectCollection findByDepartementId(int $departement_id) Return ChildEmploye objects filtered by the departement_id column
+ * @method     ChildEmploye[]|ObjectCollection findByUniteId(int $unite_id) Return ChildEmploye objects filtered by the unite_id column
  * @method     ChildEmploye[]|ObjectCollection findByNomPrenom(string $nom_prenom) Return ChildEmploye objects filtered by the nom_prenom column
  * @method     ChildEmploye[]|ObjectCollection findByPoste(string $poste) Return ChildEmploye objects filtered by the poste column
  * @method     ChildEmploye[]|ObjectCollection findByGenre(string $genre) Return ChildEmploye objects filtered by the genre column
  * @method     ChildEmploye[]|ObjectCollection findByDateEmbauche(string $date_embauche) Return ChildEmploye objects filtered by the date_embauche column
  * @method     ChildEmploye[]|ObjectCollection findByPresence(boolean $presence) Return ChildEmploye objects filtered by the presence column
+ * @method     ChildEmploye[]|ObjectCollection findByStatus(int $status) Return ChildEmploye objects filtered by the status column
  * @method     ChildEmploye[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -199,7 +234,7 @@ abstract class EmployeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT employe_id, ref_interne, departement_id, nom_prenom, poste, genre, date_embauche, presence FROM employe WHERE employe_id = :p0';
+        $sql = 'SELECT employe_id, ref_interne, unite_id, nom_prenom, poste, genre, date_embauche, presence, status FROM employe WHERE employe_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -372,18 +407,18 @@ abstract class EmployeQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the departement_id column
+     * Filter the query on the unite_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByDepartementId(1234); // WHERE departement_id = 1234
-     * $query->filterByDepartementId(array(12, 34)); // WHERE departement_id IN (12, 34)
-     * $query->filterByDepartementId(array('min' => 12)); // WHERE departement_id > 12
+     * $query->filterByUniteId(1234); // WHERE unite_id = 1234
+     * $query->filterByUniteId(array(12, 34)); // WHERE unite_id IN (12, 34)
+     * $query->filterByUniteId(array('min' => 12)); // WHERE unite_id > 12
      * </code>
      *
-     * @see       filterByDepartement()
+     * @see       filterByUnite()
      *
-     * @param     mixed $departementId The value to use as filter.
+     * @param     mixed $uniteId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -391,16 +426,16 @@ abstract class EmployeQuery extends ModelCriteria
      *
      * @return $this|ChildEmployeQuery The current query, for fluid interface
      */
-    public function filterByDepartementId($departementId = null, $comparison = null)
+    public function filterByUniteId($uniteId = null, $comparison = null)
     {
-        if (is_array($departementId)) {
+        if (is_array($uniteId)) {
             $useMinMax = false;
-            if (isset($departementId['min'])) {
-                $this->addUsingAlias(EmployeTableMap::COL_DEPARTEMENT_ID, $departementId['min'], Criteria::GREATER_EQUAL);
+            if (isset($uniteId['min'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_UNITE_ID, $uniteId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($departementId['max'])) {
-                $this->addUsingAlias(EmployeTableMap::COL_DEPARTEMENT_ID, $departementId['max'], Criteria::LESS_EQUAL);
+            if (isset($uniteId['max'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_UNITE_ID, $uniteId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -411,7 +446,7 @@ abstract class EmployeQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(EmployeTableMap::COL_DEPARTEMENT_ID, $departementId, $comparison);
+        return $this->addUsingAlias(EmployeTableMap::COL_UNITE_ID, $uniteId, $comparison);
     }
 
     /**
@@ -560,44 +595,85 @@ abstract class EmployeQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \App\Models\Departement object
+     * Filter the query on the status column
      *
-     * @param \App\Models\Departement|ObjectCollection $departement The related object(s) to use as filter
+     * Example usage:
+     * <code>
+     * $query->filterByStatus(1234); // WHERE status = 1234
+     * $query->filterByStatus(array(12, 34)); // WHERE status IN (12, 34)
+     * $query->filterByStatus(array('min' => 12)); // WHERE status > 12
+     * </code>
+     *
+     * @param     mixed $status The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildEmployeQuery The current query, for fluid interface
+     */
+    public function filterByStatus($status = null, $comparison = null)
+    {
+        if (is_array($status)) {
+            $useMinMax = false;
+            if (isset($status['min'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_STATUS, $status['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($status['max'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_STATUS, $status['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(EmployeTableMap::COL_STATUS, $status, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \App\Models\Unite object
+     *
+     * @param \App\Models\Unite|ObjectCollection $unite The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildEmployeQuery The current query, for fluid interface
      */
-    public function filterByDepartement($departement, $comparison = null)
+    public function filterByUnite($unite, $comparison = null)
     {
-        if ($departement instanceof \App\Models\Departement) {
+        if ($unite instanceof \App\Models\Unite) {
             return $this
-                ->addUsingAlias(EmployeTableMap::COL_DEPARTEMENT_ID, $departement->getDepartementId(), $comparison);
-        } elseif ($departement instanceof ObjectCollection) {
+                ->addUsingAlias(EmployeTableMap::COL_UNITE_ID, $unite->getUniteId(), $comparison);
+        } elseif ($unite instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(EmployeTableMap::COL_DEPARTEMENT_ID, $departement->toKeyValue('PrimaryKey', 'DepartementId'), $comparison);
+                ->addUsingAlias(EmployeTableMap::COL_UNITE_ID, $unite->toKeyValue('PrimaryKey', 'UniteId'), $comparison);
         } else {
-            throw new PropelException('filterByDepartement() only accepts arguments of type \App\Models\Departement or Collection');
+            throw new PropelException('filterByUnite() only accepts arguments of type \App\Models\Unite or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Departement relation
+     * Adds a JOIN clause to the query using the Unite relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildEmployeQuery The current query, for fluid interface
      */
-    public function joinDepartement($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinUnite($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Departement');
+        $relationMap = $tableMap->getRelation('Unite');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -612,14 +688,14 @@ abstract class EmployeQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Departement');
+            $this->addJoinObject($join, 'Unite');
         }
 
         return $this;
     }
 
     /**
-     * Use the Departement relation Departement object
+     * Use the Unite relation Unite object
      *
      * @see useQuery()
      *
@@ -627,13 +703,159 @@ abstract class EmployeQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \App\Models\DepartementQuery A secondary query class using the current class as primary query
+     * @return \App\Models\UniteQuery A secondary query class using the current class as primary query
      */
-    public function useDepartementQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useUniteQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinDepartement($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Departement', '\App\Models\DepartementQuery');
+            ->joinUnite($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Unite', '\App\Models\UniteQuery');
+    }
+
+    /**
+     * Filter the query by a related \App\Models\Absence object
+     *
+     * @param \App\Models\Absence|ObjectCollection $absence the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmployeQuery The current query, for fluid interface
+     */
+    public function filterByAbsence($absence, $comparison = null)
+    {
+        if ($absence instanceof \App\Models\Absence) {
+            return $this
+                ->addUsingAlias(EmployeTableMap::COL_EMPLOYE_ID, $absence->getEmployeId(), $comparison);
+        } elseif ($absence instanceof ObjectCollection) {
+            return $this
+                ->useAbsenceQuery()
+                ->filterByPrimaryKeys($absence->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByAbsence() only accepts arguments of type \App\Models\Absence or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Absence relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildEmployeQuery The current query, for fluid interface
+     */
+    public function joinAbsence($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Absence');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Absence');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Absence relation Absence object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \App\Models\AbsenceQuery A secondary query class using the current class as primary query
+     */
+    public function useAbsenceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinAbsence($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Absence', '\App\Models\AbsenceQuery');
+    }
+
+    /**
+     * Filter the query by a related \App\Models\Conge object
+     *
+     * @param \App\Models\Conge|ObjectCollection $conge the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmployeQuery The current query, for fluid interface
+     */
+    public function filterByConge($conge, $comparison = null)
+    {
+        if ($conge instanceof \App\Models\Conge) {
+            return $this
+                ->addUsingAlias(EmployeTableMap::COL_EMPLOYE_ID, $conge->getEmployeId(), $comparison);
+        } elseif ($conge instanceof ObjectCollection) {
+            return $this
+                ->useCongeQuery()
+                ->filterByPrimaryKeys($conge->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByConge() only accepts arguments of type \App\Models\Conge or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Conge relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildEmployeQuery The current query, for fluid interface
+     */
+    public function joinConge($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Conge');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Conge');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Conge relation Conge object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \App\Models\CongeQuery A secondary query class using the current class as primary query
+     */
+    public function useCongeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinConge($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Conge', '\App\Models\CongeQuery');
     }
 
     /**
@@ -707,6 +929,79 @@ abstract class EmployeQuery extends ModelCriteria
         return $this
             ->joinPointage($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Pointage', '\App\Models\PointageQuery');
+    }
+
+    /**
+     * Filter the query by a related \App\Models\Retard object
+     *
+     * @param \App\Models\Retard|ObjectCollection $retard the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmployeQuery The current query, for fluid interface
+     */
+    public function filterByRetard($retard, $comparison = null)
+    {
+        if ($retard instanceof \App\Models\Retard) {
+            return $this
+                ->addUsingAlias(EmployeTableMap::COL_EMPLOYE_ID, $retard->getEmployeId(), $comparison);
+        } elseif ($retard instanceof ObjectCollection) {
+            return $this
+                ->useRetardQuery()
+                ->filterByPrimaryKeys($retard->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRetard() only accepts arguments of type \App\Models\Retard or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Retard relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildEmployeQuery The current query, for fluid interface
+     */
+    public function joinRetard($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Retard');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Retard');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Retard relation Retard object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \App\Models\RetardQuery A secondary query class using the current class as primary query
+     */
+    public function useRetardQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRetard($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Retard', '\App\Models\RetardQuery');
     }
 
     /**

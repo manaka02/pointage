@@ -7,361 +7,458 @@ Liste des employés
 {% endblock %}
 
 {% block  body %}
-    <section class="content mt-4">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-3">
+<section class="content mt-4">
+  <div class="row">
+    <div class="col-md-8">
+      <h1 class="h3">Information sur Toavina</h1>
 
-            <!-- Profile Image -->
-            <div class="card card-primary card-outline">
-              <div class="card-body box-profile">
-                <div class="text-center">
-                  <img class="profile-user-img img-fluid img-circle" src="../../dist/img/user4-128x128.jpg" alt="User profile picture">
-                </div>
+    </div>
 
-                <h3 class="profile-username text-center">Nina Mcintire</h3>
+    <div class="col-md-4 row">
 
-                <p class="text-muted text-center">Software Engineer</p>
+      <div class="col-md-4">
+        <a href="employe-edit" class="btn btn-block btn-primary maincolor btn-sm btn-flat">
+          <i class="fa fa-edit mr-2"></i>
+          Modifier</a>
 
-                <ul class="list-group list-group-unbordered mb-3">
-                  <li class="list-group-item">
-                    <b>Followers</b> <a class="float-right">1,322</a>
-                  </li>
-                  <li class="list-group-item">
-                    <b>Following</b> <a class="float-right">543</a>
-                  </li>
-                  <li class="list-group-item">
-                    <b>Friends</b> <a class="float-right">13,287</a>
-                  </li>
-                </ul>
+      </div>
+      <div class="col-md-4">
+        <button type="button" class="btn btn-block btn-primary maincolor btn-sm btn-flat" data-toggle="modal"
+          data-target="#modal-lg">
+          <i class="fa fa-print"></i>
+          Imprimer
+        </button>
+      </div>
+      <div class="col-md-4">
+        <a href="" class="btn btn-block btn-danger btn-sm btn-flat">
+          <i class="fas fa-times mr-2"></i>
+          Débaucher</a>
 
-                <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
-              </div>
-              <!-- /.card-body -->
+      </div>
+
+
+    </div>
+  </div>
+  <hr>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+
+        <!-- Profile Image -->
+        <div class="card card-primary card-outline">
+          <div class="card-body box-profile">
+            <div class="text-center">
+              <img class="profile-user-img img-fluid img-circle"
+                src="https://thumbs.dreamstime.com/b/jeune-homme-d-affaires-africain-r%C3%A9ussi-45853931.jpg"
+                alt="User profile picture">
             </div>
-            <!-- /.card -->
 
-            <!-- About Me Box -->
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">About Me</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <strong><i class="fas fa-book mr-1"></i> Education</strong>
+            <h3 class="profile-username text-center">Nina Mcintire</h3>
 
-                <p class="text-muted">
-                  B.S. in Computer Science from the University of Tennessee at Knoxville
-                </p>
+            <p class="text-muted text-center"><small class="badge badge-success"><i class="fa fa-check"></i></small>
+              Présent(e)</p>
 
-                <hr>
+            <ul class="list-group list-group-unbordered mb-3">
+              <li class="list-group-item">
+                <b>Unité</b> <a class="float-right">1,322</a>
+              </li>
+              <li class="list-group-item">
+                <b>Service</b> <a class="float-right">543</a>
+              </li>
+              <li class="list-group-item">
+                <b>Département</b> <a class="float-right">13,287</a>
+              </li>
+              <li class="list-group-item">
+                <b>Diréction</b> <a class="float-right">13,287</a>
+              </li>
 
-                <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+              <li class="list-group-item">
+                <b>Heure Début</b> <a class="float-right">07:00</a>
+              </li>
+              <li class="list-group-item">
+                <b>Heure Fin</b> <a class="float-right">16:00</a>
+              </li>
+            </ul>
 
-                <p class="text-muted">Malibu, California</p>
-
-                <hr>
-
-                <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
-
-                <p class="text-muted">
-                  <span class="tag tag-danger">UI Design</span>
-                  <span class="tag tag-success">Coding</span>
-                  <span class="tag tag-info">Javascript</span>
-                  <span class="tag tag-warning">PHP</span>
-                  <span class="tag tag-primary">Node.js</span>
-                </p>
-
-                <hr>
-
-                <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
-
-                <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.</p>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
           </div>
-          <!-- /.col -->
-          <div class="col-md-9">
-            <div class="card">
-              <div class="card-header p-2">
-                <ul class="nav nav-pills">
-                  <li class="nav-item"><a class="nav-link" href="#activity" data-toggle="tab">Activity</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a></li>
-                  <li class="nav-item"><a class="nav-link active" href="#settings" data-toggle="tab">Settings</a></li>
-                </ul>
-              </div><!-- /.card-header -->
-              <div class="card-body">
-                <div class="tab-content">
-                  <div class="tab-pane" id="activity">
-                    <!-- Post -->
-                    <div class="post">
-                      <div class="user-block">
-                        <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">
-                        <span class="username">
-                          <a href="#">Jonathan Burke Jr.</a>
-                          <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
-                        </span>
-                        <span class="description">Shared publicly - 7:30 PM today</span>
-                      </div>
-                      <!-- /.user-block -->
-                      <p>
-                        Lorem ipsum represents a long-held tradition for designers,
-                        typographers and the like. Some people hate it and argue for
-                        its demise, but others ignore the hate as they create awesome
-                        tools to help create filler text for everyone from bacon lovers
-                        to Charlie Sheen fans.
-                      </p>
-
-                      <p>
-                        <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
-                        <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
-                        <span class="float-right">
-                          <a href="#" class="link-black text-sm">
-                            <i class="far fa-comments mr-1"></i> Comments (5)
-                          </a>
-                        </span>
-                      </p>
-
-                      <input class="form-control form-control-sm" type="text" placeholder="Type a comment">
-                    </div>
-                    <!-- /.post -->
-
-                    <!-- Post -->
-                    <div class="post clearfix">
-                      <div class="user-block">
-                        <img class="img-circle img-bordered-sm" src="../../dist/img/user7-128x128.jpg" alt="User Image">
-                        <span class="username">
-                          <a href="#">Sarah Ross</a>
-                          <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
-                        </span>
-                        <span class="description">Sent you a message - 3 days ago</span>
-                      </div>
-                      <!-- /.user-block -->
-                      <p>
-                        Lorem ipsum represents a long-held tradition for designers,
-                        typographers and the like. Some people hate it and argue for
-                        its demise, but others ignore the hate as they create awesome
-                        tools to help create filler text for everyone from bacon lovers
-                        to Charlie Sheen fans.
-                      </p>
-
-                      <form class="form-horizontal">
-                        <div class="input-group input-group-sm mb-0">
-                          <input class="form-control form-control-sm" placeholder="Response">
-                          <div class="input-group-append">
-                            <button type="submit" class="btn btn-danger">Send</button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                    <!-- /.post -->
-
-                    <!-- Post -->
-                    <div class="post">
-                      <div class="user-block">
-                        <img class="img-circle img-bordered-sm" src="../../dist/img/user6-128x128.jpg" alt="User Image">
-                        <span class="username">
-                          <a href="#">Adam Jones</a>
-                          <a href="#" class="float-right btn-tool"><i class="fas fa-times"></i></a>
-                        </span>
-                        <span class="description">Posted 5 photos - 5 days ago</span>
-                      </div>
-                      <!-- /.user-block -->
-                      <div class="row mb-3">
-                        <div class="col-sm-6">
-                          <img class="img-fluid" src="../../dist/img/photo1.png" alt="Photo">
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-sm-6">
-                          <div class="row">
-                            <div class="col-sm-6">
-                              <img class="img-fluid mb-3" src="../../dist/img/photo2.png" alt="Photo">
-                              <img class="img-fluid" src="../../dist/img/photo3.jpg" alt="Photo">
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-sm-6">
-                              <img class="img-fluid mb-3" src="../../dist/img/photo4.jpg" alt="Photo">
-                              <img class="img-fluid" src="../../dist/img/photo1.png" alt="Photo">
-                            </div>
-                            <!-- /.col -->
-                          </div>
-                          <!-- /.row -->
-                        </div>
-                        <!-- /.col -->
-                      </div>
-                      <!-- /.row -->
-
-                      <p>
-                        <a href="#" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
-                        <a href="#" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
-                        <span class="float-right">
-                          <a href="#" class="link-black text-sm">
-                            <i class="far fa-comments mr-1"></i> Comments (5)
-                          </a>
-                        </span>
-                      </p>
-
-                      <input class="form-control form-control-sm" type="text" placeholder="Type a comment">
-                    </div>
-                    <!-- /.post -->
-                  </div>
-                  <!-- /.tab-pane -->
-                  <div class="tab-pane" id="timeline">
-                    <!-- The timeline -->
-                    <div class="timeline timeline-inverse">
-                      <!-- timeline time label -->
-                      <div class="time-label">
-                        <span class="bg-danger">
-                          10 Feb. 2014
-                        </span>
-                      </div>
-                      <!-- /.timeline-label -->
-                      <!-- timeline item -->
-                      <div>
-                        <i class="fas fa-envelope bg-primary"></i>
-
-                        <div class="timeline-item">
-                          <span class="time"><i class="far fa-clock"></i> 12:05</span>
-
-                          <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
-
-                          <div class="timeline-body">
-                            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                            weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                            jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                            quora plaxo ideeli hulu weebly balihoo...
-                          </div>
-                          <div class="timeline-footer">
-                            <a href="#" class="btn btn-primary btn-sm">Read more</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- END timeline item -->
-                      <!-- timeline item -->
-                      <div>
-                        <i class="fas fa-user bg-info"></i>
-
-                        <div class="timeline-item">
-                          <span class="time"><i class="far fa-clock"></i> 5 mins ago</span>
-
-                          <h3 class="timeline-header border-0"><a href="#">Sarah Young</a> accepted your friend request
-                          </h3>
-                        </div>
-                      </div>
-                      <!-- END timeline item -->
-                      <!-- timeline item -->
-                      <div>
-                        <i class="fas fa-comments bg-warning"></i>
-
-                        <div class="timeline-item">
-                          <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
-
-                          <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-
-                          <div class="timeline-body">
-                            Take me to your leader!
-                            Switzerland is small and neutral!
-                            We are more like Germany, ambitious and misunderstood!
-                          </div>
-                          <div class="timeline-footer">
-                            <a href="#" class="btn btn-warning btn-flat btn-sm">View comment</a>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- END timeline item -->
-                      <!-- timeline time label -->
-                      <div class="time-label">
-                        <span class="bg-success">
-                          3 Jan. 2014
-                        </span>
-                      </div>
-                      <!-- /.timeline-label -->
-                      <!-- timeline item -->
-                      <div>
-                        <i class="fas fa-camera bg-purple"></i>
-
-                        <div class="timeline-item">
-                          <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
-
-                          <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-
-                          <div class="timeline-body">
-                            <img src="http://placehold.it/150x100" alt="...">
-                            <img src="http://placehold.it/150x100" alt="...">
-                            <img src="http://placehold.it/150x100" alt="...">
-                            <img src="http://placehold.it/150x100" alt="...">
-                          </div>
-                        </div>
-                      </div>
-                      <!-- END timeline item -->
-                      <div>
-                        <i class="far fa-clock bg-gray"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- /.tab-pane -->
-
-                  <div class="tab-pane active" id="settings">
-                    <form class="form-horizontal">
-                      <div class="form-group row">
-                        <label for="inputName" class="col-sm-2 col-form-label">Name</label>
-                        <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputName" placeholder="Name">
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-                        <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputEmail" placeholder="Email">
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label for="inputName2" class="col-sm-2 col-form-label">Name</label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputName2" placeholder="Name">
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label for="inputExperience" class="col-sm-2 col-form-label">Experience</label>
-                        <div class="col-sm-10">
-                          <textarea class="form-control" id="inputExperience" placeholder="Experience"></textarea>
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label for="inputSkills" class="col-sm-2 col-form-label">Skills</label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <div class="offset-sm-2 col-sm-10">
-                          <div class="checkbox">
-                            <label>
-                              <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <div class="offset-sm-2 col-sm-10">
-                          <button type="submit" class="btn btn-danger">Submit</button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <!-- /.tab-pane -->
-                </div>
-                <!-- /.tab-content -->
-              </div><!-- /.card-body -->
-            </div>
-            <!-- /.nav-tabs-custom -->
-          </div>
-          <!-- /.col -->
+          <!-- /.card-body -->
         </div>
-        <!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </section>
+        <!-- /.card -->
+
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
+      <div class="col-md-9">
+        <div class="card">
+          <div class="card-header p-2">
+            <h4>Aujourd'hui</h4>
+          </div>
+          <div class="card-body">
+            <div class="btn-group btn-group-toggle row col-sm-12" data-toggle="buttons">
+
+              <label class="btn btn-default text-center mr-2">
+                <input type="radio" name="color_option" id="color_option1" autocomplete="off">
+                <span class="text-xl">00:23</span>
+                <br>
+                Retard
+              </label>
+              <label class="btn btn-default text-center mr-2">
+                <input type="radio" name="color_option" id="color_option1" autocomplete="off">
+                <span class="text-xl"><i class="fa fa-times"></i></span>
+                <br>
+                Congé
+              </label>
+              <label class="btn btn-default text-center mr-2">
+                <input type="radio" name="color_option" id="color_option1" autocomplete="off">
+                <span class="text-xl">--:--</span>
+                <br>
+                Permission
+              </label>
+              <label class="btn btn-default text-center mr-2">
+                <input type="radio" name="color_option" id="color_option1" autocomplete="off">
+                <span class="text-xl">01:30</span>
+                <br>
+                Heure Sup
+              </label>
+              <!-- /.post -->
+
+              <!-- Post -->
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header p-2">
+            <ul class="nav nav-pills">
+              <li class="nav-item "><a class="nav-link active " href="#seven_days" data-toggle="tab">Récapitulation</a>
+              </li>
+
+              <li class="nav-item"><a class="nav-link" href="#conge" data-toggle="tab">Demande de congés</a></li>
+              <li class="nav-item"><a class="nav-link" href="#about" data-toggle="tab">Parcours</a></li>
+            </ul>
+          </div><!-- /.card-header -->
+          <div class="card-body">
+            <div class="tab-content">
+              <div class="tab-pane active" id="seven_days">
+                <div class="card">
+                  <div class="card-header row">
+                    <div class="col-sm-3">
+                      <div class="form-group">
+                        <label>Période :
+                        </label>
+                        <select class="form-control select2 form-control-sm" style="width: 100%;" name="limit">
+                          <option value="10" selected="selected">7 derniers jours
+                          </option>
+                          <option value="25">14 derniers jours
+                          </option>
+                          <option value="50">30 derniers jours
+                          </option>
+                          <option value="100">3 derniers mois
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-9">
+                      <div class="form-group  row ml-2">
+                        <label class="col-sm-12">Afficher :
+                        </label>
+                        <div class="custom-control custom-checkbox col-sm-3">
+                          <input class="custom-control-input" type="checkbox" id="customCheckbox1" checked="">
+                          <label for="customCheckbox1" class="custom-control-label font-weight-normal">Avec
+                            retard</label>
+                        </div>
+                        <div class="custom-control custom-checkbox col-sm-3">
+                          <input class="custom-control-input" type="checkbox" id="customCheckbox2" checked="">
+                          <label for="customCheckbox2" class="custom-control-label font-weight-normal">Absence</label>
+                        </div>
+                        <div class="custom-control custom-checkbox col-sm-3">
+                          <input class="custom-control-input" type="checkbox" id="customCheckbox3" checked="">
+                          <label for="customCheckbox3"
+                            class="custom-control-label font-weight-normal">Permission</label>
+                        </div>
+                        <div class="custom-control custom-checkbox col-sm-3">
+                          <input class="custom-control-input" type="checkbox" id="customCheckbox4" checked="">
+                          <label for="customCheckbox4" class="custom-control-label font-weight-normal">Heure Sup</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <div class="col-md-3 float-left mb-3">
+                        <button type="submit"
+                          class="btn btn-block btn-primary maincolor btn-sm btn-flat">Afficher</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 row  p-2">
+                    <div class="col-md-6">
+                      <div class="col-12">
+                        <h4>Nombre de jours : </h4>
+                      </div>
+                      <canvas id="presenceChart"
+                        style="min-height: 200px; height: 200px; max-height: 200px; max-width: 100%; display: block; width: 487px;"
+                        width="487" height="200" class="chartjs-render-monitor"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="col-12">
+                        <h4>Total : </h4>
+                      </div>
+                      <ul class="nav nav-pills flex-column">
+                        <li class="nav-item">
+                          <a href="#" class="nav-link">
+                            Retard
+                            <span class="float-right text-danger">
+                              01:04</span>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="#" class="nav-link">
+                            Heure Sup
+                            <span class="float-right text-success">
+                              07:30
+                            </span>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="#" class="nav-link">
+                            Congé pris
+                            <span class="float-right">
+                              1 jour
+                            </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Présence</th>
+                          <th>Congé</th>
+                          <th>Retard</th>
+                          <th>Permission (H. Départ)</th>
+                          <th>Heure Sup</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>23 oct 2020</td>
+                          <td>Oui</td>
+                          <td>Non</td>
+                          <td>00:19</td>
+                          <td>--:--</td>
+                          <td>01:30</td>
+                        </tr>
+                        <tr>
+                          <td>22 oct 2020</td>
+                          <td>Oui</td>
+                          <td>Non</td>
+                          <td>--:--</td>
+                          <td>--:--</td>
+                          <td>01:30</td>
+                        </tr>
+                        <tr>
+                          <td>21 oct 2020</td>
+                          <td>Oui</td>
+                          <td>Non</td>
+                          <td>--:--</td>
+                          <td>--:--</td>
+                          <td>01:30</td>
+                        </tr>
+                        <tr>
+                          <td>20 oct 2020</td>
+                          <td>Oui</td>
+                          <td>Non</td>
+                          <td class="bg-danger">00:45</td>
+                          <td>--:--</td>
+                          <td>01:30</td>
+                        </tr>
+                        <tr>
+                          <td>19 oct 2020</td>
+                          <td class="bg-danger">Non</td>
+                          <td>Non</td>
+                          <td>--:--</td>
+                          <td>--:--</td>
+                          <td>--:--</td>
+
+                        </tr>
+                        <tr>
+                          <td>18 oct 2020</td>
+                          <td>Oui</td>
+                          <td>Non</td>
+                          <td>--:--</td>
+                          <td>--:--</td>
+                          <td>01:30</td>
+                        </tr>
+                        <tr>
+                          <td>17 oct 2020</td>
+                          <td class="bg-warning">Non</td>
+                          <td>Oui</td>
+                          <td>--:--</td>
+                          <td>--:--</td>
+                          <td>--:--</td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+              </div>
+
+              <div class="tab-pane" id="conge">
+                <div class="card-header row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Date de début
+                        (Date min)</label>
+                      <input type="date" class="form-control form-control-sm" placeholder="Date de pointage"
+                        name="date_pointage[min]">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Date de début
+                        (Date max)</label>
+                      <input type="date" class="form-control form-control-sm" placeholder="Date de pointage"
+                        name="date_pointage[min]">
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group  row ml-2">
+                      <label class="col-sm-12">Afficher :
+                      </label>
+                      <div class="custom-control custom-checkbox col-sm-6">
+                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" checked="">
+                        <label for="customCheckbox1" class="custom-control-label font-weight-normal">Validé</label>
+                      </div>
+                      <div class="custom-control custom-checkbox col-sm-6">
+                        <input class="custom-control-input" type="checkbox" id="customCheckbox2" checked="">
+                        <label for="customCheckbox2" class="custom-control-label font-weight-normal">Non Validé</label>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="col-md-3 float-left mb-3">
+                      <button type="submit"
+                        class="btn btn-block btn-primary maincolor btn-sm btn-flat">Afficher</button>
+                    </div>
+                  </div>
+                </div>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Date de demande</th>
+                      <th>Date de début</th>
+                      <th>Date Fin</th>
+                      <th>Motif</th>
+                      <th>Validation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>18 Oct 2020</td>
+                      <td>20 Oct 2020</td>
+                      <td>20 Oct 2020</td>
+                      <td>Reunion Familiale</td>
+                      <td><span class="badge bg-danger">Non validé</span></td>
+                    </tr>
+                    <tr>
+                      <td>15 Oct 2020</td>
+                      <td>17 Oct 2020</td>
+                      <td>17 Oct 2020</td>
+                      <td>Reunion Familiale</td>
+                      <td><span class="badge bg-success">validé</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="tab-pane" id="about">
+                <div class="timeline timeline-inverse">
+                  <div class="time-label">
+                    <span class="bg-success">
+                      16 Aout 2020
+                    </span>
+                  </div>
+                  <div>
+                    <i class="fas fa-check bg-primary"></i>
+
+                    <div class="timeline-item">
+                      <h3 class="timeline-header border-0">Déplacement vers le département HHTM
+                      </h3>
+                    </div>
+                  </div>
+                  <div class="time-label">
+                    <span class="bg-success">
+                      30 Mars 2020
+                    </span>
+                  </div>
+                  <div>
+                    <i class="fas fa-check bg-primary"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header border-0">Affectation au Département FABRICATION TEXTILE
+                      </h3>
+                    </div>
+                  </div>
+                  <div>
+                    <i class="fas fa-check bg-primary"></i>
+                    <div class="timeline-item">
+                      <h3 class="timeline-header border-0">Date d'embauche
+                      </h3>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div><!-- /.card-body -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div><!-- /.container-fluid -->
+</section>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+  var donutChartCanvas = $('#presenceChart').get(0).getContext('2d')
+  var donutData = {
+    labels: [
+      'Présence',
+      'Absence justifié',
+      'Absence non justifié'
+    ],
+    datasets: [
+      {
+        data: [5, 1, 1],
+        backgroundColor: ['#00a65a', '#f39c12', '#f56954'],
+      }
+    ]
+  }
+  var donutOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      position: 'right',
+      display: true,
+      labels: {
+
+      }
+    }
+  }
+  var donutChart = new Chart(donutChartCanvas, {
+    type: 'doughnut',
+    data: donutData,
+    options: donutOptions
+  })
+</script>
 {% endblock %}

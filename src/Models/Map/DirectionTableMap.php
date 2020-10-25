@@ -2,8 +2,8 @@
 
 namespace App\Models\Map;
 
-use App\Models\Employe;
-use App\Models\EmployeQuery;
+use App\Models\Direction;
+use App\Models\DirectionQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'employe' table.
+ * This class defines the structure of the 'direction' table.
  *
  *
  *
@@ -25,7 +25,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
  * (i.e. if it's a text column type).
  */
-class EmployeTableMap extends TableMap
+class DirectionTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -33,7 +33,7 @@ class EmployeTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.EmployeTableMap';
+    const CLASS_NAME = '.Map.DirectionTableMap';
 
     /**
      * The default database name for this class
@@ -43,22 +43,22 @@ class EmployeTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'employe';
+    const TABLE_NAME = 'direction';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\App\\Models\\Employe';
+    const OM_CLASS = '\\App\\Models\\Direction';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Employe';
+    const CLASS_DEFAULT = 'Direction';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -68,52 +68,22 @@ class EmployeTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
-     * the column name for the employe_id field
+     * the column name for the direction_id field
      */
-    const COL_EMPLOYE_ID = 'employe.employe_id';
+    const COL_DIRECTION_ID = 'direction.direction_id';
 
     /**
-     * the column name for the ref_interne field
+     * the column name for the designation field
      */
-    const COL_REF_INTERNE = 'employe.ref_interne';
+    const COL_DESIGNATION = 'direction.designation';
 
     /**
-     * the column name for the unite_id field
+     * the column name for the description field
      */
-    const COL_UNITE_ID = 'employe.unite_id';
-
-    /**
-     * the column name for the nom_prenom field
-     */
-    const COL_NOM_PRENOM = 'employe.nom_prenom';
-
-    /**
-     * the column name for the poste field
-     */
-    const COL_POSTE = 'employe.poste';
-
-    /**
-     * the column name for the genre field
-     */
-    const COL_GENRE = 'employe.genre';
-
-    /**
-     * the column name for the date_embauche field
-     */
-    const COL_DATE_EMBAUCHE = 'employe.date_embauche';
-
-    /**
-     * the column name for the presence field
-     */
-    const COL_PRESENCE = 'employe.presence';
-
-    /**
-     * the column name for the status field
-     */
-    const COL_STATUS = 'employe.status';
+    const COL_DESCRIPTION = 'direction.description';
 
     /**
      * The default string format for model objects of the related table
@@ -127,11 +97,11 @@ class EmployeTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('EmployeId', 'RefInterne', 'UniteId', 'NomPrenom', 'Poste', 'Genre', 'DateEmbauche', 'Presence', 'Status', ),
-        self::TYPE_CAMELNAME     => array('employeId', 'refInterne', 'uniteId', 'nomPrenom', 'poste', 'genre', 'dateEmbauche', 'presence', 'status', ),
-        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID, EmployeTableMap::COL_REF_INTERNE, EmployeTableMap::COL_UNITE_ID, EmployeTableMap::COL_NOM_PRENOM, EmployeTableMap::COL_POSTE, EmployeTableMap::COL_GENRE, EmployeTableMap::COL_DATE_EMBAUCHE, EmployeTableMap::COL_PRESENCE, EmployeTableMap::COL_STATUS, ),
-        self::TYPE_FIELDNAME     => array('employe_id', 'ref_interne', 'unite_id', 'nom_prenom', 'poste', 'genre', 'date_embauche', 'presence', 'status', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('DirectionId', 'Designation', 'Description', ),
+        self::TYPE_CAMELNAME     => array('directionId', 'designation', 'description', ),
+        self::TYPE_COLNAME       => array(DirectionTableMap::COL_DIRECTION_ID, DirectionTableMap::COL_DESIGNATION, DirectionTableMap::COL_DESCRIPTION, ),
+        self::TYPE_FIELDNAME     => array('direction_id', 'designation', 'description', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -141,11 +111,11 @@ class EmployeTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('EmployeId' => 0, 'RefInterne' => 1, 'UniteId' => 2, 'NomPrenom' => 3, 'Poste' => 4, 'Genre' => 5, 'DateEmbauche' => 6, 'Presence' => 7, 'Status' => 8, ),
-        self::TYPE_CAMELNAME     => array('employeId' => 0, 'refInterne' => 1, 'uniteId' => 2, 'nomPrenom' => 3, 'poste' => 4, 'genre' => 5, 'dateEmbauche' => 6, 'presence' => 7, 'status' => 8, ),
-        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID => 0, EmployeTableMap::COL_REF_INTERNE => 1, EmployeTableMap::COL_UNITE_ID => 2, EmployeTableMap::COL_NOM_PRENOM => 3, EmployeTableMap::COL_POSTE => 4, EmployeTableMap::COL_GENRE => 5, EmployeTableMap::COL_DATE_EMBAUCHE => 6, EmployeTableMap::COL_PRESENCE => 7, EmployeTableMap::COL_STATUS => 8, ),
-        self::TYPE_FIELDNAME     => array('employe_id' => 0, 'ref_interne' => 1, 'unite_id' => 2, 'nom_prenom' => 3, 'poste' => 4, 'genre' => 5, 'date_embauche' => 6, 'presence' => 7, 'status' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('DirectionId' => 0, 'Designation' => 1, 'Description' => 2, ),
+        self::TYPE_CAMELNAME     => array('directionId' => 0, 'designation' => 1, 'description' => 2, ),
+        self::TYPE_COLNAME       => array(DirectionTableMap::COL_DIRECTION_ID => 0, DirectionTableMap::COL_DESIGNATION => 1, DirectionTableMap::COL_DESCRIPTION => 2, ),
+        self::TYPE_FIELDNAME     => array('direction_id' => 0, 'designation' => 1, 'description' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -158,22 +128,16 @@ class EmployeTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('employe');
-        $this->setPhpName('Employe');
+        $this->setName('direction');
+        $this->setPhpName('Direction');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\App\\Models\\Employe');
+        $this->setClassName('\\App\\Models\\Direction');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('employe_id', 'EmployeId', 'INTEGER', true, null, null);
-        $this->addColumn('ref_interne', 'RefInterne', 'INTEGER', false, null, null);
-        $this->addForeignKey('unite_id', 'UniteId', 'INTEGER', 'unite', 'unite_id', false, null, null);
-        $this->addColumn('nom_prenom', 'NomPrenom', 'VARCHAR', false, 100, null);
-        $this->addColumn('poste', 'Poste', 'VARCHAR', false, 100, null);
-        $this->addColumn('genre', 'Genre', 'VARCHAR', false, 40, null);
-        $this->addColumn('date_embauche', 'DateEmbauche', 'DATE', false, null, null);
-        $this->addColumn('presence', 'Presence', 'BOOLEAN', false, 1, true);
-        $this->addColumn('status', 'Status', 'INTEGER', true, null, 1);
+        $this->addPrimaryKey('direction_id', 'DirectionId', 'INTEGER', true, null, null);
+        $this->addColumn('designation', 'Designation', 'VARCHAR', true, 250, null);
+        $this->addColumn('description', 'Description', 'LONGVARCHAR', false, null, null);
     } // initialize()
 
     /**
@@ -181,53 +145,22 @@ class EmployeTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Unite', '\\App\\Models\\Unite', RelationMap::MANY_TO_ONE, array (
+        $this->addRelation('Departement', '\\App\\Models\\Departement', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':unite_id',
-    1 => ':unite_id',
+    0 => ':direction_id',
+    1 => ':direction_id',
   ),
-), null, null, null, false);
-        $this->addRelation('Absence', '\\App\\Models\\Absence', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':employe_id',
-    1 => ':employe_id',
-  ),
-), 'CASCADE', null, 'Absences', false);
-        $this->addRelation('Conge', '\\App\\Models\\Conge', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':employe_id',
-    1 => ':employe_id',
-  ),
-), 'CASCADE', null, 'Conges', false);
-        $this->addRelation('Pointage', '\\App\\Models\\Pointage', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':employe_id',
-    1 => ':employe_id',
-  ),
-), 'CASCADE', null, 'Pointages', false);
-        $this->addRelation('Retard', '\\App\\Models\\Retard', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':employe_id',
-    1 => ':employe_id',
-  ),
-), 'CASCADE', null, 'Retards', false);
+), 'CASCADE', null, 'Departements', false);
     } // buildRelations()
     /**
-     * Method to invalidate the instance pool of all tables related to employe     * by a foreign key with ON DELETE CASCADE
+     * Method to invalidate the instance pool of all tables related to direction     * by a foreign key with ON DELETE CASCADE
      */
     public static function clearRelatedInstancePool()
     {
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        AbsenceTableMap::clearInstancePool();
-        CongeTableMap::clearInstancePool();
-        PointageTableMap::clearInstancePool();
-        RetardTableMap::clearInstancePool();
+        DepartementTableMap::clearInstancePool();
     }
 
     /**
@@ -246,11 +179,11 @@ class EmployeTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DirectionId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DirectionId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DirectionId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DirectionId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DirectionId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DirectionId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -270,7 +203,7 @@ class EmployeTableMap extends TableMap
         return (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('DirectionId', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
 
@@ -287,7 +220,7 @@ class EmployeTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? EmployeTableMap::CLASS_DEFAULT : EmployeTableMap::OM_CLASS;
+        return $withPrefix ? DirectionTableMap::CLASS_DEFAULT : DirectionTableMap::OM_CLASS;
     }
 
     /**
@@ -301,22 +234,22 @@ class EmployeTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Employe object, last column rank)
+     * @return array           (Direction object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = EmployeTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = EmployeTableMap::getInstanceFromPool($key))) {
+        $key = DirectionTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = DirectionTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + EmployeTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + DirectionTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = EmployeTableMap::OM_CLASS;
-            /** @var Employe $obj */
+            $cls = DirectionTableMap::OM_CLASS;
+            /** @var Direction $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            EmployeTableMap::addInstanceToPool($obj, $key);
+            DirectionTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -339,18 +272,18 @@ class EmployeTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = EmployeTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = EmployeTableMap::getInstanceFromPool($key))) {
+            $key = DirectionTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = DirectionTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Employe $obj */
+                /** @var Direction $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                EmployeTableMap::addInstanceToPool($obj, $key);
+                DirectionTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -371,25 +304,13 @@ class EmployeTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(EmployeTableMap::COL_EMPLOYE_ID);
-            $criteria->addSelectColumn(EmployeTableMap::COL_REF_INTERNE);
-            $criteria->addSelectColumn(EmployeTableMap::COL_UNITE_ID);
-            $criteria->addSelectColumn(EmployeTableMap::COL_NOM_PRENOM);
-            $criteria->addSelectColumn(EmployeTableMap::COL_POSTE);
-            $criteria->addSelectColumn(EmployeTableMap::COL_GENRE);
-            $criteria->addSelectColumn(EmployeTableMap::COL_DATE_EMBAUCHE);
-            $criteria->addSelectColumn(EmployeTableMap::COL_PRESENCE);
-            $criteria->addSelectColumn(EmployeTableMap::COL_STATUS);
+            $criteria->addSelectColumn(DirectionTableMap::COL_DIRECTION_ID);
+            $criteria->addSelectColumn(DirectionTableMap::COL_DESIGNATION);
+            $criteria->addSelectColumn(DirectionTableMap::COL_DESCRIPTION);
         } else {
-            $criteria->addSelectColumn($alias . '.employe_id');
-            $criteria->addSelectColumn($alias . '.ref_interne');
-            $criteria->addSelectColumn($alias . '.unite_id');
-            $criteria->addSelectColumn($alias . '.nom_prenom');
-            $criteria->addSelectColumn($alias . '.poste');
-            $criteria->addSelectColumn($alias . '.genre');
-            $criteria->addSelectColumn($alias . '.date_embauche');
-            $criteria->addSelectColumn($alias . '.presence');
-            $criteria->addSelectColumn($alias . '.status');
+            $criteria->addSelectColumn($alias . '.direction_id');
+            $criteria->addSelectColumn($alias . '.designation');
+            $criteria->addSelectColumn($alias . '.description');
         }
     }
 
@@ -402,7 +323,7 @@ class EmployeTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(EmployeTableMap::DATABASE_NAME)->getTable(EmployeTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(DirectionTableMap::DATABASE_NAME)->getTable(DirectionTableMap::TABLE_NAME);
     }
 
     /**
@@ -410,16 +331,16 @@ class EmployeTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(EmployeTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(EmployeTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new EmployeTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(DirectionTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(DirectionTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new DirectionTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Employe or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Direction or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Employe object or primary key or array of primary keys
+     * @param mixed               $values Criteria or Direction object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -430,27 +351,27 @@ class EmployeTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EmployeTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DirectionTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \App\Models\Employe) { // it's a model object
+        } elseif ($values instanceof \App\Models\Direction) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(EmployeTableMap::DATABASE_NAME);
-            $criteria->add(EmployeTableMap::COL_EMPLOYE_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(DirectionTableMap::DATABASE_NAME);
+            $criteria->add(DirectionTableMap::COL_DIRECTION_ID, (array) $values, Criteria::IN);
         }
 
-        $query = EmployeQuery::create()->mergeWith($criteria);
+        $query = DirectionQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            EmployeTableMap::clearInstancePool();
+            DirectionTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                EmployeTableMap::removeInstanceFromPool($singleval);
+                DirectionTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -458,20 +379,20 @@ class EmployeTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the employe table.
+     * Deletes all rows from the direction table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return EmployeQuery::create()->doDeleteAll($con);
+        return DirectionQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Employe or Criteria object.
+     * Performs an INSERT on the database, given a Direction or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Employe object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or Direction object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -480,22 +401,22 @@ class EmployeTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(EmployeTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DirectionTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Employe object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Direction object
         }
 
-        if ($criteria->containsKey(EmployeTableMap::COL_EMPLOYE_ID) && $criteria->keyContainsValue(EmployeTableMap::COL_EMPLOYE_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.EmployeTableMap::COL_EMPLOYE_ID.')');
+        if ($criteria->containsKey(DirectionTableMap::COL_DIRECTION_ID) && $criteria->keyContainsValue(DirectionTableMap::COL_DIRECTION_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.DirectionTableMap::COL_DIRECTION_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = EmployeQuery::create()->mergeWith($criteria);
+        $query = DirectionQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -504,7 +425,7 @@ class EmployeTableMap extends TableMap
         });
     }
 
-} // EmployeTableMap
+} // DirectionTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-EmployeTableMap::buildTableMap();
+DirectionTableMap::buildTableMap();

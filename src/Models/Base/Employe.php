@@ -5,14 +5,23 @@ namespace App\Models\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
-use App\Models\Departement as ChildDepartement;
-use App\Models\DepartementQuery as ChildDepartementQuery;
+use App\Models\Absence as ChildAbsence;
+use App\Models\AbsenceQuery as ChildAbsenceQuery;
+use App\Models\Conge as ChildConge;
+use App\Models\CongeQuery as ChildCongeQuery;
 use App\Models\Employe as ChildEmploye;
 use App\Models\EmployeQuery as ChildEmployeQuery;
 use App\Models\Pointage as ChildPointage;
 use App\Models\PointageQuery as ChildPointageQuery;
+use App\Models\Retard as ChildRetard;
+use App\Models\RetardQuery as ChildRetardQuery;
+use App\Models\Unite as ChildUnite;
+use App\Models\UniteQuery as ChildUniteQuery;
+use App\Models\Map\AbsenceTableMap;
+use App\Models\Map\CongeTableMap;
 use App\Models\Map\EmployeTableMap;
 use App\Models\Map\PointageTableMap;
+use App\Models\Map\RetardTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -83,11 +92,11 @@ abstract class Employe implements ActiveRecordInterface
     protected $ref_interne;
 
     /**
-     * The value for the departement_id field.
+     * The value for the unite_id field.
      *
      * @var        int
      */
-    protected $departement_id;
+    protected $unite_id;
 
     /**
      * The value for the nom_prenom field.
@@ -126,15 +135,41 @@ abstract class Employe implements ActiveRecordInterface
     protected $presence;
 
     /**
-     * @var        ChildDepartement
+     * The value for the status field.
+     *
+     * Note: this column has a database default value of: 1
+     * @var        int
      */
-    protected $aDepartement;
+    protected $status;
+
+    /**
+     * @var        ChildUnite
+     */
+    protected $aUnite;
+
+    /**
+     * @var        ObjectCollection|ChildAbsence[] Collection to store aggregation of ChildAbsence objects.
+     */
+    protected $collAbsences;
+    protected $collAbsencesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildConge[] Collection to store aggregation of ChildConge objects.
+     */
+    protected $collConges;
+    protected $collCongesPartial;
 
     /**
      * @var        ObjectCollection|ChildPointage[] Collection to store aggregation of ChildPointage objects.
      */
     protected $collPointages;
     protected $collPointagesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildRetard[] Collection to store aggregation of ChildRetard objects.
+     */
+    protected $collRetards;
+    protected $collRetardsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -146,9 +181,27 @@ abstract class Employe implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildAbsence[]
+     */
+    protected $absencesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildConge[]
+     */
+    protected $congesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildPointage[]
      */
     protected $pointagesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildRetard[]
+     */
+    protected $retardsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -159,6 +212,7 @@ abstract class Employe implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->presence = true;
+        $this->status = 1;
     }
 
     /**
@@ -409,13 +463,13 @@ abstract class Employe implements ActiveRecordInterface
     }
 
     /**
-     * Get the [departement_id] column value.
+     * Get the [unite_id] column value.
      *
      * @return int
      */
-    public function getDepartementId()
+    public function getUniteId()
     {
-        return $this->departement_id;
+        return $this->unite_id;
     }
 
     /**
@@ -489,6 +543,16 @@ abstract class Employe implements ActiveRecordInterface
     }
 
     /**
+     * Get the [status] column value.
+     *
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
      * Set the value of [employe_id] column.
      *
      * @param int $v New value
@@ -529,28 +593,28 @@ abstract class Employe implements ActiveRecordInterface
     } // setRefInterne()
 
     /**
-     * Set the value of [departement_id] column.
+     * Set the value of [unite_id] column.
      *
      * @param int|null $v New value
      * @return $this|\App\Models\Employe The current object (for fluent API support)
      */
-    public function setDepartementId($v)
+    public function setUniteId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->departement_id !== $v) {
-            $this->departement_id = $v;
-            $this->modifiedColumns[EmployeTableMap::COL_DEPARTEMENT_ID] = true;
+        if ($this->unite_id !== $v) {
+            $this->unite_id = $v;
+            $this->modifiedColumns[EmployeTableMap::COL_UNITE_ID] = true;
         }
 
-        if ($this->aDepartement !== null && $this->aDepartement->getDepartementId() !== $v) {
-            $this->aDepartement = null;
+        if ($this->aUnite !== null && $this->aUnite->getUniteId() !== $v) {
+            $this->aUnite = null;
         }
 
         return $this;
-    } // setDepartementId()
+    } // setUniteId()
 
     /**
      * Set the value of [nom_prenom] column.
@@ -661,6 +725,26 @@ abstract class Employe implements ActiveRecordInterface
     } // setPresence()
 
     /**
+     * Set the value of [status] column.
+     *
+     * @param int $v New value
+     * @return $this|\App\Models\Employe The current object (for fluent API support)
+     */
+    public function setStatus($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->status !== $v) {
+            $this->status = $v;
+            $this->modifiedColumns[EmployeTableMap::COL_STATUS] = true;
+        }
+
+        return $this;
+    } // setStatus()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -671,6 +755,10 @@ abstract class Employe implements ActiveRecordInterface
     public function hasOnlyDefaultValues()
     {
             if ($this->presence !== true) {
+                return false;
+            }
+
+            if ($this->status !== 1) {
                 return false;
             }
 
@@ -706,8 +794,8 @@ abstract class Employe implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EmployeTableMap::translateFieldName('RefInterne', TableMap::TYPE_PHPNAME, $indexType)];
             $this->ref_interne = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmployeTableMap::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->departement_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmployeTableMap::translateFieldName('UniteId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->unite_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmployeTableMap::translateFieldName('NomPrenom', TableMap::TYPE_PHPNAME, $indexType)];
             $this->nom_prenom = (null !== $col) ? (string) $col : null;
@@ -726,6 +814,9 @@ abstract class Employe implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmployeTableMap::translateFieldName('Presence', TableMap::TYPE_PHPNAME, $indexType)];
             $this->presence = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : EmployeTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->status = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -734,7 +825,7 @@ abstract class Employe implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = EmployeTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = EmployeTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Employe'), 0, $e);
@@ -756,8 +847,8 @@ abstract class Employe implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aDepartement !== null && $this->departement_id !== $this->aDepartement->getDepartementId()) {
-            $this->aDepartement = null;
+        if ($this->aUnite !== null && $this->unite_id !== $this->aUnite->getUniteId()) {
+            $this->aUnite = null;
         }
     } // ensureConsistency
 
@@ -798,8 +889,14 @@ abstract class Employe implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aDepartement = null;
+            $this->aUnite = null;
+            $this->collAbsences = null;
+
+            $this->collConges = null;
+
             $this->collPointages = null;
+
+            $this->collRetards = null;
 
         } // if (deep)
     }
@@ -909,11 +1006,11 @@ abstract class Employe implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aDepartement !== null) {
-                if ($this->aDepartement->isModified() || $this->aDepartement->isNew()) {
-                    $affectedRows += $this->aDepartement->save($con);
+            if ($this->aUnite !== null) {
+                if ($this->aUnite->isModified() || $this->aUnite->isNew()) {
+                    $affectedRows += $this->aUnite->save($con);
                 }
-                $this->setDepartement($this->aDepartement);
+                $this->setUnite($this->aUnite);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -927,6 +1024,40 @@ abstract class Employe implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->absencesScheduledForDeletion !== null) {
+                if (!$this->absencesScheduledForDeletion->isEmpty()) {
+                    \App\Models\AbsenceQuery::create()
+                        ->filterByPrimaryKeys($this->absencesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->absencesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collAbsences !== null) {
+                foreach ($this->collAbsences as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->congesScheduledForDeletion !== null) {
+                if (!$this->congesScheduledForDeletion->isEmpty()) {
+                    \App\Models\CongeQuery::create()
+                        ->filterByPrimaryKeys($this->congesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->congesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collConges !== null) {
+                foreach ($this->collConges as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             if ($this->pointagesScheduledForDeletion !== null) {
                 if (!$this->pointagesScheduledForDeletion->isEmpty()) {
                     \App\Models\PointageQuery::create()
@@ -938,6 +1069,23 @@ abstract class Employe implements ActiveRecordInterface
 
             if ($this->collPointages !== null) {
                 foreach ($this->collPointages as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->retardsScheduledForDeletion !== null) {
+                if (!$this->retardsScheduledForDeletion->isEmpty()) {
+                    \App\Models\RetardQuery::create()
+                        ->filterByPrimaryKeys($this->retardsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->retardsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collRetards !== null) {
+                foreach ($this->collRetards as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -976,8 +1124,8 @@ abstract class Employe implements ActiveRecordInterface
         if ($this->isColumnModified(EmployeTableMap::COL_REF_INTERNE)) {
             $modifiedColumns[':p' . $index++]  = 'ref_interne';
         }
-        if ($this->isColumnModified(EmployeTableMap::COL_DEPARTEMENT_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'departement_id';
+        if ($this->isColumnModified(EmployeTableMap::COL_UNITE_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'unite_id';
         }
         if ($this->isColumnModified(EmployeTableMap::COL_NOM_PRENOM)) {
             $modifiedColumns[':p' . $index++]  = 'nom_prenom';
@@ -993,6 +1141,9 @@ abstract class Employe implements ActiveRecordInterface
         }
         if ($this->isColumnModified(EmployeTableMap::COL_PRESENCE)) {
             $modifiedColumns[':p' . $index++]  = 'presence';
+        }
+        if ($this->isColumnModified(EmployeTableMap::COL_STATUS)) {
+            $modifiedColumns[':p' . $index++]  = 'status';
         }
 
         $sql = sprintf(
@@ -1011,8 +1162,8 @@ abstract class Employe implements ActiveRecordInterface
                     case 'ref_interne':
                         $stmt->bindValue($identifier, $this->ref_interne, PDO::PARAM_INT);
                         break;
-                    case 'departement_id':
-                        $stmt->bindValue($identifier, $this->departement_id, PDO::PARAM_INT);
+                    case 'unite_id':
+                        $stmt->bindValue($identifier, $this->unite_id, PDO::PARAM_INT);
                         break;
                     case 'nom_prenom':
                         $stmt->bindValue($identifier, $this->nom_prenom, PDO::PARAM_STR);
@@ -1028,6 +1179,9 @@ abstract class Employe implements ActiveRecordInterface
                         break;
                     case 'presence':
                         $stmt->bindValue($identifier, (int) $this->presence, PDO::PARAM_INT);
+                        break;
+                    case 'status':
+                        $stmt->bindValue($identifier, $this->status, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -1098,7 +1252,7 @@ abstract class Employe implements ActiveRecordInterface
                 return $this->getRefInterne();
                 break;
             case 2:
-                return $this->getDepartementId();
+                return $this->getUniteId();
                 break;
             case 3:
                 return $this->getNomPrenom();
@@ -1114,6 +1268,9 @@ abstract class Employe implements ActiveRecordInterface
                 break;
             case 7:
                 return $this->getPresence();
+                break;
+            case 8:
+                return $this->getStatus();
                 break;
             default:
                 return null;
@@ -1147,12 +1304,13 @@ abstract class Employe implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getEmployeId(),
             $keys[1] => $this->getRefInterne(),
-            $keys[2] => $this->getDepartementId(),
+            $keys[2] => $this->getUniteId(),
             $keys[3] => $this->getNomPrenom(),
             $keys[4] => $this->getPoste(),
             $keys[5] => $this->getGenre(),
             $keys[6] => $this->getDateEmbauche(),
             $keys[7] => $this->getPresence(),
+            $keys[8] => $this->getStatus(),
         );
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
@@ -1164,20 +1322,50 @@ abstract class Employe implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aDepartement) {
+            if (null !== $this->aUnite) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'departement';
+                        $key = 'unite';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'departement';
+                        $key = 'unite';
                         break;
                     default:
-                        $key = 'Departement';
+                        $key = 'Unite';
                 }
 
-                $result[$key] = $this->aDepartement->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aUnite->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collAbsences) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'absences';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'absences';
+                        break;
+                    default:
+                        $key = 'Absences';
+                }
+
+                $result[$key] = $this->collAbsences->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collConges) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'conges';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'conges';
+                        break;
+                    default:
+                        $key = 'Conges';
+                }
+
+                $result[$key] = $this->collConges->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collPointages) {
 
@@ -1193,6 +1381,21 @@ abstract class Employe implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collPointages->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collRetards) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'retards';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'retards';
+                        break;
+                    default:
+                        $key = 'Retards';
+                }
+
+                $result[$key] = $this->collRetards->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1235,7 +1438,7 @@ abstract class Employe implements ActiveRecordInterface
                 $this->setRefInterne($value);
                 break;
             case 2:
-                $this->setDepartementId($value);
+                $this->setUniteId($value);
                 break;
             case 3:
                 $this->setNomPrenom($value);
@@ -1251,6 +1454,9 @@ abstract class Employe implements ActiveRecordInterface
                 break;
             case 7:
                 $this->setPresence($value);
+                break;
+            case 8:
+                $this->setStatus($value);
                 break;
         } // switch()
 
@@ -1285,7 +1491,7 @@ abstract class Employe implements ActiveRecordInterface
             $this->setRefInterne($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setDepartementId($arr[$keys[2]]);
+            $this->setUniteId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setNomPrenom($arr[$keys[3]]);
@@ -1301,6 +1507,9 @@ abstract class Employe implements ActiveRecordInterface
         }
         if (array_key_exists($keys[7], $arr)) {
             $this->setPresence($arr[$keys[7]]);
+        }
+        if (array_key_exists($keys[8], $arr)) {
+            $this->setStatus($arr[$keys[8]]);
         }
     }
 
@@ -1349,8 +1558,8 @@ abstract class Employe implements ActiveRecordInterface
         if ($this->isColumnModified(EmployeTableMap::COL_REF_INTERNE)) {
             $criteria->add(EmployeTableMap::COL_REF_INTERNE, $this->ref_interne);
         }
-        if ($this->isColumnModified(EmployeTableMap::COL_DEPARTEMENT_ID)) {
-            $criteria->add(EmployeTableMap::COL_DEPARTEMENT_ID, $this->departement_id);
+        if ($this->isColumnModified(EmployeTableMap::COL_UNITE_ID)) {
+            $criteria->add(EmployeTableMap::COL_UNITE_ID, $this->unite_id);
         }
         if ($this->isColumnModified(EmployeTableMap::COL_NOM_PRENOM)) {
             $criteria->add(EmployeTableMap::COL_NOM_PRENOM, $this->nom_prenom);
@@ -1366,6 +1575,9 @@ abstract class Employe implements ActiveRecordInterface
         }
         if ($this->isColumnModified(EmployeTableMap::COL_PRESENCE)) {
             $criteria->add(EmployeTableMap::COL_PRESENCE, $this->presence);
+        }
+        if ($this->isColumnModified(EmployeTableMap::COL_STATUS)) {
+            $criteria->add(EmployeTableMap::COL_STATUS, $this->status);
         }
 
         return $criteria;
@@ -1454,21 +1666,40 @@ abstract class Employe implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setRefInterne($this->getRefInterne());
-        $copyObj->setDepartementId($this->getDepartementId());
+        $copyObj->setUniteId($this->getUniteId());
         $copyObj->setNomPrenom($this->getNomPrenom());
         $copyObj->setPoste($this->getPoste());
         $copyObj->setGenre($this->getGenre());
         $copyObj->setDateEmbauche($this->getDateEmbauche());
         $copyObj->setPresence($this->getPresence());
+        $copyObj->setStatus($this->getStatus());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
+            foreach ($this->getAbsences() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addAbsence($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getConges() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addConge($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getPointages() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addPointage($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getRetards() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addRetard($relObj->copy($deepCopy));
                 }
             }
 
@@ -1503,24 +1734,24 @@ abstract class Employe implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildDepartement object.
+     * Declares an association between this object and a ChildUnite object.
      *
-     * @param  ChildDepartement $v
+     * @param  ChildUnite $v
      * @return $this|\App\Models\Employe The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setDepartement(ChildDepartement $v = null)
+    public function setUnite(ChildUnite $v = null)
     {
         if ($v === null) {
-            $this->setDepartementId(NULL);
+            $this->setUniteId(NULL);
         } else {
-            $this->setDepartementId($v->getDepartementId());
+            $this->setUniteId($v->getUniteId());
         }
 
-        $this->aDepartement = $v;
+        $this->aUnite = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildDepartement object, it will not be re-added.
+        // If this object has already been added to the ChildUnite object, it will not be re-added.
         if ($v !== null) {
             $v->addEmploye($this);
         }
@@ -1531,26 +1762,26 @@ abstract class Employe implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildDepartement object
+     * Get the associated ChildUnite object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildDepartement The associated ChildDepartement object.
+     * @return ChildUnite The associated ChildUnite object.
      * @throws PropelException
      */
-    public function getDepartement(ConnectionInterface $con = null)
+    public function getUnite(ConnectionInterface $con = null)
     {
-        if ($this->aDepartement === null && ($this->departement_id != 0)) {
-            $this->aDepartement = ChildDepartementQuery::create()->findPk($this->departement_id, $con);
+        if ($this->aUnite === null && ($this->unite_id != 0)) {
+            $this->aUnite = ChildUniteQuery::create()->findPk($this->unite_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aDepartement->addEmployes($this);
+                $this->aUnite->addEmployes($this);
              */
         }
 
-        return $this->aDepartement;
+        return $this->aUnite;
     }
 
 
@@ -1564,10 +1795,490 @@ abstract class Employe implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('Absence' === $relationName) {
+            $this->initAbsences();
+            return;
+        }
+        if ('Conge' === $relationName) {
+            $this->initConges();
+            return;
+        }
         if ('Pointage' === $relationName) {
             $this->initPointages();
             return;
         }
+        if ('Retard' === $relationName) {
+            $this->initRetards();
+            return;
+        }
+    }
+
+    /**
+     * Clears out the collAbsences collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addAbsences()
+     */
+    public function clearAbsences()
+    {
+        $this->collAbsences = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collAbsences collection loaded partially.
+     */
+    public function resetPartialAbsences($v = true)
+    {
+        $this->collAbsencesPartial = $v;
+    }
+
+    /**
+     * Initializes the collAbsences collection.
+     *
+     * By default this just sets the collAbsences collection to an empty array (like clearcollAbsences());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initAbsences($overrideExisting = true)
+    {
+        if (null !== $this->collAbsences && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = AbsenceTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collAbsences = new $collectionClassName;
+        $this->collAbsences->setModel('\App\Models\Absence');
+    }
+
+    /**
+     * Gets an array of ChildAbsence objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildEmploye is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildAbsence[] List of ChildAbsence objects
+     * @throws PropelException
+     */
+    public function getAbsences(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAbsencesPartial && !$this->isNew();
+        if (null === $this->collAbsences || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collAbsences) {
+                    $this->initAbsences();
+                } else {
+                    $collectionClassName = AbsenceTableMap::getTableMap()->getCollectionClassName();
+
+                    $collAbsences = new $collectionClassName;
+                    $collAbsences->setModel('\App\Models\Absence');
+
+                    return $collAbsences;
+                }
+            } else {
+                $collAbsences = ChildAbsenceQuery::create(null, $criteria)
+                    ->filterByEmploye($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collAbsencesPartial && count($collAbsences)) {
+                        $this->initAbsences(false);
+
+                        foreach ($collAbsences as $obj) {
+                            if (false == $this->collAbsences->contains($obj)) {
+                                $this->collAbsences->append($obj);
+                            }
+                        }
+
+                        $this->collAbsencesPartial = true;
+                    }
+
+                    return $collAbsences;
+                }
+
+                if ($partial && $this->collAbsences) {
+                    foreach ($this->collAbsences as $obj) {
+                        if ($obj->isNew()) {
+                            $collAbsences[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collAbsences = $collAbsences;
+                $this->collAbsencesPartial = false;
+            }
+        }
+
+        return $this->collAbsences;
+    }
+
+    /**
+     * Sets a collection of ChildAbsence objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $absences A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function setAbsences(Collection $absences, ConnectionInterface $con = null)
+    {
+        /** @var ChildAbsence[] $absencesToDelete */
+        $absencesToDelete = $this->getAbsences(new Criteria(), $con)->diff($absences);
+
+
+        $this->absencesScheduledForDeletion = $absencesToDelete;
+
+        foreach ($absencesToDelete as $absenceRemoved) {
+            $absenceRemoved->setEmploye(null);
+        }
+
+        $this->collAbsences = null;
+        foreach ($absences as $absence) {
+            $this->addAbsence($absence);
+        }
+
+        $this->collAbsences = $absences;
+        $this->collAbsencesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Absence objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Absence objects.
+     * @throws PropelException
+     */
+    public function countAbsences(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAbsencesPartial && !$this->isNew();
+        if (null === $this->collAbsences || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collAbsences) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getAbsences());
+            }
+
+            $query = ChildAbsenceQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByEmploye($this)
+                ->count($con);
+        }
+
+        return count($this->collAbsences);
+    }
+
+    /**
+     * Method called to associate a ChildAbsence object to this object
+     * through the ChildAbsence foreign key attribute.
+     *
+     * @param  ChildAbsence $l ChildAbsence
+     * @return $this|\App\Models\Employe The current object (for fluent API support)
+     */
+    public function addAbsence(ChildAbsence $l)
+    {
+        if ($this->collAbsences === null) {
+            $this->initAbsences();
+            $this->collAbsencesPartial = true;
+        }
+
+        if (!$this->collAbsences->contains($l)) {
+            $this->doAddAbsence($l);
+
+            if ($this->absencesScheduledForDeletion and $this->absencesScheduledForDeletion->contains($l)) {
+                $this->absencesScheduledForDeletion->remove($this->absencesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildAbsence $absence The ChildAbsence object to add.
+     */
+    protected function doAddAbsence(ChildAbsence $absence)
+    {
+        $this->collAbsences[]= $absence;
+        $absence->setEmploye($this);
+    }
+
+    /**
+     * @param  ChildAbsence $absence The ChildAbsence object to remove.
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function removeAbsence(ChildAbsence $absence)
+    {
+        if ($this->getAbsences()->contains($absence)) {
+            $pos = $this->collAbsences->search($absence);
+            $this->collAbsences->remove($pos);
+            if (null === $this->absencesScheduledForDeletion) {
+                $this->absencesScheduledForDeletion = clone $this->collAbsences;
+                $this->absencesScheduledForDeletion->clear();
+            }
+            $this->absencesScheduledForDeletion[]= clone $absence;
+            $absence->setEmploye(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collConges collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addConges()
+     */
+    public function clearConges()
+    {
+        $this->collConges = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collConges collection loaded partially.
+     */
+    public function resetPartialConges($v = true)
+    {
+        $this->collCongesPartial = $v;
+    }
+
+    /**
+     * Initializes the collConges collection.
+     *
+     * By default this just sets the collConges collection to an empty array (like clearcollConges());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initConges($overrideExisting = true)
+    {
+        if (null !== $this->collConges && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = CongeTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collConges = new $collectionClassName;
+        $this->collConges->setModel('\App\Models\Conge');
+    }
+
+    /**
+     * Gets an array of ChildConge objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildEmploye is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildConge[] List of ChildConge objects
+     * @throws PropelException
+     */
+    public function getConges(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collCongesPartial && !$this->isNew();
+        if (null === $this->collConges || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collConges) {
+                    $this->initConges();
+                } else {
+                    $collectionClassName = CongeTableMap::getTableMap()->getCollectionClassName();
+
+                    $collConges = new $collectionClassName;
+                    $collConges->setModel('\App\Models\Conge');
+
+                    return $collConges;
+                }
+            } else {
+                $collConges = ChildCongeQuery::create(null, $criteria)
+                    ->filterByEmploye($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collCongesPartial && count($collConges)) {
+                        $this->initConges(false);
+
+                        foreach ($collConges as $obj) {
+                            if (false == $this->collConges->contains($obj)) {
+                                $this->collConges->append($obj);
+                            }
+                        }
+
+                        $this->collCongesPartial = true;
+                    }
+
+                    return $collConges;
+                }
+
+                if ($partial && $this->collConges) {
+                    foreach ($this->collConges as $obj) {
+                        if ($obj->isNew()) {
+                            $collConges[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collConges = $collConges;
+                $this->collCongesPartial = false;
+            }
+        }
+
+        return $this->collConges;
+    }
+
+    /**
+     * Sets a collection of ChildConge objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $conges A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function setConges(Collection $conges, ConnectionInterface $con = null)
+    {
+        /** @var ChildConge[] $congesToDelete */
+        $congesToDelete = $this->getConges(new Criteria(), $con)->diff($conges);
+
+
+        $this->congesScheduledForDeletion = $congesToDelete;
+
+        foreach ($congesToDelete as $congeRemoved) {
+            $congeRemoved->setEmploye(null);
+        }
+
+        $this->collConges = null;
+        foreach ($conges as $conge) {
+            $this->addConge($conge);
+        }
+
+        $this->collConges = $conges;
+        $this->collCongesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Conge objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Conge objects.
+     * @throws PropelException
+     */
+    public function countConges(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collCongesPartial && !$this->isNew();
+        if (null === $this->collConges || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collConges) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getConges());
+            }
+
+            $query = ChildCongeQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByEmploye($this)
+                ->count($con);
+        }
+
+        return count($this->collConges);
+    }
+
+    /**
+     * Method called to associate a ChildConge object to this object
+     * through the ChildConge foreign key attribute.
+     *
+     * @param  ChildConge $l ChildConge
+     * @return $this|\App\Models\Employe The current object (for fluent API support)
+     */
+    public function addConge(ChildConge $l)
+    {
+        if ($this->collConges === null) {
+            $this->initConges();
+            $this->collCongesPartial = true;
+        }
+
+        if (!$this->collConges->contains($l)) {
+            $this->doAddConge($l);
+
+            if ($this->congesScheduledForDeletion and $this->congesScheduledForDeletion->contains($l)) {
+                $this->congesScheduledForDeletion->remove($this->congesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildConge $conge The ChildConge object to add.
+     */
+    protected function doAddConge(ChildConge $conge)
+    {
+        $this->collConges[]= $conge;
+        $conge->setEmploye($this);
+    }
+
+    /**
+     * @param  ChildConge $conge The ChildConge object to remove.
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function removeConge(ChildConge $conge)
+    {
+        if ($this->getConges()->contains($conge)) {
+            $pos = $this->collConges->search($conge);
+            $this->collConges->remove($pos);
+            if (null === $this->congesScheduledForDeletion) {
+                $this->congesScheduledForDeletion = clone $this->collConges;
+                $this->congesScheduledForDeletion->clear();
+            }
+            $this->congesScheduledForDeletion[]= clone $conge;
+            $conge->setEmploye(null);
+        }
+
+        return $this;
     }
 
     /**
@@ -1805,23 +2516,258 @@ abstract class Employe implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collRetards collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addRetards()
+     */
+    public function clearRetards()
+    {
+        $this->collRetards = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collRetards collection loaded partially.
+     */
+    public function resetPartialRetards($v = true)
+    {
+        $this->collRetardsPartial = $v;
+    }
+
+    /**
+     * Initializes the collRetards collection.
+     *
+     * By default this just sets the collRetards collection to an empty array (like clearcollRetards());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initRetards($overrideExisting = true)
+    {
+        if (null !== $this->collRetards && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = RetardTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collRetards = new $collectionClassName;
+        $this->collRetards->setModel('\App\Models\Retard');
+    }
+
+    /**
+     * Gets an array of ChildRetard objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildEmploye is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildRetard[] List of ChildRetard objects
+     * @throws PropelException
+     */
+    public function getRetards(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRetardsPartial && !$this->isNew();
+        if (null === $this->collRetards || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collRetards) {
+                    $this->initRetards();
+                } else {
+                    $collectionClassName = RetardTableMap::getTableMap()->getCollectionClassName();
+
+                    $collRetards = new $collectionClassName;
+                    $collRetards->setModel('\App\Models\Retard');
+
+                    return $collRetards;
+                }
+            } else {
+                $collRetards = ChildRetardQuery::create(null, $criteria)
+                    ->filterByEmploye($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collRetardsPartial && count($collRetards)) {
+                        $this->initRetards(false);
+
+                        foreach ($collRetards as $obj) {
+                            if (false == $this->collRetards->contains($obj)) {
+                                $this->collRetards->append($obj);
+                            }
+                        }
+
+                        $this->collRetardsPartial = true;
+                    }
+
+                    return $collRetards;
+                }
+
+                if ($partial && $this->collRetards) {
+                    foreach ($this->collRetards as $obj) {
+                        if ($obj->isNew()) {
+                            $collRetards[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collRetards = $collRetards;
+                $this->collRetardsPartial = false;
+            }
+        }
+
+        return $this->collRetards;
+    }
+
+    /**
+     * Sets a collection of ChildRetard objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $retards A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function setRetards(Collection $retards, ConnectionInterface $con = null)
+    {
+        /** @var ChildRetard[] $retardsToDelete */
+        $retardsToDelete = $this->getRetards(new Criteria(), $con)->diff($retards);
+
+
+        $this->retardsScheduledForDeletion = $retardsToDelete;
+
+        foreach ($retardsToDelete as $retardRemoved) {
+            $retardRemoved->setEmploye(null);
+        }
+
+        $this->collRetards = null;
+        foreach ($retards as $retard) {
+            $this->addRetard($retard);
+        }
+
+        $this->collRetards = $retards;
+        $this->collRetardsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Retard objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Retard objects.
+     * @throws PropelException
+     */
+    public function countRetards(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collRetardsPartial && !$this->isNew();
+        if (null === $this->collRetards || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRetards) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getRetards());
+            }
+
+            $query = ChildRetardQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByEmploye($this)
+                ->count($con);
+        }
+
+        return count($this->collRetards);
+    }
+
+    /**
+     * Method called to associate a ChildRetard object to this object
+     * through the ChildRetard foreign key attribute.
+     *
+     * @param  ChildRetard $l ChildRetard
+     * @return $this|\App\Models\Employe The current object (for fluent API support)
+     */
+    public function addRetard(ChildRetard $l)
+    {
+        if ($this->collRetards === null) {
+            $this->initRetards();
+            $this->collRetardsPartial = true;
+        }
+
+        if (!$this->collRetards->contains($l)) {
+            $this->doAddRetard($l);
+
+            if ($this->retardsScheduledForDeletion and $this->retardsScheduledForDeletion->contains($l)) {
+                $this->retardsScheduledForDeletion->remove($this->retardsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildRetard $retard The ChildRetard object to add.
+     */
+    protected function doAddRetard(ChildRetard $retard)
+    {
+        $this->collRetards[]= $retard;
+        $retard->setEmploye($this);
+    }
+
+    /**
+     * @param  ChildRetard $retard The ChildRetard object to remove.
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function removeRetard(ChildRetard $retard)
+    {
+        if ($this->getRetards()->contains($retard)) {
+            $pos = $this->collRetards->search($retard);
+            $this->collRetards->remove($pos);
+            if (null === $this->retardsScheduledForDeletion) {
+                $this->retardsScheduledForDeletion = clone $this->collRetards;
+                $this->retardsScheduledForDeletion->clear();
+            }
+            $this->retardsScheduledForDeletion[]= clone $retard;
+            $retard->setEmploye(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aDepartement) {
-            $this->aDepartement->removeEmploye($this);
+        if (null !== $this->aUnite) {
+            $this->aUnite->removeEmploye($this);
         }
         $this->employe_id = null;
         $this->ref_interne = null;
-        $this->departement_id = null;
+        $this->unite_id = null;
         $this->nom_prenom = null;
         $this->poste = null;
         $this->genre = null;
         $this->date_embauche = null;
         $this->presence = null;
+        $this->status = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1841,15 +2787,33 @@ abstract class Employe implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collAbsences) {
+                foreach ($this->collAbsences as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collConges) {
+                foreach ($this->collConges as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collPointages) {
                 foreach ($this->collPointages as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collRetards) {
+                foreach ($this->collRetards as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collAbsences = null;
+        $this->collConges = null;
         $this->collPointages = null;
-        $this->aDepartement = null;
+        $this->collRetards = null;
+        $this->aUnite = null;
     }
 
     /**
