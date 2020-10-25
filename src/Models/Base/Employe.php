@@ -2,6 +2,7 @@
 
 namespace App\Models\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use App\Models\Departement as ChildDepartement;
@@ -24,6 +25,7 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
  * Base class that represents a row from the 'employe' table.
@@ -74,13 +76,6 @@ abstract class Employe implements ActiveRecordInterface
     protected $employe_id;
 
     /**
-     * The value for the employe_pointage_id field.
-     *
-     * @var        int
-     */
-    protected $employe_pointage_id;
-
-    /**
      * The value for the ref_interne field.
      *
      * @var        int
@@ -116,6 +111,21 @@ abstract class Employe implements ActiveRecordInterface
     protected $genre;
 
     /**
+     * The value for the date_embauche field.
+     *
+     * @var        DateTime
+     */
+    protected $date_embauche;
+
+    /**
+     * The value for the presence field.
+     *
+     * Note: this column has a database default value of: true
+     * @var        boolean
+     */
+    protected $presence;
+
+    /**
      * @var        ChildDepartement
      */
     protected $aDepartement;
@@ -141,10 +151,23 @@ abstract class Employe implements ActiveRecordInterface
     protected $pointagesScheduledForDeletion = null;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->presence = true;
+    }
+
+    /**
      * Initializes internal state of App\Models\Base\Employe object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -376,16 +399,6 @@ abstract class Employe implements ActiveRecordInterface
     }
 
     /**
-     * Get the [employe_pointage_id] column value.
-     *
-     * @return int
-     */
-    public function getEmployePointageId()
-    {
-        return $this->employe_pointage_id;
-    }
-
-    /**
      * Get the [ref_interne] column value.
      *
      * @return int
@@ -436,6 +449,46 @@ abstract class Employe implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [date_embauche] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getDateEmbauche($format = NULL)
+    {
+        if ($format === null) {
+            return $this->date_embauche;
+        } else {
+            return $this->date_embauche instanceof \DateTimeInterface ? $this->date_embauche->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [presence] column value.
+     *
+     * @return boolean
+     */
+    public function getPresence()
+    {
+        return $this->presence;
+    }
+
+    /**
+     * Get the [presence] column value.
+     *
+     * @return boolean
+     */
+    public function isPresence()
+    {
+        return $this->getPresence();
+    }
+
+    /**
      * Set the value of [employe_id] column.
      *
      * @param int $v New value
@@ -454,26 +507,6 @@ abstract class Employe implements ActiveRecordInterface
 
         return $this;
     } // setEmployeId()
-
-    /**
-     * Set the value of [employe_pointage_id] column.
-     *
-     * @param int|null $v New value
-     * @return $this|\App\Models\Employe The current object (for fluent API support)
-     */
-    public function setEmployePointageId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->employe_pointage_id !== $v) {
-            $this->employe_pointage_id = $v;
-            $this->modifiedColumns[EmployeTableMap::COL_EMPLOYE_POINTAGE_ID] = true;
-        }
-
-        return $this;
-    } // setEmployePointageId()
 
     /**
      * Set the value of [ref_interne] column.
@@ -580,6 +613,54 @@ abstract class Employe implements ActiveRecordInterface
     } // setGenre()
 
     /**
+     * Sets the value of [date_embauche] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\App\Models\Employe The current object (for fluent API support)
+     */
+    public function setDateEmbauche($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->date_embauche !== null || $dt !== null) {
+            if ($this->date_embauche === null || $dt === null || $dt->format("Y-m-d") !== $this->date_embauche->format("Y-m-d")) {
+                $this->date_embauche = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[EmployeTableMap::COL_DATE_EMBAUCHE] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setDateEmbauche()
+
+    /**
+     * Sets the value of the [presence] column.
+     * Non-boolean arguments are converted using the following rules:
+     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     *
+     * @param  boolean|integer|string $v The new value
+     * @return $this|\App\Models\Employe The current object (for fluent API support)
+     */
+    public function setPresence($v)
+    {
+        if ($v !== null) {
+            if (is_string($v)) {
+                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+            } else {
+                $v = (boolean) $v;
+            }
+        }
+
+        if ($this->presence !== $v) {
+            $this->presence = $v;
+            $this->modifiedColumns[EmployeTableMap::COL_PRESENCE] = true;
+        }
+
+        return $this;
+    } // setPresence()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -589,6 +670,10 @@ abstract class Employe implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->presence !== true) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -618,23 +703,29 @@ abstract class Employe implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : EmployeTableMap::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->employe_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EmployeTableMap::translateFieldName('EmployePointageId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->employe_pointage_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmployeTableMap::translateFieldName('RefInterne', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : EmployeTableMap::translateFieldName('RefInterne', TableMap::TYPE_PHPNAME, $indexType)];
             $this->ref_interne = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmployeTableMap::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : EmployeTableMap::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->departement_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmployeTableMap::translateFieldName('NomPrenom', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : EmployeTableMap::translateFieldName('NomPrenom', TableMap::TYPE_PHPNAME, $indexType)];
             $this->nom_prenom = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmployeTableMap::translateFieldName('Poste', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : EmployeTableMap::translateFieldName('Poste', TableMap::TYPE_PHPNAME, $indexType)];
             $this->poste = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EmployeTableMap::translateFieldName('Genre', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : EmployeTableMap::translateFieldName('Genre', TableMap::TYPE_PHPNAME, $indexType)];
             $this->genre = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : EmployeTableMap::translateFieldName('DateEmbauche', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00') {
+                $col = null;
+            }
+            $this->date_embauche = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmployeTableMap::translateFieldName('Presence', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->presence = (null !== $col) ? (boolean) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -643,7 +734,7 @@ abstract class Employe implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = EmployeTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = EmployeTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Employe'), 0, $e);
@@ -882,9 +973,6 @@ abstract class Employe implements ActiveRecordInterface
         if ($this->isColumnModified(EmployeTableMap::COL_EMPLOYE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'employe_id';
         }
-        if ($this->isColumnModified(EmployeTableMap::COL_EMPLOYE_POINTAGE_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'employe_pointage_id';
-        }
         if ($this->isColumnModified(EmployeTableMap::COL_REF_INTERNE)) {
             $modifiedColumns[':p' . $index++]  = 'ref_interne';
         }
@@ -900,6 +988,12 @@ abstract class Employe implements ActiveRecordInterface
         if ($this->isColumnModified(EmployeTableMap::COL_GENRE)) {
             $modifiedColumns[':p' . $index++]  = 'genre';
         }
+        if ($this->isColumnModified(EmployeTableMap::COL_DATE_EMBAUCHE)) {
+            $modifiedColumns[':p' . $index++]  = 'date_embauche';
+        }
+        if ($this->isColumnModified(EmployeTableMap::COL_PRESENCE)) {
+            $modifiedColumns[':p' . $index++]  = 'presence';
+        }
 
         $sql = sprintf(
             'INSERT INTO employe (%s) VALUES (%s)',
@@ -913,9 +1007,6 @@ abstract class Employe implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'employe_id':
                         $stmt->bindValue($identifier, $this->employe_id, PDO::PARAM_INT);
-                        break;
-                    case 'employe_pointage_id':
-                        $stmt->bindValue($identifier, $this->employe_pointage_id, PDO::PARAM_INT);
                         break;
                     case 'ref_interne':
                         $stmt->bindValue($identifier, $this->ref_interne, PDO::PARAM_INT);
@@ -931,6 +1022,12 @@ abstract class Employe implements ActiveRecordInterface
                         break;
                     case 'genre':
                         $stmt->bindValue($identifier, $this->genre, PDO::PARAM_STR);
+                        break;
+                    case 'date_embauche':
+                        $stmt->bindValue($identifier, $this->date_embauche ? $this->date_embauche->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'presence':
+                        $stmt->bindValue($identifier, (int) $this->presence, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -998,22 +1095,25 @@ abstract class Employe implements ActiveRecordInterface
                 return $this->getEmployeId();
                 break;
             case 1:
-                return $this->getEmployePointageId();
-                break;
-            case 2:
                 return $this->getRefInterne();
                 break;
-            case 3:
+            case 2:
                 return $this->getDepartementId();
                 break;
-            case 4:
+            case 3:
                 return $this->getNomPrenom();
                 break;
-            case 5:
+            case 4:
                 return $this->getPoste();
                 break;
-            case 6:
+            case 5:
                 return $this->getGenre();
+                break;
+            case 6:
+                return $this->getDateEmbauche();
+                break;
+            case 7:
+                return $this->getPresence();
                 break;
             default:
                 return null;
@@ -1046,13 +1146,18 @@ abstract class Employe implements ActiveRecordInterface
         $keys = EmployeTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getEmployeId(),
-            $keys[1] => $this->getEmployePointageId(),
-            $keys[2] => $this->getRefInterne(),
-            $keys[3] => $this->getDepartementId(),
-            $keys[4] => $this->getNomPrenom(),
-            $keys[5] => $this->getPoste(),
-            $keys[6] => $this->getGenre(),
+            $keys[1] => $this->getRefInterne(),
+            $keys[2] => $this->getDepartementId(),
+            $keys[3] => $this->getNomPrenom(),
+            $keys[4] => $this->getPoste(),
+            $keys[5] => $this->getGenre(),
+            $keys[6] => $this->getDateEmbauche(),
+            $keys[7] => $this->getPresence(),
         );
+        if ($result[$keys[6]] instanceof \DateTimeInterface) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -1127,22 +1232,25 @@ abstract class Employe implements ActiveRecordInterface
                 $this->setEmployeId($value);
                 break;
             case 1:
-                $this->setEmployePointageId($value);
-                break;
-            case 2:
                 $this->setRefInterne($value);
                 break;
-            case 3:
+            case 2:
                 $this->setDepartementId($value);
                 break;
-            case 4:
+            case 3:
                 $this->setNomPrenom($value);
                 break;
-            case 5:
+            case 4:
                 $this->setPoste($value);
                 break;
-            case 6:
+            case 5:
                 $this->setGenre($value);
+                break;
+            case 6:
+                $this->setDateEmbauche($value);
+                break;
+            case 7:
+                $this->setPresence($value);
                 break;
         } // switch()
 
@@ -1174,22 +1282,25 @@ abstract class Employe implements ActiveRecordInterface
             $this->setEmployeId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setEmployePointageId($arr[$keys[1]]);
+            $this->setRefInterne($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setRefInterne($arr[$keys[2]]);
+            $this->setDepartementId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setDepartementId($arr[$keys[3]]);
+            $this->setNomPrenom($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setNomPrenom($arr[$keys[4]]);
+            $this->setPoste($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setPoste($arr[$keys[5]]);
+            $this->setGenre($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setGenre($arr[$keys[6]]);
+            $this->setDateEmbauche($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setPresence($arr[$keys[7]]);
         }
     }
 
@@ -1235,9 +1346,6 @@ abstract class Employe implements ActiveRecordInterface
         if ($this->isColumnModified(EmployeTableMap::COL_EMPLOYE_ID)) {
             $criteria->add(EmployeTableMap::COL_EMPLOYE_ID, $this->employe_id);
         }
-        if ($this->isColumnModified(EmployeTableMap::COL_EMPLOYE_POINTAGE_ID)) {
-            $criteria->add(EmployeTableMap::COL_EMPLOYE_POINTAGE_ID, $this->employe_pointage_id);
-        }
         if ($this->isColumnModified(EmployeTableMap::COL_REF_INTERNE)) {
             $criteria->add(EmployeTableMap::COL_REF_INTERNE, $this->ref_interne);
         }
@@ -1252,6 +1360,12 @@ abstract class Employe implements ActiveRecordInterface
         }
         if ($this->isColumnModified(EmployeTableMap::COL_GENRE)) {
             $criteria->add(EmployeTableMap::COL_GENRE, $this->genre);
+        }
+        if ($this->isColumnModified(EmployeTableMap::COL_DATE_EMBAUCHE)) {
+            $criteria->add(EmployeTableMap::COL_DATE_EMBAUCHE, $this->date_embauche);
+        }
+        if ($this->isColumnModified(EmployeTableMap::COL_PRESENCE)) {
+            $criteria->add(EmployeTableMap::COL_PRESENCE, $this->presence);
         }
 
         return $criteria;
@@ -1339,12 +1453,13 @@ abstract class Employe implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setEmployePointageId($this->getEmployePointageId());
         $copyObj->setRefInterne($this->getRefInterne());
         $copyObj->setDepartementId($this->getDepartementId());
         $copyObj->setNomPrenom($this->getNomPrenom());
         $copyObj->setPoste($this->getPoste());
         $copyObj->setGenre($this->getGenre());
+        $copyObj->setDateEmbauche($this->getDateEmbauche());
+        $copyObj->setPresence($this->getPresence());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1700,14 +1815,16 @@ abstract class Employe implements ActiveRecordInterface
             $this->aDepartement->removeEmploye($this);
         }
         $this->employe_id = null;
-        $this->employe_pointage_id = null;
         $this->ref_interne = null;
         $this->departement_id = null;
         $this->nom_prenom = null;
         $this->poste = null;
         $this->genre = null;
+        $this->date_embauche = null;
+        $this->presence = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);

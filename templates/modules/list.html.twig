@@ -1,0 +1,114 @@
+<div class="card-body table-responsive p-0">
+	<table class="table table-hover text-nowrap table-sm">
+		<tr>
+			{% for key in keyText  %}
+				<th>
+					{{key}}
+				</th>
+			{% endfor %}
+			<th></th>
+		</tr>
+
+		{% for result in  results[target ~"s"] %}
+			<tr>
+				{% for key in keys  %}
+					<td>
+							<a class="text-dark" style="font-weight: 300;" {% if actionLink['pagedetail'] is not null %} href="{{path(actionLink['pagedetail'],{id:result[target_id]})}}" {% else %} href="#" {% endif %}>
+								{% if "+03:00" in result[key] and result[key]|length == 25 %}
+									{{ result[key]|date('d-M-Y') }}
+								{% elseif key == "osc_name" and result["osc_id"] is defined %}
+									<a href="{{path('osc-detail',{id:result["osc_id"]})}}">{{result[key]}}</a>
+								{% else %}
+									{{ result[key]|slice(0, 45) ~ ' ' }}
+								{% endif %}
+
+							</a>
+					</td>
+				{% endfor %}
+				{% if oldparamsArray["no_action"] is not defined %}
+					<td>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default">
+								<a href="{{actionLink['pageedit']}}">
+									<i class="fas fa-edit"></i>
+								</a>
+							</button>
+							<form method="POST" action="{{actionLink['pagedelete']}}" onsubmit="return confirm('Cette action supprimera tous les données relatives à ce donnée')">
+								<input type="hidden" name="_method" value="DELETE">
+								<input type="hidden" name="mode" value="{{mode}}">
+								<input type="hidden" name="_token" value="{{csrf_token(result[target_id])}}">
+								<button type="submit" class="btn btn-danger">
+									<i class="fas fa-trash text-light"></i>
+								</button>
+							</form>
+
+						</div>
+
+					</td>
+				{% endif %}
+
+
+			</tr>
+		{% endfor %}
+		<div class="card-footer clearfix">
+			<div class="row">
+				<div class="col-sm-6 ">
+					<a href="/target-export?{{oldparams}}" class="btn btn-default text-white bg-success">Exporter les
+																								                  données</a>
+				</div>
+				<div class="col-sm-6">
+					<ul class="pagination pagination-sm m-0 float-right">
+						{% if paginationData['actualPage'] != 1 %}
+							<li class="page-item">
+								<a class="page-link" href="/target-list?page={{1}}&{{oldparams}}">« début</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="/target-list?page={{paginationData['actualPage'] - 1}}&{{oldparams}}">précédent</a>
+							</li>
+						{% endif %}
+
+						{% set pageactive = false  %}
+						{% for i in range(1, paginationData['pagenumber']) %}
+							{% if paginationData['breakStart'] != 0 and i == paginationData['breakStart'] %}
+								{% if i == paginationData['actualPage'] %}
+									<li class="page-item bg-primary text-white">
+										<a class="page-link page-link-active" href="/target-list?page={{i}}&{{oldparams}}">{{ i }}</a>
+									</li>
+								{% endif %}
+								<li class="page-item page-link">...</li>
+							{% elseif paginationData['breakStart'] != 0 and i > paginationData['breakStart'] and i < paginationData['breakEnd'] %}
+								{% if i == paginationData['actualPage'] %}
+									<li class="page-item bg-primary text-white">
+										<a class="page-link page-link-active" href="/target-list?page={{i}}&{{oldparams}}">{{ i }}</a>
+									</li>
+								{% endif %}
+
+							{% else %}
+								<li {% if i == paginationData['actualPage'] %} class="page-item bg-primary text-white" {% else %} class="page-item" {% endif %}>
+									<a {% if i == paginationData['actualPage'] %} class="page-link page-link-active" {% else %} class="page-link" {% endif %} href="/target-list?page={{i}}&{{oldparams}}">{{ i }}</a>
+								</li>
+							{% endif %}
+
+						{% endfor %}
+						{% if paginationData['actualPage'] != paginationData['pagenumber'] %}
+							<li class="page-item">
+								<a class="page-link" href="/target-list?page={{paginationData['actualPage'] + 1}}&{{oldparams}}">suivant</a>
+							</li>
+							<li class="page-item">
+								<a class="page-link" href="/target-list?page={{paginationData['pagenumber']}}&{{oldparams}}">fin »</a>
+							</li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</table>
+
+	{% if results[target ~"s"]|length == 0 %}
+		<div class="text-center">
+			<hr>
+			<p>Aucune valeur trouvée</p>
+		</div>
+	{% endif %}
+</div>

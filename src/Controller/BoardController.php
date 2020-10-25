@@ -25,11 +25,11 @@ class BoardController extends AbstractController
         error_log("boarrrd");
         $params = $request->query->all();
         $service = new BoardService();
-        $allData = $service->getData($params);
+        // $allData = $service->getData($params);
 
         return $this->render("pages/board.html.twig",
         [
-            "data" => $allData
+            // "data" => $allData
         ]    
     );
     }

@@ -58,7 +58,7 @@ class EmployeTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /**
      * The number of lazy-loaded columns
@@ -68,17 +68,12 @@ class EmployeTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /**
      * the column name for the employe_id field
      */
     const COL_EMPLOYE_ID = 'employe.employe_id';
-
-    /**
-     * the column name for the employe_pointage_id field
-     */
-    const COL_EMPLOYE_POINTAGE_ID = 'employe.employe_pointage_id';
 
     /**
      * the column name for the ref_interne field
@@ -106,6 +101,16 @@ class EmployeTableMap extends TableMap
     const COL_GENRE = 'employe.genre';
 
     /**
+     * the column name for the date_embauche field
+     */
+    const COL_DATE_EMBAUCHE = 'employe.date_embauche';
+
+    /**
+     * the column name for the presence field
+     */
+    const COL_PRESENCE = 'employe.presence';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -117,11 +122,11 @@ class EmployeTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('EmployeId', 'EmployePointageId', 'RefInterne', 'DepartementId', 'NomPrenom', 'Poste', 'Genre', ),
-        self::TYPE_CAMELNAME     => array('employeId', 'employePointageId', 'refInterne', 'departementId', 'nomPrenom', 'poste', 'genre', ),
-        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID, EmployeTableMap::COL_EMPLOYE_POINTAGE_ID, EmployeTableMap::COL_REF_INTERNE, EmployeTableMap::COL_DEPARTEMENT_ID, EmployeTableMap::COL_NOM_PRENOM, EmployeTableMap::COL_POSTE, EmployeTableMap::COL_GENRE, ),
-        self::TYPE_FIELDNAME     => array('employe_id', 'employe_pointage_id', 'ref_interne', 'departement_id', 'nom_prenom', 'poste', 'genre', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('EmployeId', 'RefInterne', 'DepartementId', 'NomPrenom', 'Poste', 'Genre', 'DateEmbauche', 'Presence', ),
+        self::TYPE_CAMELNAME     => array('employeId', 'refInterne', 'departementId', 'nomPrenom', 'poste', 'genre', 'dateEmbauche', 'presence', ),
+        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID, EmployeTableMap::COL_REF_INTERNE, EmployeTableMap::COL_DEPARTEMENT_ID, EmployeTableMap::COL_NOM_PRENOM, EmployeTableMap::COL_POSTE, EmployeTableMap::COL_GENRE, EmployeTableMap::COL_DATE_EMBAUCHE, EmployeTableMap::COL_PRESENCE, ),
+        self::TYPE_FIELDNAME     => array('employe_id', 'ref_interne', 'departement_id', 'nom_prenom', 'poste', 'genre', 'date_embauche', 'presence', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -131,11 +136,11 @@ class EmployeTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('EmployeId' => 0, 'EmployePointageId' => 1, 'RefInterne' => 2, 'DepartementId' => 3, 'NomPrenom' => 4, 'Poste' => 5, 'Genre' => 6, ),
-        self::TYPE_CAMELNAME     => array('employeId' => 0, 'employePointageId' => 1, 'refInterne' => 2, 'departementId' => 3, 'nomPrenom' => 4, 'poste' => 5, 'genre' => 6, ),
-        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID => 0, EmployeTableMap::COL_EMPLOYE_POINTAGE_ID => 1, EmployeTableMap::COL_REF_INTERNE => 2, EmployeTableMap::COL_DEPARTEMENT_ID => 3, EmployeTableMap::COL_NOM_PRENOM => 4, EmployeTableMap::COL_POSTE => 5, EmployeTableMap::COL_GENRE => 6, ),
-        self::TYPE_FIELDNAME     => array('employe_id' => 0, 'employe_pointage_id' => 1, 'ref_interne' => 2, 'departement_id' => 3, 'nom_prenom' => 4, 'poste' => 5, 'genre' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('EmployeId' => 0, 'RefInterne' => 1, 'DepartementId' => 2, 'NomPrenom' => 3, 'Poste' => 4, 'Genre' => 5, 'DateEmbauche' => 6, 'Presence' => 7, ),
+        self::TYPE_CAMELNAME     => array('employeId' => 0, 'refInterne' => 1, 'departementId' => 2, 'nomPrenom' => 3, 'poste' => 4, 'genre' => 5, 'dateEmbauche' => 6, 'presence' => 7, ),
+        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID => 0, EmployeTableMap::COL_REF_INTERNE => 1, EmployeTableMap::COL_DEPARTEMENT_ID => 2, EmployeTableMap::COL_NOM_PRENOM => 3, EmployeTableMap::COL_POSTE => 4, EmployeTableMap::COL_GENRE => 5, EmployeTableMap::COL_DATE_EMBAUCHE => 6, EmployeTableMap::COL_PRESENCE => 7, ),
+        self::TYPE_FIELDNAME     => array('employe_id' => 0, 'ref_interne' => 1, 'departement_id' => 2, 'nom_prenom' => 3, 'poste' => 4, 'genre' => 5, 'date_embauche' => 6, 'presence' => 7, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -156,12 +161,13 @@ class EmployeTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('employe_id', 'EmployeId', 'INTEGER', true, null, null);
-        $this->addColumn('employe_pointage_id', 'EmployePointageId', 'INTEGER', false, null, null);
         $this->addColumn('ref_interne', 'RefInterne', 'INTEGER', false, null, null);
         $this->addForeignKey('departement_id', 'DepartementId', 'INTEGER', 'departement', 'departement_id', false, null, null);
         $this->addColumn('nom_prenom', 'NomPrenom', 'VARCHAR', false, 100, null);
         $this->addColumn('poste', 'Poste', 'VARCHAR', false, 100, null);
         $this->addColumn('genre', 'Genre', 'VARCHAR', false, 40, null);
+        $this->addColumn('date_embauche', 'DateEmbauche', 'DATE', false, null, null);
+        $this->addColumn('presence', 'Presence', 'BOOLEAN', false, 1, true);
     } // initialize()
 
     /**
@@ -336,20 +342,22 @@ class EmployeTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(EmployeTableMap::COL_EMPLOYE_ID);
-            $criteria->addSelectColumn(EmployeTableMap::COL_EMPLOYE_POINTAGE_ID);
             $criteria->addSelectColumn(EmployeTableMap::COL_REF_INTERNE);
             $criteria->addSelectColumn(EmployeTableMap::COL_DEPARTEMENT_ID);
             $criteria->addSelectColumn(EmployeTableMap::COL_NOM_PRENOM);
             $criteria->addSelectColumn(EmployeTableMap::COL_POSTE);
             $criteria->addSelectColumn(EmployeTableMap::COL_GENRE);
+            $criteria->addSelectColumn(EmployeTableMap::COL_DATE_EMBAUCHE);
+            $criteria->addSelectColumn(EmployeTableMap::COL_PRESENCE);
         } else {
             $criteria->addSelectColumn($alias . '.employe_id');
-            $criteria->addSelectColumn($alias . '.employe_pointage_id');
             $criteria->addSelectColumn($alias . '.ref_interne');
             $criteria->addSelectColumn($alias . '.departement_id');
             $criteria->addSelectColumn($alias . '.nom_prenom');
             $criteria->addSelectColumn($alias . '.poste');
             $criteria->addSelectColumn($alias . '.genre');
+            $criteria->addSelectColumn($alias . '.date_embauche');
+            $criteria->addSelectColumn($alias . '.presence');
         }
     }
 

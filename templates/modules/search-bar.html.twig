@@ -1,0 +1,123 @@
+<div class="row col-md-12">
+	<div class="col-md-12">
+		<h5>Utiliser des filtres
+		</h5>
+	</div>
+	<form action="{{path('target-list')}}" method="get">
+		<div class="row">
+			{% for input in searchList %}
+
+			<!-- text input -->
+			{% if input['type'] is defined %}
+			{% if input["type"] == "select" %}
+			<div class="col-sm-3">
+				<div class="form-group">
+					<select class="form-control select2 form-control-sm" style="width: 100%;" name="{{input["path"]}}">
+						<option value="">(non défini)</option>
+						{% for key in input["value"]|keys %}
+
+						<option value="{{input["value"][key]}}"
+							{% if oldparamsArray[input["path"]] is defined and oldparamsArray[input["path"]] == input["value"][key] %}
+							selected="selected" {% endif %}>{{key}}</option>
+						{% endfor %}
+
+					</select>
+				</div>
+			</div>
+			{% elseif input["type"] == "date" %}
+			<div class="col-12 row">
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label>{{input['key']}}
+							(Date min)</label>
+						<input type="date" class="form-control form-control-sm" placeholder="{{input['key']}}"
+							name="{{input['path']}}[min]" {% if oldparamsArray[input["path"]] is defined %}
+							value="{{oldparamsArray[input["path"]]["min"]}}" {% endif %}>
+					</div>
+
+				</div>
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label>{{input['key']}}
+							(Date max)</label>
+						<input type="date" class="form-control form-control-sm" placeholder="{{input['key']}}"
+							name="{{input['path']}}[max]" {% if oldparamsArray[input["path"]] is defined %}
+							value="{{oldparamsArray[input["path"]]["max"]}}" {% endif %}>
+					</div>
+				</div>
+			</div>
+			{% elseif input["type"] == "number" %}
+				<div class="col-sm-3">
+					<div class="form-group">
+
+						<input type="number" class="form-control form-control-sm" placeholder="{{input['key']}}"
+							name="{{input['path']}}" {% if oldparamsArray[input["path"]] is defined %}
+							value="{{oldparamsArray[input["path"]]}}" {% endif %}>
+					</div>
+				</div>
+			{% endif %}
+			{% else %}
+			<div class="col-sm-3">
+				<div class="form-group">
+
+					<input type="text" class="form-control form-control-sm" placeholder="{{input['key']}}"
+						name="{{input['path']}}[lk]" {% if oldparamsArray[input["path"]] is defined %}
+						value="{{oldparamsArray[input["path"]]["lk"]}}" {% endif %}>
+				</div>
+			</div>
+			{% endif %}
+
+
+			{% endfor %}
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label>Trié par : </label>
+					<select class="form-control select2 form-control-sm" style="width: 100%;" name="orderby">
+						<option value="">(Mode de triage)</option>
+						{% for key in orderby|keys %}
+
+						<option value="{{orderby[key]}}" {% if oldparamsArray["orderby"] is defined %}
+							selected="selected" {% endif %}>{{key}}</option>
+						{% endfor %}
+
+					</select>
+				</div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Nombres de resultats :
+                    </label>
+                    <select class="form-control select2 form-control-sm" style="width: 100%;" name="limit">
+                        <option value="10" {% if oldparamsArray["limit"] == 10 %} selected="selected" {% endif %}>10
+                        </option>
+                        <option value="25" {% if oldparamsArray["limit"] == 25 %} selected="selected" {% endif %}>25
+                        </option>
+                        <option value="50" {% if oldparamsArray["limit"] == 50 %} selected="selected" {% endif %}>50
+                        </option>
+                        <option value="100" {% if oldparamsArray["limit"]  == 100 %} selected="selected" {% endif %}>100
+                        </option>
+    
+    
+                    </select>
+                </div>
+            </div>
+
+			<input type="hidden" name="target" value="{{target}}">
+			{% for k in preAddparams|keys %}
+			<input type="hidden" name={{"pre_" ~ k}} value="{{preAddparams[k]}}">
+			{% endfor %}
+
+			<input type="hidden" name="search" value="1">
+			<input type="hidden" name="pagenew" value="{{actionLink['pagenew']}}">
+			<input type="hidden" name="pageedit" value="{{actionLink['pageedit']}}">
+			<input type="hidden" name="pagedelete" value="{{actionLink['pagedelete']}}">
+			<input type="hidden" name="pagedetail" value="{{actionLink['pagedetail']}}">
+			<input type="hidden" name="mode" value="{{mode}}">
+		</div>
+		<div class="col-md-3 float-left mb-3">
+			<button type="submit" class="btn btn-block btn-primary maincolor btn-sm btn-flat">Rechercher</button>
+		</div>
+
+	</form>
+
+</div>

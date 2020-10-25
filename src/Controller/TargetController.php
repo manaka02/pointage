@@ -33,13 +33,14 @@ class TargetController extends AbstractController
      */
     public function targetimport(Request $request) : Response
     {
+        $params = $request->request->all();
+
         $upload = new Upload();
         $form = $this->createForm(UploadExcelType::class, $upload);
         $form->handleRequest($request);
 
-        
-        
         if ($form->isSubmitted() && $form->isValid()) {
+
             $params = $request->request->all();
             if(!array_key_exists("target", $params)){
                 $this->addFlash("error", "Cible d'import non spécifié");
@@ -47,7 +48,7 @@ class TargetController extends AbstractController
             }
             $brochureFile = $form->get('data')->getData();
             if ($brochureFile) {
-                try {
+                // try {
                     $target = $params['target'];
                     $worksheet = $form->getData("worksheet")->getWorkSheet();
                     $uploadService = new UploadService();
@@ -62,15 +63,17 @@ class TargetController extends AbstractController
                     // $listReference = GeneralService::collectionToArray($listReference);
                     $targetData = $uploadService->importFile($brochureFile->getRealPath(), $target, $worksheet,$listReference);
                     $this->addFlash("success", "Succès de l'importation du fichier");
+                    throw new Exception("Error Processing Request", 1);
+                    
                     return $this->redirectToRoute("target-list", [
                         'target' =>$target
                     ]);
-                } catch (\Throwable $th) {
-                    $this->addFlash("error", "Une erreur est survenue lors de l'import :" . $th->getMessage());
-                }
+                // } catch (\Throwable $th) {
+                    // $this->addFlash("error", "Une erreur est survenue lors de l'import :" . $th->getMessage());
+                // }
             }
         }
-
+        throw new Exception("Error Processing Request", 1);
         return $this->redirectToRoute("target-list");
     }
 
@@ -160,6 +163,12 @@ class TargetController extends AbstractController
         if (!GeneralService::isTargetOk($params)) {
             $params["target"] = "osc";
         }
+        $preAddparams = [];
+        if (!array_key_exists("search", $params)) {
+            $preAddparams = $params;
+        } else {
+            $preAddparams = $this->getAllPreParams($params);
+        }
 
         $target = GeneralService::invokeExtension($targetname);
         $query = GeneralService::invokeExtension($targetname . "_query");
@@ -174,23 +183,8 @@ class TargetController extends AbstractController
         $keyText = !method_exists($target, "getKeyText")? $keys : $target->getKeyText($mode);
 
         $results = GeneralService::getResults($query, $params, $targetname);
-        // dump($results);
-        $pagenumber = round($results['count'] / $params['limit'], 0);
-        if ($results['count'] % $params['limit'] > 0) {
-            $pagenumber ++;
-        }
-        if ($pagenumber == 0) {
-            $pagenumber = 1;
-        }
-
-        $breakStart = 0;
-        $breakEnd = 0;
-        if ($pagenumber > 5) {
-            $breakStart = 3;
-            $breakEnd = $pagenumber - 2;
-        }
-
-
+        $paginationData = GeneralService::getPaginationParams($results['count'], $params);
+        
         $keySearch = [];
         if (method_exists($target, "getKeySearch")) {
             $keySearch = $target->getKeySearch($mode);
@@ -208,48 +202,24 @@ class TargetController extends AbstractController
                 'action' => $this->generateUrl('target-import')
         ]);
      
-        $actualPage = $params['page'];
         unset($params['page']);
 
+        $actionLink = GeneralService::configureActionLink($params,$target, $targetname);
 
-        $pagenew = "target-new";
-        $pageedit = "target-edit";
-        $pagedelete ="target-delete";
-        $pagedetail = "target-delete";
-
-        if (array_key_exists('pagenew', $params)) {
-            $pagenew = $params['pagenew'];
-        }
-        if (array_key_exists('pagedetail', $params)) {
-            $pagedetail = $params['pagedetail'];
-        }
-        if (array_key_exists('pageedit', $params)) {
-            $pageedit = $params['pageedit'];
-        }
-        if (array_key_exists('pagedelete', $params)) {
-            $pagedelete = $params['pagedelete'];
-        }
+        
         $back =  $request->headers->get('referer');
-        $redirect = "/target-list?target=$targetname";
         $paramsData = [
+            "preAddparams" =>$preAddparams,
             "search" =>$keySearch,
             "back" =>$back,
-            "redirect" =>$redirect,
+            "actionLink" =>$actionLink,
+            'paginationData' => $paginationData,
             "title" =>$title,
-            "count" => $results['count'],
-            "results" => $results[$targetname.'s'],
-            'pagenumber' => $pagenumber,
-            'breakstart' => $breakStart,
-            'breakend' => $breakEnd,
-            'actualpage' => $actualPage,
+            "results" => $results,
             "keys" => $keys,
             "keyText" => $keyText,
             "target" => $targetname,
             "target_id" =>$targetname . "_id",
-            "pagedetail" =>$pagedetail,
-            "pageedit" =>$pageedit,
-            "pagenew" =>$pagenew,
-            "pagedelete" =>$pagedelete,
             "oldparams" => http_build_query($params),
             "oldparamsArray" => $params,
             "orderby" =>$orderByList,
@@ -257,6 +227,20 @@ class TargetController extends AbstractController
             "mode" =>$mode
         ];
         return $this->render("pages/target/list.html.twig", $paramsData);
+    }
+
+    public function getAllPreParams(&$params)
+    {
+        $preAdd = [];
+        foreach ($params as $key => $value) {
+            if (strpos($key, "pre_") !== false) {
+                $k = substr($key, 4);
+                $preAdd[$k] = $value;
+                $params[$k] = $value;
+                unset($params[$key]);
+            }
+        }
+        return $preAdd;
     }
 
     public function getMuteFields($params, $defaultRedirect = null)

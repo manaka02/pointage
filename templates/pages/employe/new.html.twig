@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+{% block title %}
+  Ajouter un membre
+{% endblock %}
+{% block nav %}
+{{ include ("modules/navbar.html.twig") }}
+{% endblock %}
+
+{% endif %}
+    <div class="container">
+
+        <h1>Ajouter/Modifier un Accompagnement</h1>
+    
+        {{form_start(form)}}
+
+    <div class="row">
+        <div class="col-md-6">
+            {{form_row(form.employe_id)}}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.ref_interne)}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{form_row(form.nom_prenom)}}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.departement_id)}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{form_row(form.genre)}}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.poste)}}
+        </div>
+    </div>
+    {{form_end(form)}}
+    {# {{ form(form_product) }} #}
+    </div>
+
+{% endblock %}

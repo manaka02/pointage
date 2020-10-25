@@ -67,7 +67,6 @@ class BoardService
         // ->filterByEmployeId(15)
         ->joinEmploye()
         ->withColumn("nom_prenom")
-        ->withColumn("employe_pointage_id")
         ->withColumn("poste");
 
         if(array_key_exists("employe_id",$params)){

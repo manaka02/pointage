@@ -210,6 +210,61 @@ class GeneralService
         return $result;
     }
 
+    public static function configureActionLink($params,$target, $targetname)
+    {
+        $id = $target->getPrimaryKey();
+        $pagenew = "target-new?target=$targetname";
+        $pageedit = "target-edit?target=$targetname&target_id=$id";
+        $pagedelete = "target-delete?target=$targetname&target_id=$id";
+        $pagedetail = null;
+
+
+        if (method_exists($target, "getDetailLink")) {
+            $pagedetail = $target->getDetailLink();
+        }
+        if (method_exists($target, "getEditLink")) {
+            $pageedit = $target->getEditLink();
+        }
+        if (method_exists($target, "getNewLink")) {
+            $pagenew = $target->getNewLink();
+        }
+        if (method_exists($target, "getDeleteLink")) {
+            $pagedelete = $target->getDeleteLink();
+        }
+
+        return [
+            "pagenew" => $pagenew,
+            "pagedetail" => $pagedetail,
+            "pageedit" => $pageedit,
+            "pagedelete" => $pagedelete,
+        ];
+    }
+
+    public static function getPaginationParams($resultCount, $params)
+    {
+        $actualPage = $params['page'];
+        $pagenumber = round($resultCount / $params['limit'], 0);
+        if ($resultCount % $params['limit'] > 0) {
+            $pagenumber ++;
+        }
+        if ($pagenumber == 0) {
+            $pagenumber = 1;
+        }
+
+        $breakStart = 0;
+        $breakEnd = 0;
+        if ($pagenumber > 5) {
+            $breakStart = 3;
+            $breakEnd = $pagenumber - 2;
+        }
+        return  [
+            "pagenumber" => $pagenumber,
+            "breakStart" => $breakStart,
+            "breakEnd" => $breakEnd,
+            "actualPage" => $actualPage,
+        ];
+    }
+
     public static function arrayToChartValue($targets, $key, $value)
     {
         $response = [];
@@ -438,7 +493,7 @@ class GeneralService
         ->filterByColumnName($columnName)
         ->select("value")
         ->findOne();
-        dump($choice);
+
         $values = self::valueToKey(json_decode($choice, true));
         return empty($values)? [] : $values;
     }
@@ -483,7 +538,7 @@ class GeneralService
 
     public static function valueToKey($array)
     {
-        dump($array);
+
         $result = [];
         foreach ($array as $key => $value) {
             $result[$value] = $value;

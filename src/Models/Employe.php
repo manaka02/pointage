@@ -18,7 +18,27 @@ use App\Models\Base\Employe as BaseEmploye;
  */
 class Employe extends BaseEmploye
 {
+
     private $addmore = true;
+
+    public function getDetailLink()
+    {
+        return "employe-detail";
+    }
+    public function getEditLink()
+    {
+        return "employe-edit";
+    }
+    public function getDeleteLink()
+    {
+        return "employe-delete";
+    }
+
+    public function getNewLink()
+    {
+        return "employe-new";
+    }
+
 
     public function getAddmore()
     {
@@ -52,7 +72,6 @@ class Employe extends BaseEmploye
 
             $response[$k] = $child['employe_id'];
         }
-        
         return $response;
     }
 
@@ -60,11 +79,7 @@ class Employe extends BaseEmploye
     {
         $departement = (new Departement())->getAllDepartmentAsChoice();
         return [
-            [
-                "path" => "employe_pointage_id",
-                "key" => "Numéro de l'utilisateur dans le pointeur",
-                "type" => 'number',
-            ],
+            
             [
                 "path" => "ref_interne",
                 "key" => "Référence en interne"
@@ -94,16 +109,16 @@ class Employe extends BaseEmploye
 
 
     private $keyToShow =[
-        "employe_pointage_id", "ref_interne", "nom_prenom", "poste", "genre"
+         "ref_interne", "genre", "nom_prenom", "poste","date_embauche","presence"
     ];
 
     private $keyText = [
-
-        "N° Pointeur",
         "Réf Interne",
-        "Nom et prénoms",
         "Genre",
-        "Région",
+        "Nom et prénoms",
+        "Fonction",
+        "Date d'embauche",
+        "Présence"
     ];
     /**
      * Get the value of keySearch
@@ -112,12 +127,9 @@ class Employe extends BaseEmploye
     {
         return [
             [
-                "path" => "employe_pointage_id",
-                "key" => "N° Pointeur"
-            ],
-            [
                 "path" => "ref_interne",
-                "key" => "Ref Interne"
+                "key" => "Ref Interne",
+                "type" => "number"
             ],
             [
                 "path" => "nom_prenom",
@@ -125,7 +137,7 @@ class Employe extends BaseEmploye
             ],
             [
                 "path" => "poste",
-                "key" => "Poste"
+                "key" => "Fonction"
             ],
             [
                 "path" => "genre",

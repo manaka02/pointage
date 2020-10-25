@@ -1,237 +1,81 @@
 {% extends "base.html.twig" %}
 
 {% block nav %}
-	{{ include ("modules/navbar.html.twig") }}
+{{ include ("modules/navbar.html.twig") }}
 {% endblock %}
 
 {% block body %}
-	<div class="container">
-		{% if app.request.hasPreviousSession %}
-			{% for message in app.flashes('success') %}
-				<div class="alert alert-success">
-					{{message}}
-				</div>
-			{% endfor %}
-			{% for message in app.flashes('error') %}
-				<div class="alert alert-danger mt-4">
-					{{message}}
-				</div>
-			{% endfor %}
-		{% endif %}
-		<div class="row mt-4">
-			<div class="col-md-8">
-				<h3>Liste des {{target}}s</h3>
-			</div>
+<div class="container">
+  {% if app.request.hasPreviousSession %}
+  {% for message in app.flashes('success') %}
+  <div class="alert alert-success">
+    {{message}}
+  </div>
+  {% endfor %}
+  {% for message in app.flashes('error') %}
+  <div class="alert alert-danger mt-4">
+    {{message}}
+  </div>
+  {% endfor %}
+  {% endif %}
+  <div class="row mt-4">
+    <div class="col-md-8">
+      <h3>Liste des {{target}}s</h3>
+    </div>
 
-			<div class="col-md-4 row">
-				<div class="col-md-4">
-					<a href="{{path(pagenew,{target:target})}}" class="btn btn-block btn-primary maincolor btn-sm btn-flat">
-						<i class="fas fa-add mr-2"></i>
-						Ajouter</a>
+    <div class="col-md-4 row">
 
-				</div>
-				<div class="col-md-4">
-            <button type="button" class="btn btn-block btn-primary maincolor btn-sm btn-flat" data-toggle="modal" data-target="#modal-lg">
-              Importer
-            </button>
-				</div>
-				<div class="col-md-4">
-					<a href="" class="btn btn-block btn-primary maincolor btn-sm btn-flat">
-						<i class="fas fa-add mr-2"></i>
-						Exporter</a>
-
-				</div>
+      <div class="col-md-4">
+        <a href="{{actionLink['pagenew']}}" class="btn btn-block btn-primary maincolor btn-sm btn-flat">
+          <i class="fas fa-add mr-2"></i>
+          Ajouter</a>
 
       </div>
-      
-      {{ include ("modules/modal-import.html.twig",{form:form,target:target,redirect:redirect}) }}
-
-			<div class="row col-md-12">
-				<div class="col-md-12">
-					<h5>Utiliser des filtres
-					</h5>
-				</div>
-				<form action="{{path('target-list')}}" method="get">
-					<div class="row">
-						{% for input in search %}
-							<div
-								class="col-sm-3">
-								<!-- text input -->
-								{% if input['type'] is defined %}
-									{% if input["type"] == "select" %}
-										<div class="form-group">
-											<select class="form-control select2 form-control-sm" style="width: 100%;" name="{{input["path"]}}">
-												<option value="">(non défini)</option>
-												{% for key in input["value"]|keys %}
-
-													<option value="{{input["value"][key]}}" {% if oldparamsArray[input["path"]] is defined and oldparamsArray[input["path"]] == input["value"][key] %} selected="selected" {% endif %}>{{key}}</option>
-												{% endfor %}
-
-											</select>
-										</div>
-									{% elseif input["type"] == "date" %}
-										<div class="form-group">
-											<label>{{input['key']}}
-												(Date min)</label>
-											<input type="date" class="form-control form-control-sm" placeholder="{{input['key']}}" name="{{input['path']}}[min]" {% if oldparamsArray[input["path"]] is defined %} value="{{oldparamsArray[input["path"]]["min"]}}" {% endif %}>
-										</div>
-										<div class="form-group">
-											<label>{{input['key']}}
-												(Date max)</label>
-											<input type="date" class="form-control form-control-sm" placeholder="{{input['key']}}" name="{{input['path']}}[max]" {% if oldparamsArray[input["path"]] is defined %} value="{{oldparamsArray[input["path"]]["max"]}}" {% endif %}>
-										</div>
-									{% endif %}
-								{% else %}
-									<div class="form-group">
-										<input type="text" class="form-control form-control-sm" placeholder="{{input['key']}}" name="{{input['path']}}[lk]" {% if oldparamsArray[input["path"]] is defined %} value="{{oldparamsArray[input["path"]]["lk"]}}" {% endif %}>
-									</div>
-								{% endif %}
-
-							</div>
-						{% endfor %}
-						<div class="form-group">
-							<select class="form-control select2 form-control-sm" style="width: 100%;" name="orderby">
-								<option value="">(Mode de triage)</option>
-								{% for key in orderby|keys %}
-
-									<option value="{{orderby[key]}}" {% if oldparamsArray["orderby"] is defined %} selected="selected" {% endif %}>{{key}}</option>
-								{% endfor %}
-
-							</select>
-						</div>
-
-						<input type="hidden" name="target" value="{{target}}">
-						<input type="hidden" name="pagenew" value="{{pagenew}}">
-						<input type="hidden" name="pageedit" value="{{pageedit}}">
-						<input type="hidden" name="pagedelete" value="{{pagedelete}}">
-						<input type="hidden" name="pagedetail" value="{{pagedetail}}">
-						<input type="hidden" name="mode" value="{{mode}}">
-					</div>
-					<div class="col-md-3 float-left">
-						<button type="submit" class="btn btn-block btn-primary maincolor btn-sm btn-flat">Rechercher</button>
-					</div>
-
-				</form>
-
-			</div>
-
-
-				
-
-    </div>
-    <div class="row col-12 mt-4">
-      <div class="card col-12">
-        <div class="card-header">
-
-          <div class="card-tools">
-            <ul class="pagination pagination-sm m-0 float-right">
-              {% if actualpage != 1 %}
-              <li class="page-item"><a class="page-link" href="/target-list?page={{1}}&{{oldparams}}">« début</a></li>
-              <li class="page-item"><a class="page-link" href="/target-list?page={{actualpage - 1}}&{{oldparams}}">précédent</a></li>
-              {% endif %}
-
-              
-              {% for i in range(1, pagenumber) %}
-                {% if breakstart != 0 and i == breakstart %}
-                <li class="page-item page-link">...</li>
-                {% elseif breakstart != 0 and i > breakstart and i < breakend %}
-                  
-                {% else %}
-                <li class="page-item"><a class="page-link" http_build_query($params)
-                  href="/target-list?page={{i}}&{{oldparams}}">{{ i }}</a></li>
-                {% endif %}
-
-              {% endfor %}
-              {% if actualpage != pagenumber %}
-              <li class="page-item"><a class="page-link" href="/target-list?page={{actualpage + 1}}&{{oldparams}}">suivant</a>
-              <li class="page-item"><a class="page-link" href="/target-list?page={{pagenumber}}&{{oldparams}}">fin »</a>
-              </li>
-              {% endif %}
-            </ul>
-            </ul>
-          </div>
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body table-responsive p-0">
-          <table class="table table-hover text-nowrap table-sm">
-            <thead>
-              <tr>
-                {% for key in keyText  %}
-                  <th>
-
-                    {{key}}
-
-                  </th>
-                {% endfor %}
-                <th>actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              
-              {% for result in  results %}
-                <tr>
-                  {% for key in keys  %}
-                    <td>
-                      {% set link = key ~ '-detail' %}
-                      {% if result[key] is  iterable %}
-                        {% for ext in result[key] %}
-                          <p>
-                            <a href="{{path(link,{"id":ext['id']})}}">{{ext['name']}}</a>
-                          </p>
-                        {% endfor %}
-
-                      {% else %}
-                        <a class="text-dark" style="font-weight: 300;" href="{{path(pagedetail,{id:result[target_id]})}}">
-                          {% if "+03:00" in result[key] %}
-                            {{ result[key]|date('d-M-Y H:i:s') }}
-                          {% elseif key == "osc_name" and result["osc_id"] is defined %}
-                            <a href="{{path('osc-detail',{id:result["osc_id"]})}}">{{result[key]}}</a>
-                          {% else %}
-                            {{ result[key] }}
-                          {% endif %}
-
-                        </a>
-                      {% endif %}
-
-
-                    </td>
-                  {% endfor %}
-                  <td>
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-default">
-                        <a href="{{path(pageedit,{id:result[target_id],mode:mode})}}">
-                          <i class="fas fa-edit"></i>
-                        </a>
-                      </button>
-                      <form method="POST" action="{{path(pagedelete,{id:result[target_id]})}}" onsubmit="return confirm('Cette action supprimera tous les données relatives à ce donnée')">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <input type="hidden" name="mode" value="{{mode}}">
-                        <input type="hidden" name="_token" value="{{csrf_token(result[target_id])}}">
-                        <button type="submit" class="btn btn-danger">
-                          <i class="fas fa-trash text-light"></i>
-                        </button>
-                      </form>
-
-                    </div>
-
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% if results|length == 0 %}
-            <p class="text-center mt-2">
-              Aucune valeur disponible
-            </p>    
-            {% endif %}
-        </div>
-        <!-- /.card-body -->
+      <div class="col-md-4">
+        <button type="button" class="btn btn-block btn-primary maincolor btn-sm btn-flat" data-toggle="modal"
+          data-target="#modal-lg">
+          Importer
+        </button>
       </div>
-      <!-- /.card -->
+      <div class="col-md-4">
+        <a href="" class="btn btn-block btn-primary maincolor btn-sm btn-flat">
+          <i class="fas fa-add mr-2"></i>
+          Exporter</a>
+
+      </div>
+
     </div>
-	</div>
-  {% endblock %}
-  {% block javascripts %}
+
+    {# {{ include ("modules/modal-import.html.twig",{form:form,target:target,redirect:redirect}) }} #}
+
+    {{ include ("modules/search-bar.html.twig",{
+        action : "target-list",
+        searchList:search,
+        preAddparams:preAddparams,
+        oldparamsArray:oldparamsArray,
+        orderbyList:orderby,
+        target:target,
+        actionLink:actionLink,
+        mode:mode
+    }) }}
+
+
+  </div>
+  {{ include ("modules/list.html.twig" , {
+    keyText : keyText,
+    target:target,
+    results:results,
+    keys:keys,
+    actionLink:actionLink,
+    mode:mode,
+    oldparams:oldparams,
+    paginationData:paginationData,
+    mode:mode,
+
+  }) }}
+</div>
+{% endblock %}
+{% block javascripts %}
 <script>
 
   $('.custom-file-input').on('change', function (event) {

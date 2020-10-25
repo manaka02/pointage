@@ -29,10 +29,11 @@ class UploadService
 
     public function importFile($filename, $target, $worksheet,Array $listReference = [])
     {
-        error_log('import file');
+        dump('import file');
         $this->listReference = $listReference;
         $this->filename = $filename;
         $this->beginMapping($target, $worksheet);
+        throw new Exception("Error Processing Request", 1);
         
         return [
             "status"  => "success",
@@ -113,6 +114,7 @@ class UploadService
         $sql .= implode(",", $listLine );
 
         $stmt = $this->con->prepare($sql);
+        dump($sql);
         $stmt->execute();
     }
 

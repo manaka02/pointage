@@ -31,6 +31,10 @@ class Pointage extends BasePointage
 
     const OUT = "C/Out";
     const IN = "C/In";
+
+    
+
+
     public $totalWork;
     public $totalNormal;
     public $totalExtra;
@@ -99,7 +103,6 @@ class Pointage extends BasePointage
     {
         $query->joinEmploye(null,Criteria::LEFT_JOIN);
 
-        $query->withColumn('Employe.employe_pointage_id', 'no_employe');
         $query->withColumn('Employe.ref_interne', 'ref_interne');
         $query->withColumn('Employe.nom_prenom', 'nom_prenom');
         $query->withColumn('Employe.genre', 'genre');
@@ -107,17 +110,14 @@ class Pointage extends BasePointage
     }
 
     private $keyToShow =[
-        "no_employe", "ref_interne", "nom_prenom", "date_pointage", "status"
+        "employe_id", "nom_prenom", "date_pointage", "status"
     ];
 
     private $keyText = [
-
-        "N° Pointeur",
         "Réf Interne",
         "Nom et prénoms",
-        
-        "Statut",
         "Date de pointage",
+        "Statut",
     ];
 
     /**
@@ -127,12 +127,9 @@ class Pointage extends BasePointage
     {
         return [
             [
-                "path" => "Employe%no_employe",
-                "key" => "N° Pointeur"
-            ],
-            [
-                "path" => "Employe%ref_interne",
-                "key" => "Ref Interne"
+                "path" => "employe_id",
+                "key" => "N° matricule",
+                "type" => "number"
             ],
             [
                 "path" => "Employe%nom_prenom",

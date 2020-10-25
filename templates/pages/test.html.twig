@@ -1,0 +1,116 @@
+
+<div class="row col-md-12">
+      <div class="col-md-12">
+        <h5>Utiliser des filtres
+        </h5>
+      </div>
+      <form action="{{path('board')}}" method="get" class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-3">
+            <!-- text input -->
+            <div class="form-group">
+              <label for="" class="font-weight-light grey">Nom de l'employé</label>
+              <input type="text" class="form-control form-control-sm" placeholder="Nom de l'employé" name="employe">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label for="" class="font-weight-light grey">Date début</label>
+              <input type="date" class="form-control form-control-sm" placeholder="Nom de l'employé" name="date_debut">
+            </div>
+          </div>
+          <div class="col-sm-3">
+
+            <div class="form-group">
+              <label for="" class="font-weight-light grey">Date Fin</label>
+              <input type="date" class="form-control form-control-sm" placeholder="Nom de l'employé" name="date_fin">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 float-left">
+          <button type="submit" class="btn btn-block btn-primary maincolor btn-sm btn-flat">Rechercher</button>
+        </div>
+
+      </form>
+
+    </div>
+
+<div class="row mt-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-tools">
+            <div class="input-group input-group-sm" style="width: 150px;">
+              <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body table-responsive p-0">
+          <table class="table table-hover text-nowrap table-sm table-bordered">
+            <thead>
+              <tr>
+                <th>Numéro</th>
+                <th>Nom et prénoms</th>
+                <th>Poste</th>
+                <th>Jour de présence</th>
+                <th>Total heure de présence</th>
+                <th>Total Heure normale de travail</th>
+                <th>Total Heure jour</th>
+                <th>Total Heure nuit</th>
+                <th>Total Heure Samedi </th>
+                <th>Total Manque</th>
+                <th>Total Extra</th>
+
+                {% for key in data['extraPerWeek']|keys %}
+                <th>semaine {{key}} (Extra 8h)</th>
+                <th>semaine {{key}} (Extra Surplus)</th>
+                {% endfor %}
+                <th>Erreur trouvée</th>
+                <th>Warning trouvé</th>
+              </tr>
+            </thead>
+            <tbody>
+
+
+              {% for line in data['data'] %}
+              <tr>
+                {% set value = line['result'] %}
+                <td>{{value.virtualcolumns.nom_prenom}}</td>
+                <td>{{value.virtualcolumns.poste}}</td>
+                <td>{{value.jourPresence}}</td>
+                <td>{{value.totalWork|date("%H:%I:%S")}}</td>
+                <td>{{value.totalNormal|date("%H:%I:%S")}}</td>
+                <td>{{value.day|date("%H:%I:%S")}}</td>
+                <td>{{value.night|date("%H:%I:%S")}}</td>
+                <td>{{value.samedi|date("%H:%I:%S")}}</td>
+
+                <td>{{value.manque|date("%H:%I:%S")}}</td>
+                <td>{{value.totalExtra|date("%H:%I:%S")}}</td>
+                {% for key in data['extraPerWeek']|keys %}
+                  {% if value.extraPerWeek[key] is defined %}
+                    <td>{{value.extraPerWeek[key]['firstExtra']|date("H:i:s", '+00:00 GMT')}}</td>
+                    <td>{{value.extraPerWeek[key]["others"]|date("H:i:s", '+00:00 GMT')}}</td>
+                  {% else %}
+                    
+                    <td></td>
+                    <td></td>
+                  {% endif %}
+                {% endfor %}
+                <td class="{{line['error'] ==  0 ? null : "bg-danger"}}">{{line['error']}}</td>
+                <td class="{{line['warning'] ==  0 ? null : "bg-warning"}}">{{line['warning']}}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+  </div>
