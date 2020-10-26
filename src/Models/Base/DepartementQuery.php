@@ -48,6 +48,26 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDepartementQuery rightJoinWithDirection() Adds a RIGHT JOIN clause and with to the query using the Direction relation
  * @method     ChildDepartementQuery innerJoinWithDirection() Adds a INNER JOIN clause and with to the query using the Direction relation
  *
+ * @method     ChildDepartementQuery leftJoinDebauche($relationAlias = null) Adds a LEFT JOIN clause to the query using the Debauche relation
+ * @method     ChildDepartementQuery rightJoinDebauche($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Debauche relation
+ * @method     ChildDepartementQuery innerJoinDebauche($relationAlias = null) Adds a INNER JOIN clause to the query using the Debauche relation
+ *
+ * @method     ChildDepartementQuery joinWithDebauche($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Debauche relation
+ *
+ * @method     ChildDepartementQuery leftJoinWithDebauche() Adds a LEFT JOIN clause and with to the query using the Debauche relation
+ * @method     ChildDepartementQuery rightJoinWithDebauche() Adds a RIGHT JOIN clause and with to the query using the Debauche relation
+ * @method     ChildDepartementQuery innerJoinWithDebauche() Adds a INNER JOIN clause and with to the query using the Debauche relation
+ *
+ * @method     ChildDepartementQuery leftJoinEmbauche($relationAlias = null) Adds a LEFT JOIN clause to the query using the Embauche relation
+ * @method     ChildDepartementQuery rightJoinEmbauche($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Embauche relation
+ * @method     ChildDepartementQuery innerJoinEmbauche($relationAlias = null) Adds a INNER JOIN clause to the query using the Embauche relation
+ *
+ * @method     ChildDepartementQuery joinWithEmbauche($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Embauche relation
+ *
+ * @method     ChildDepartementQuery leftJoinWithEmbauche() Adds a LEFT JOIN clause and with to the query using the Embauche relation
+ * @method     ChildDepartementQuery rightJoinWithEmbauche() Adds a RIGHT JOIN clause and with to the query using the Embauche relation
+ * @method     ChildDepartementQuery innerJoinWithEmbauche() Adds a INNER JOIN clause and with to the query using the Embauche relation
+ *
  * @method     ChildDepartementQuery leftJoinService($relationAlias = null) Adds a LEFT JOIN clause to the query using the Service relation
  * @method     ChildDepartementQuery rightJoinService($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Service relation
  * @method     ChildDepartementQuery innerJoinService($relationAlias = null) Adds a INNER JOIN clause to the query using the Service relation
@@ -58,7 +78,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildDepartementQuery rightJoinWithService() Adds a RIGHT JOIN clause and with to the query using the Service relation
  * @method     ChildDepartementQuery innerJoinWithService() Adds a INNER JOIN clause and with to the query using the Service relation
  *
- * @method     \App\Models\DirectionQuery|\App\Models\ServiceQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \App\Models\DirectionQuery|\App\Models\DebaucheQuery|\App\Models\EmbaucheQuery|\App\Models\ServiceQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildDepartement findOne(ConnectionInterface $con = null) Return the first ChildDepartement matching the query
  * @method     ChildDepartement findOneOrCreate(ConnectionInterface $con = null) Return the first ChildDepartement matching the query, or a new ChildDepartement object populated from the query conditions when no match is found
@@ -478,6 +498,152 @@ abstract class DepartementQuery extends ModelCriteria
         return $this
             ->joinDirection($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Direction', '\App\Models\DirectionQuery');
+    }
+
+    /**
+     * Filter the query by a related \App\Models\Debauche object
+     *
+     * @param \App\Models\Debauche|ObjectCollection $debauche the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDepartementQuery The current query, for fluid interface
+     */
+    public function filterByDebauche($debauche, $comparison = null)
+    {
+        if ($debauche instanceof \App\Models\Debauche) {
+            return $this
+                ->addUsingAlias(DepartementTableMap::COL_DEPARTEMENT_ID, $debauche->getDepartementId(), $comparison);
+        } elseif ($debauche instanceof ObjectCollection) {
+            return $this
+                ->useDebaucheQuery()
+                ->filterByPrimaryKeys($debauche->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByDebauche() only accepts arguments of type \App\Models\Debauche or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Debauche relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDepartementQuery The current query, for fluid interface
+     */
+    public function joinDebauche($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Debauche');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Debauche');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Debauche relation Debauche object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \App\Models\DebaucheQuery A secondary query class using the current class as primary query
+     */
+    public function useDebaucheQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinDebauche($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Debauche', '\App\Models\DebaucheQuery');
+    }
+
+    /**
+     * Filter the query by a related \App\Models\Embauche object
+     *
+     * @param \App\Models\Embauche|ObjectCollection $embauche the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildDepartementQuery The current query, for fluid interface
+     */
+    public function filterByEmbauche($embauche, $comparison = null)
+    {
+        if ($embauche instanceof \App\Models\Embauche) {
+            return $this
+                ->addUsingAlias(DepartementTableMap::COL_DEPARTEMENT_ID, $embauche->getDepartementId(), $comparison);
+        } elseif ($embauche instanceof ObjectCollection) {
+            return $this
+                ->useEmbaucheQuery()
+                ->filterByPrimaryKeys($embauche->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByEmbauche() only accepts arguments of type \App\Models\Embauche or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Embauche relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildDepartementQuery The current query, for fluid interface
+     */
+    public function joinEmbauche($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Embauche');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Embauche');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Embauche relation Embauche object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \App\Models\EmbaucheQuery A secondary query class using the current class as primary query
+     */
+    public function useEmbaucheQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinEmbauche($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Embauche', '\App\Models\EmbaucheQuery');
     }
 
     /**

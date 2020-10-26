@@ -173,6 +173,27 @@ class GeneralService
         
     }
 
+    public function getTargetAsChoice($targetname, $columnToShow, $orderBy = null)
+    {
+        if(!$orderBy){
+            $orderBy = $columnToShow;
+        }
+        $query = self::invokeQuery($targetname);
+        $id = $targetname.'_id';
+        $query->withColumn($id)
+        ->withColumn($columnToShow)
+        ->orderBy($orderBy)
+        ->select($id,$columnToShow);
+        $referents = $query->find();
+        $response = [];
+        foreach ($referents as $key => $child) {
+            $k = $child[$columnToShow];
+
+            $response[$k] = $child[$id];
+        }
+        return $response;
+    }
+
     public static function hasAccessToThis($user, $params)
     {
         if($user->getStatus() > 9){

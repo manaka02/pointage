@@ -2,8 +2,8 @@
 
 namespace App\Models\Map;
 
-use App\Models\Departement;
-use App\Models\DepartementQuery;
+use App\Models\Debauche;
+use App\Models\DebaucheQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'departement' table.
+ * This class defines the structure of the 'debauche' table.
  *
  *
  *
@@ -25,7 +25,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
  * (i.e. if it's a text column type).
  */
-class DepartementTableMap extends TableMap
+class DebaucheTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -33,7 +33,7 @@ class DepartementTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.DepartementTableMap';
+    const CLASS_NAME = '.Map.DebaucheTableMap';
 
     /**
      * The default database name for this class
@@ -43,22 +43,22 @@ class DepartementTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'departement';
+    const TABLE_NAME = 'debauche';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\App\\Models\\Departement';
+    const OM_CLASS = '\\App\\Models\\Debauche';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Departement';
+    const CLASS_DEFAULT = 'Debauche';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 9;
 
     /**
      * The number of lazy-loaded columns
@@ -68,27 +68,52 @@ class DepartementTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 9;
+
+    /**
+     * the column name for the debauche_id field
+     */
+    const COL_DEBAUCHE_ID = 'debauche.debauche_id';
+
+    /**
+     * the column name for the ref_interne field
+     */
+    const COL_REF_INTERNE = 'debauche.ref_interne';
+
+    /**
+     * the column name for the nom_prenom field
+     */
+    const COL_NOM_PRENOM = 'debauche.nom_prenom';
+
+    /**
+     * the column name for the fonction field
+     */
+    const COL_FONCTION = 'debauche.fonction';
 
     /**
      * the column name for the departement_id field
      */
-    const COL_DEPARTEMENT_ID = 'departement.departement_id';
+    const COL_DEPARTEMENT_ID = 'debauche.departement_id';
 
     /**
-     * the column name for the direction_id field
+     * the column name for the date_embauche field
      */
-    const COL_DIRECTION_ID = 'departement.direction_id';
+    const COL_DATE_EMBAUCHE = 'debauche.date_embauche';
 
     /**
-     * the column name for the designation field
+     * the column name for the date_depart field
      */
-    const COL_DESIGNATION = 'departement.designation';
+    const COL_DATE_DEPART = 'debauche.date_depart';
 
     /**
-     * the column name for the description field
+     * the column name for the raisons field
      */
-    const COL_DESCRIPTION = 'departement.description';
+    const COL_RAISONS = 'debauche.raisons';
+
+    /**
+     * the column name for the motif field
+     */
+    const COL_MOTIF = 'debauche.motif';
 
     /**
      * The default string format for model objects of the related table
@@ -102,11 +127,11 @@ class DepartementTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('DepartementId', 'DirectionId', 'Designation', 'Description', ),
-        self::TYPE_CAMELNAME     => array('departementId', 'directionId', 'designation', 'description', ),
-        self::TYPE_COLNAME       => array(DepartementTableMap::COL_DEPARTEMENT_ID, DepartementTableMap::COL_DIRECTION_ID, DepartementTableMap::COL_DESIGNATION, DepartementTableMap::COL_DESCRIPTION, ),
-        self::TYPE_FIELDNAME     => array('departement_id', 'direction_id', 'designation', 'description', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('DebaucheId', 'RefInterne', 'NomPrenom', 'Fonction', 'DepartementId', 'DateEmbauche', 'DateDepart', 'Raisons', 'Motif', ),
+        self::TYPE_CAMELNAME     => array('debaucheId', 'refInterne', 'nomPrenom', 'fonction', 'departementId', 'dateEmbauche', 'dateDepart', 'raisons', 'motif', ),
+        self::TYPE_COLNAME       => array(DebaucheTableMap::COL_DEBAUCHE_ID, DebaucheTableMap::COL_REF_INTERNE, DebaucheTableMap::COL_NOM_PRENOM, DebaucheTableMap::COL_FONCTION, DebaucheTableMap::COL_DEPARTEMENT_ID, DebaucheTableMap::COL_DATE_EMBAUCHE, DebaucheTableMap::COL_DATE_DEPART, DebaucheTableMap::COL_RAISONS, DebaucheTableMap::COL_MOTIF, ),
+        self::TYPE_FIELDNAME     => array('debauche_id', 'ref_interne', 'nom_prenom', 'fonction', 'departement_id', 'date_embauche', 'date_depart', 'raisons', 'motif', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -116,11 +141,11 @@ class DepartementTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('DepartementId' => 0, 'DirectionId' => 1, 'Designation' => 2, 'Description' => 3, ),
-        self::TYPE_CAMELNAME     => array('departementId' => 0, 'directionId' => 1, 'designation' => 2, 'description' => 3, ),
-        self::TYPE_COLNAME       => array(DepartementTableMap::COL_DEPARTEMENT_ID => 0, DepartementTableMap::COL_DIRECTION_ID => 1, DepartementTableMap::COL_DESIGNATION => 2, DepartementTableMap::COL_DESCRIPTION => 3, ),
-        self::TYPE_FIELDNAME     => array('departement_id' => 0, 'direction_id' => 1, 'designation' => 2, 'description' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('DebaucheId' => 0, 'RefInterne' => 1, 'NomPrenom' => 2, 'Fonction' => 3, 'DepartementId' => 4, 'DateEmbauche' => 5, 'DateDepart' => 6, 'Raisons' => 7, 'Motif' => 8, ),
+        self::TYPE_CAMELNAME     => array('debaucheId' => 0, 'refInterne' => 1, 'nomPrenom' => 2, 'fonction' => 3, 'departementId' => 4, 'dateEmbauche' => 5, 'dateDepart' => 6, 'raisons' => 7, 'motif' => 8, ),
+        self::TYPE_COLNAME       => array(DebaucheTableMap::COL_DEBAUCHE_ID => 0, DebaucheTableMap::COL_REF_INTERNE => 1, DebaucheTableMap::COL_NOM_PRENOM => 2, DebaucheTableMap::COL_FONCTION => 3, DebaucheTableMap::COL_DEPARTEMENT_ID => 4, DebaucheTableMap::COL_DATE_EMBAUCHE => 5, DebaucheTableMap::COL_DATE_DEPART => 6, DebaucheTableMap::COL_RAISONS => 7, DebaucheTableMap::COL_MOTIF => 8, ),
+        self::TYPE_FIELDNAME     => array('debauche_id' => 0, 'ref_interne' => 1, 'nom_prenom' => 2, 'fonction' => 3, 'departement_id' => 4, 'date_embauche' => 5, 'date_depart' => 6, 'raisons' => 7, 'motif' => 8, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -133,17 +158,22 @@ class DepartementTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('departement');
-        $this->setPhpName('Departement');
+        $this->setName('debauche');
+        $this->setPhpName('Debauche');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\App\\Models\\Departement');
+        $this->setClassName('\\App\\Models\\Debauche');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('departement_id', 'DepartementId', 'INTEGER', true, null, null);
-        $this->addForeignKey('direction_id', 'DirectionId', 'INTEGER', 'direction', 'direction_id', true, null, null);
-        $this->addColumn('designation', 'Designation', 'VARCHAR', false, 100, null);
-        $this->addColumn('description', 'Description', 'VARCHAR', false, 100, null);
+        $this->addPrimaryKey('debauche_id', 'DebaucheId', 'INTEGER', true, null, null);
+        $this->addColumn('ref_interne', 'RefInterne', 'INTEGER', true, null, null);
+        $this->addColumn('nom_prenom', 'NomPrenom', 'INTEGER', true, null, null);
+        $this->addColumn('fonction', 'Fonction', 'INTEGER', true, null, null);
+        $this->addForeignKey('departement_id', 'DepartementId', 'INTEGER', 'departement', 'departement_id', false, null, null);
+        $this->addColumn('date_embauche', 'DateEmbauche', 'INTEGER', false, null, null);
+        $this->addColumn('date_depart', 'DateDepart', 'INTEGER', true, null, null);
+        $this->addColumn('raisons', 'Raisons', 'INTEGER', true, null, null);
+        $this->addColumn('motif', 'Motif', 'INTEGER', false, null, null);
     } // initialize()
 
     /**
@@ -151,44 +181,14 @@ class DepartementTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Direction', '\\App\\Models\\Direction', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':direction_id',
-    1 => ':direction_id',
-  ),
-), 'CASCADE', null, null, false);
-        $this->addRelation('Debauche', '\\App\\Models\\Debauche', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Departement', '\\App\\Models\\Departement', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
     0 => ':departement_id',
     1 => ':departement_id',
   ),
-), null, null, 'Debauches', false);
-        $this->addRelation('Embauche', '\\App\\Models\\Embauche', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':departement_id',
-    1 => ':departement_id',
-  ),
-), null, null, 'Embauches', false);
-        $this->addRelation('Service', '\\App\\Models\\Service', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':departement_id',
-    1 => ':departement_id',
-  ),
-), 'CASCADE', null, 'Services', false);
+), null, null, null, false);
     } // buildRelations()
-    /**
-     * Method to invalidate the instance pool of all tables related to departement     * by a foreign key with ON DELETE CASCADE
-     */
-    public static function clearRelatedInstancePool()
-    {
-        // Invalidate objects in related instance pools,
-        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        ServiceTableMap::clearInstancePool();
-    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -206,11 +206,11 @@ class DepartementTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DebaucheId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DebaucheId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DebaucheId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DebaucheId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DebaucheId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('DebaucheId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -230,7 +230,7 @@ class DepartementTableMap extends TableMap
         return (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('DebaucheId', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
 
@@ -247,7 +247,7 @@ class DepartementTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? DepartementTableMap::CLASS_DEFAULT : DepartementTableMap::OM_CLASS;
+        return $withPrefix ? DebaucheTableMap::CLASS_DEFAULT : DebaucheTableMap::OM_CLASS;
     }
 
     /**
@@ -261,22 +261,22 @@ class DepartementTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Departement object, last column rank)
+     * @return array           (Debauche object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = DepartementTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = DepartementTableMap::getInstanceFromPool($key))) {
+        $key = DebaucheTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = DebaucheTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + DepartementTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + DebaucheTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = DepartementTableMap::OM_CLASS;
-            /** @var Departement $obj */
+            $cls = DebaucheTableMap::OM_CLASS;
+            /** @var Debauche $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            DepartementTableMap::addInstanceToPool($obj, $key);
+            DebaucheTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -299,18 +299,18 @@ class DepartementTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = DepartementTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = DepartementTableMap::getInstanceFromPool($key))) {
+            $key = DebaucheTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = DebaucheTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Departement $obj */
+                /** @var Debauche $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                DepartementTableMap::addInstanceToPool($obj, $key);
+                DebaucheTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -331,15 +331,25 @@ class DepartementTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(DepartementTableMap::COL_DEPARTEMENT_ID);
-            $criteria->addSelectColumn(DepartementTableMap::COL_DIRECTION_ID);
-            $criteria->addSelectColumn(DepartementTableMap::COL_DESIGNATION);
-            $criteria->addSelectColumn(DepartementTableMap::COL_DESCRIPTION);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_DEBAUCHE_ID);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_REF_INTERNE);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_NOM_PRENOM);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_FONCTION);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_DEPARTEMENT_ID);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_DATE_EMBAUCHE);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_DATE_DEPART);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_RAISONS);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_MOTIF);
         } else {
+            $criteria->addSelectColumn($alias . '.debauche_id');
+            $criteria->addSelectColumn($alias . '.ref_interne');
+            $criteria->addSelectColumn($alias . '.nom_prenom');
+            $criteria->addSelectColumn($alias . '.fonction');
             $criteria->addSelectColumn($alias . '.departement_id');
-            $criteria->addSelectColumn($alias . '.direction_id');
-            $criteria->addSelectColumn($alias . '.designation');
-            $criteria->addSelectColumn($alias . '.description');
+            $criteria->addSelectColumn($alias . '.date_embauche');
+            $criteria->addSelectColumn($alias . '.date_depart');
+            $criteria->addSelectColumn($alias . '.raisons');
+            $criteria->addSelectColumn($alias . '.motif');
         }
     }
 
@@ -352,7 +362,7 @@ class DepartementTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(DepartementTableMap::DATABASE_NAME)->getTable(DepartementTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(DebaucheTableMap::DATABASE_NAME)->getTable(DebaucheTableMap::TABLE_NAME);
     }
 
     /**
@@ -360,16 +370,16 @@ class DepartementTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(DepartementTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(DepartementTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new DepartementTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(DebaucheTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(DebaucheTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new DebaucheTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Departement or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Debauche or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Departement object or primary key or array of primary keys
+     * @param mixed               $values Criteria or Debauche object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -380,27 +390,27 @@ class DepartementTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DebaucheTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \App\Models\Departement) { // it's a model object
+        } elseif ($values instanceof \App\Models\Debauche) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(DepartementTableMap::DATABASE_NAME);
-            $criteria->add(DepartementTableMap::COL_DEPARTEMENT_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(DebaucheTableMap::DATABASE_NAME);
+            $criteria->add(DebaucheTableMap::COL_DEBAUCHE_ID, (array) $values, Criteria::IN);
         }
 
-        $query = DepartementQuery::create()->mergeWith($criteria);
+        $query = DebaucheQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            DepartementTableMap::clearInstancePool();
+            DebaucheTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                DepartementTableMap::removeInstanceFromPool($singleval);
+                DebaucheTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -408,20 +418,20 @@ class DepartementTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the departement table.
+     * Deletes all rows from the debauche table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return DepartementQuery::create()->doDeleteAll($con);
+        return DebaucheQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Departement or Criteria object.
+     * Performs an INSERT on the database, given a Debauche or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Departement object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or Debauche object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -430,22 +440,22 @@ class DepartementTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(DepartementTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DebaucheTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Departement object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Debauche object
         }
 
-        if ($criteria->containsKey(DepartementTableMap::COL_DEPARTEMENT_ID) && $criteria->keyContainsValue(DepartementTableMap::COL_DEPARTEMENT_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.DepartementTableMap::COL_DEPARTEMENT_ID.')');
+        if ($criteria->containsKey(DebaucheTableMap::COL_DEBAUCHE_ID) && $criteria->keyContainsValue(DebaucheTableMap::COL_DEBAUCHE_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.DebaucheTableMap::COL_DEBAUCHE_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = DepartementQuery::create()->mergeWith($criteria);
+        $query = DebaucheQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -454,7 +464,7 @@ class DepartementTableMap extends TableMap
         });
     }
 
-} // DepartementTableMap
+} // DebaucheTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-DepartementTableMap::buildTableMap();
+DebaucheTableMap::buildTableMap();

@@ -82,25 +82,25 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{path('target-list', {target:"direction"})}}" class="nav-link">
 
                                 <small>Direction</small>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{path('target-list', {target:"departement"})}}" class="nav-link">
 
                                 <small>Département</small>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{path('target-list', {target:"service"})}}" class="nav-link">
 
                                 <small>Service</small>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{path('target-list', {target:"unite"})}}" class="nav-link">
 
                                 <small>Unité</small>
                             </a>
@@ -108,7 +108,7 @@
                     </ul>
                 </li>
                 <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
+                    <a href="{{path('target-list', {target:"conge"})}}" class="nav-link">
                         <i class="nav-icon fas fa-tools"></i>
                         <p>
                             Congés 
@@ -117,13 +117,36 @@
                 
                 </li>
                 <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
+                    <a href="{{path('target-list', {target:"absence"})}}" class="nav-link">
                         <i class="nav-icon fas fa-tools"></i>
                         <p>
                             Absences 
                         </p>
                     </a>
                 
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-hand-pointer"></i>
+                        <p>
+                            Mouvement du pers
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{path("target-list", {target:"embauche"})}}" class="nav-link">
+
+                                <small>Embauches</small>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{path("target-list", {target:"debauche"})}}" class="nav-link">
+
+                                <small>Débauches</small>
+                            </a>
+                        </li>                        
+                    </ul>
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
@@ -155,36 +178,7 @@
                         
                     </ul>
                 </li>
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-bookmark"></i>
-                        <p>
-                            Recrutement
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-
-                                <small>Embauches</small>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-
-                                <small>Débauches</small>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-
-                                <small>Récapitulation</small>
-                            </a>
-                        </li>
-                        
-                    </ul>
-                </li>
+                
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-chart-pie"></i>
@@ -194,12 +188,6 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-
-                                <small>Absence</small>
-                            </a>
-                        </li>   
                         <li class="nav-item">
                             <a href="#" class="nav-link">
 

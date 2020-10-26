@@ -56,7 +56,8 @@ class Employe extends BaseEmploye
 
     public function joinOtherColummns(&$query)
     {
-        $query->useUniteQuery()
+        $query
+        ->useUniteQuery()
         ->withColumn('Unite.designation', 'unite')
             ->useServiceQuery()
             ->withColumn('Service.designation','service')
@@ -70,29 +71,9 @@ class Employe extends BaseEmploye
         ->endUse();
     }
 
-    public function getAllEmployeAsChoice()
-    {
-        $query = EmployeQuery::create()
-        ->withColumn("employe_id")
-        ->withColumn("nom_prenom")
-        ->orderBy("nom_prenom")
-        ->select("employe_id","nom_prenom");
-
-        
-        $referents = $query->find();
-
-        $response = [];
-        foreach ($referents as $key => $child) {
-            $k = $child['nom_prenom'];
-
-            $response[$k] = $child['employe_id'];
-        }
-        return $response;
-    }
-
     public function keyCrud()
     {
-        $departement = (new Departement())->getAllDepartmentAsChoice();
+        $unites = GeneralService::getTargetAsChoice('unite','designation','designation');
         return [
             
             [
@@ -106,7 +87,7 @@ class Employe extends BaseEmploye
             [
                 "path" => "unite_id",
                 "key" => "Nom de l'unite",
-                "value" => [],
+                "value" => $unites,
                 "type" => 'select',
             ],
             [
@@ -143,6 +124,10 @@ class Employe extends BaseEmploye
      */ 
     public function getKeySearch()
     {
+        $direction = GeneralService::getTargetAsChoice('direction','designation');
+        $departement = GeneralService::getTargetAsChoice('departement','designation');
+        $service = GeneralService::getTargetAsChoice('service','designation');
+        $unite = GeneralService::getTargetAsChoice('unite','designation');
         return [
             [
                 "path" => "ref_interne",
@@ -156,10 +141,27 @@ class Employe extends BaseEmploye
             [
                 "path" => "poste",
                 "key" => "Fonction"
-            ],
-            [
-                "path" => "genre",
-                "key" => "Genre"
+            ],[
+                "path" => "unite_id",
+                "key" => "Unité",
+                "type"  => "select",
+                "value" => $unite
+            ],[
+                "path" => "Unite%service_id",
+                "key" => "Service",
+                "type"  => "select",
+                "value" => $service
+            ],[
+                "path" => "Unite%Service%departement_id",
+                "key" => "Département",
+                "type"  => "select",
+                "value" => $departement
+            ]
+            ,[
+                "path" => "Unite%Service%Departement%direction_id",
+                "key" => "Direction",
+                "type"  => "select",
+                "value" => $direction
             ]
         ];
     }

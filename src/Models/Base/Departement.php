@@ -4,13 +4,19 @@ namespace App\Models\Base;
 
 use \Exception;
 use \PDO;
+use App\Models\Debauche as ChildDebauche;
+use App\Models\DebaucheQuery as ChildDebaucheQuery;
 use App\Models\Departement as ChildDepartement;
 use App\Models\DepartementQuery as ChildDepartementQuery;
 use App\Models\Direction as ChildDirection;
 use App\Models\DirectionQuery as ChildDirectionQuery;
+use App\Models\Embauche as ChildEmbauche;
+use App\Models\EmbaucheQuery as ChildEmbaucheQuery;
 use App\Models\Service as ChildService;
 use App\Models\ServiceQuery as ChildServiceQuery;
+use App\Models\Map\DebaucheTableMap;
 use App\Models\Map\DepartementTableMap;
+use App\Models\Map\EmbaucheTableMap;
 use App\Models\Map\ServiceTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -100,6 +106,18 @@ abstract class Departement implements ActiveRecordInterface
     protected $aDirection;
 
     /**
+     * @var        ObjectCollection|ChildDebauche[] Collection to store aggregation of ChildDebauche objects.
+     */
+    protected $collDebauches;
+    protected $collDebauchesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildEmbauche[] Collection to store aggregation of ChildEmbauche objects.
+     */
+    protected $collEmbauches;
+    protected $collEmbauchesPartial;
+
+    /**
      * @var        ObjectCollection|ChildService[] Collection to store aggregation of ChildService objects.
      */
     protected $collServices;
@@ -112,6 +130,18 @@ abstract class Departement implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildDebauche[]
+     */
+    protected $debauchesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildEmbauche[]
+     */
+    protected $embauchesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -588,6 +618,10 @@ abstract class Departement implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aDirection = null;
+            $this->collDebauches = null;
+
+            $this->collEmbauches = null;
+
             $this->collServices = null;
 
         } // if (deep)
@@ -714,6 +748,42 @@ abstract class Departement implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->debauchesScheduledForDeletion !== null) {
+                if (!$this->debauchesScheduledForDeletion->isEmpty()) {
+                    foreach ($this->debauchesScheduledForDeletion as $debauche) {
+                        // need to save related object because we set the relation to null
+                        $debauche->save($con);
+                    }
+                    $this->debauchesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collDebauches !== null) {
+                foreach ($this->collDebauches as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->embauchesScheduledForDeletion !== null) {
+                if (!$this->embauchesScheduledForDeletion->isEmpty()) {
+                    foreach ($this->embauchesScheduledForDeletion as $embauche) {
+                        // need to save related object because we set the relation to null
+                        $embauche->save($con);
+                    }
+                    $this->embauchesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collEmbauches !== null) {
+                foreach ($this->collEmbauches as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->servicesScheduledForDeletion !== null) {
@@ -923,6 +993,36 @@ abstract class Departement implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aDirection->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collDebauches) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'debauches';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'debauches';
+                        break;
+                    default:
+                        $key = 'Debauches';
+                }
+
+                $result[$key] = $this->collDebauches->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collEmbauches) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'embauches';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'embauches';
+                        break;
+                    default:
+                        $key = 'Embauches';
+                }
+
+                $result[$key] = $this->collEmbauches->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collServices) {
 
@@ -1171,6 +1271,18 @@ abstract class Departement implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
+            foreach ($this->getDebauches() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addDebauche($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getEmbauches() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addEmbauche($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getServices() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addService($relObj->copy($deepCopy));
@@ -1269,10 +1381,486 @@ abstract class Departement implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('Debauche' === $relationName) {
+            $this->initDebauches();
+            return;
+        }
+        if ('Embauche' === $relationName) {
+            $this->initEmbauches();
+            return;
+        }
         if ('Service' === $relationName) {
             $this->initServices();
             return;
         }
+    }
+
+    /**
+     * Clears out the collDebauches collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addDebauches()
+     */
+    public function clearDebauches()
+    {
+        $this->collDebauches = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collDebauches collection loaded partially.
+     */
+    public function resetPartialDebauches($v = true)
+    {
+        $this->collDebauchesPartial = $v;
+    }
+
+    /**
+     * Initializes the collDebauches collection.
+     *
+     * By default this just sets the collDebauches collection to an empty array (like clearcollDebauches());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initDebauches($overrideExisting = true)
+    {
+        if (null !== $this->collDebauches && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = DebaucheTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collDebauches = new $collectionClassName;
+        $this->collDebauches->setModel('\App\Models\Debauche');
+    }
+
+    /**
+     * Gets an array of ChildDebauche objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildDepartement is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildDebauche[] List of ChildDebauche objects
+     * @throws PropelException
+     */
+    public function getDebauches(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collDebauchesPartial && !$this->isNew();
+        if (null === $this->collDebauches || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collDebauches) {
+                    $this->initDebauches();
+                } else {
+                    $collectionClassName = DebaucheTableMap::getTableMap()->getCollectionClassName();
+
+                    $collDebauches = new $collectionClassName;
+                    $collDebauches->setModel('\App\Models\Debauche');
+
+                    return $collDebauches;
+                }
+            } else {
+                $collDebauches = ChildDebaucheQuery::create(null, $criteria)
+                    ->filterByDepartement($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collDebauchesPartial && count($collDebauches)) {
+                        $this->initDebauches(false);
+
+                        foreach ($collDebauches as $obj) {
+                            if (false == $this->collDebauches->contains($obj)) {
+                                $this->collDebauches->append($obj);
+                            }
+                        }
+
+                        $this->collDebauchesPartial = true;
+                    }
+
+                    return $collDebauches;
+                }
+
+                if ($partial && $this->collDebauches) {
+                    foreach ($this->collDebauches as $obj) {
+                        if ($obj->isNew()) {
+                            $collDebauches[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collDebauches = $collDebauches;
+                $this->collDebauchesPartial = false;
+            }
+        }
+
+        return $this->collDebauches;
+    }
+
+    /**
+     * Sets a collection of ChildDebauche objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $debauches A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildDepartement The current object (for fluent API support)
+     */
+    public function setDebauches(Collection $debauches, ConnectionInterface $con = null)
+    {
+        /** @var ChildDebauche[] $debauchesToDelete */
+        $debauchesToDelete = $this->getDebauches(new Criteria(), $con)->diff($debauches);
+
+
+        $this->debauchesScheduledForDeletion = $debauchesToDelete;
+
+        foreach ($debauchesToDelete as $debaucheRemoved) {
+            $debaucheRemoved->setDepartement(null);
+        }
+
+        $this->collDebauches = null;
+        foreach ($debauches as $debauche) {
+            $this->addDebauche($debauche);
+        }
+
+        $this->collDebauches = $debauches;
+        $this->collDebauchesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Debauche objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Debauche objects.
+     * @throws PropelException
+     */
+    public function countDebauches(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collDebauchesPartial && !$this->isNew();
+        if (null === $this->collDebauches || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collDebauches) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getDebauches());
+            }
+
+            $query = ChildDebaucheQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByDepartement($this)
+                ->count($con);
+        }
+
+        return count($this->collDebauches);
+    }
+
+    /**
+     * Method called to associate a ChildDebauche object to this object
+     * through the ChildDebauche foreign key attribute.
+     *
+     * @param  ChildDebauche $l ChildDebauche
+     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     */
+    public function addDebauche(ChildDebauche $l)
+    {
+        if ($this->collDebauches === null) {
+            $this->initDebauches();
+            $this->collDebauchesPartial = true;
+        }
+
+        if (!$this->collDebauches->contains($l)) {
+            $this->doAddDebauche($l);
+
+            if ($this->debauchesScheduledForDeletion and $this->debauchesScheduledForDeletion->contains($l)) {
+                $this->debauchesScheduledForDeletion->remove($this->debauchesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildDebauche $debauche The ChildDebauche object to add.
+     */
+    protected function doAddDebauche(ChildDebauche $debauche)
+    {
+        $this->collDebauches[]= $debauche;
+        $debauche->setDepartement($this);
+    }
+
+    /**
+     * @param  ChildDebauche $debauche The ChildDebauche object to remove.
+     * @return $this|ChildDepartement The current object (for fluent API support)
+     */
+    public function removeDebauche(ChildDebauche $debauche)
+    {
+        if ($this->getDebauches()->contains($debauche)) {
+            $pos = $this->collDebauches->search($debauche);
+            $this->collDebauches->remove($pos);
+            if (null === $this->debauchesScheduledForDeletion) {
+                $this->debauchesScheduledForDeletion = clone $this->collDebauches;
+                $this->debauchesScheduledForDeletion->clear();
+            }
+            $this->debauchesScheduledForDeletion[]= $debauche;
+            $debauche->setDepartement(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collEmbauches collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addEmbauches()
+     */
+    public function clearEmbauches()
+    {
+        $this->collEmbauches = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collEmbauches collection loaded partially.
+     */
+    public function resetPartialEmbauches($v = true)
+    {
+        $this->collEmbauchesPartial = $v;
+    }
+
+    /**
+     * Initializes the collEmbauches collection.
+     *
+     * By default this just sets the collEmbauches collection to an empty array (like clearcollEmbauches());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initEmbauches($overrideExisting = true)
+    {
+        if (null !== $this->collEmbauches && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = EmbaucheTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collEmbauches = new $collectionClassName;
+        $this->collEmbauches->setModel('\App\Models\Embauche');
+    }
+
+    /**
+     * Gets an array of ChildEmbauche objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildDepartement is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildEmbauche[] List of ChildEmbauche objects
+     * @throws PropelException
+     */
+    public function getEmbauches(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collEmbauchesPartial && !$this->isNew();
+        if (null === $this->collEmbauches || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collEmbauches) {
+                    $this->initEmbauches();
+                } else {
+                    $collectionClassName = EmbaucheTableMap::getTableMap()->getCollectionClassName();
+
+                    $collEmbauches = new $collectionClassName;
+                    $collEmbauches->setModel('\App\Models\Embauche');
+
+                    return $collEmbauches;
+                }
+            } else {
+                $collEmbauches = ChildEmbaucheQuery::create(null, $criteria)
+                    ->filterByDepartement($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collEmbauchesPartial && count($collEmbauches)) {
+                        $this->initEmbauches(false);
+
+                        foreach ($collEmbauches as $obj) {
+                            if (false == $this->collEmbauches->contains($obj)) {
+                                $this->collEmbauches->append($obj);
+                            }
+                        }
+
+                        $this->collEmbauchesPartial = true;
+                    }
+
+                    return $collEmbauches;
+                }
+
+                if ($partial && $this->collEmbauches) {
+                    foreach ($this->collEmbauches as $obj) {
+                        if ($obj->isNew()) {
+                            $collEmbauches[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collEmbauches = $collEmbauches;
+                $this->collEmbauchesPartial = false;
+            }
+        }
+
+        return $this->collEmbauches;
+    }
+
+    /**
+     * Sets a collection of ChildEmbauche objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $embauches A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildDepartement The current object (for fluent API support)
+     */
+    public function setEmbauches(Collection $embauches, ConnectionInterface $con = null)
+    {
+        /** @var ChildEmbauche[] $embauchesToDelete */
+        $embauchesToDelete = $this->getEmbauches(new Criteria(), $con)->diff($embauches);
+
+
+        $this->embauchesScheduledForDeletion = $embauchesToDelete;
+
+        foreach ($embauchesToDelete as $embaucheRemoved) {
+            $embaucheRemoved->setDepartement(null);
+        }
+
+        $this->collEmbauches = null;
+        foreach ($embauches as $embauche) {
+            $this->addEmbauche($embauche);
+        }
+
+        $this->collEmbauches = $embauches;
+        $this->collEmbauchesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Embauche objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Embauche objects.
+     * @throws PropelException
+     */
+    public function countEmbauches(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collEmbauchesPartial && !$this->isNew();
+        if (null === $this->collEmbauches || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collEmbauches) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getEmbauches());
+            }
+
+            $query = ChildEmbaucheQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByDepartement($this)
+                ->count($con);
+        }
+
+        return count($this->collEmbauches);
+    }
+
+    /**
+     * Method called to associate a ChildEmbauche object to this object
+     * through the ChildEmbauche foreign key attribute.
+     *
+     * @param  ChildEmbauche $l ChildEmbauche
+     * @return $this|\App\Models\Departement The current object (for fluent API support)
+     */
+    public function addEmbauche(ChildEmbauche $l)
+    {
+        if ($this->collEmbauches === null) {
+            $this->initEmbauches();
+            $this->collEmbauchesPartial = true;
+        }
+
+        if (!$this->collEmbauches->contains($l)) {
+            $this->doAddEmbauche($l);
+
+            if ($this->embauchesScheduledForDeletion and $this->embauchesScheduledForDeletion->contains($l)) {
+                $this->embauchesScheduledForDeletion->remove($this->embauchesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildEmbauche $embauche The ChildEmbauche object to add.
+     */
+    protected function doAddEmbauche(ChildEmbauche $embauche)
+    {
+        $this->collEmbauches[]= $embauche;
+        $embauche->setDepartement($this);
+    }
+
+    /**
+     * @param  ChildEmbauche $embauche The ChildEmbauche object to remove.
+     * @return $this|ChildDepartement The current object (for fluent API support)
+     */
+    public function removeEmbauche(ChildEmbauche $embauche)
+    {
+        if ($this->getEmbauches()->contains($embauche)) {
+            $pos = $this->collEmbauches->search($embauche);
+            $this->collEmbauches->remove($pos);
+            if (null === $this->embauchesScheduledForDeletion) {
+                $this->embauchesScheduledForDeletion = clone $this->collEmbauches;
+                $this->embauchesScheduledForDeletion->clear();
+            }
+            $this->embauchesScheduledForDeletion[]= $embauche;
+            $embauche->setDepartement(null);
+        }
+
+        return $this;
     }
 
     /**
@@ -1541,6 +2129,16 @@ abstract class Departement implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collDebauches) {
+                foreach ($this->collDebauches as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collEmbauches) {
+                foreach ($this->collEmbauches as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collServices) {
                 foreach ($this->collServices as $o) {
                     $o->clearAllReferences($deep);
@@ -1548,6 +2146,8 @@ abstract class Departement implements ActiveRecordInterface
             }
         } // if ($deep)
 
+        $this->collDebauches = null;
+        $this->collEmbauches = null;
         $this->collServices = null;
         $this->aDirection = null;
     }

@@ -151,7 +151,7 @@ class Pointage extends BasePointage
 
     public function keyCrud()
     {
-        $employe = (new Employe())->getAllEmployeAsChoice();
+        $employe = GeneralService::getTargetAsChoice('employe','nom_prenom','nom_prenom');
         return [
             [
                 "path" => "employe_id",

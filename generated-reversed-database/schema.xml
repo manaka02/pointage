@@ -42,6 +42,26 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
+  <table name="debauche" idMethod="native" phpName="Debauche">
+    <column name="debauche_id" phpName="DebaucheId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="ref_interne" phpName="RefInterne" type="INTEGER" required="true"/>
+    <column name="nom_prenom" phpName="NomPrenom" type="INTEGER" required="true"/>
+    <column name="fonction" phpName="Fonction" type="INTEGER" required="true"/>
+    <column name="departement_id" phpName="DepartementId" type="INTEGER"/>
+    <column name="date_embauche" phpName="DateEmbauche" type="INTEGER"/>
+    <column name="date_depart" phpName="DateDepart" type="INTEGER" required="true"/>
+    <column name="raisons" phpName="Raisons" type="INTEGER" required="true"/>
+    <column name="motif" phpName="Motif" type="INTEGER"/>
+    <foreign-key foreignTable="departement" name="fk_fk_debauche_departement">
+      <reference local="departement_id" foreign="departement_id"/>
+    </foreign-key>
+    <index name="fk_fk_debauche_departement">
+      <index-column name="departement_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
   <table name="departement" idMethod="native" phpName="Departement">
     <column name="departement_id" phpName="DepartementId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="direction_id" phpName="DirectionId" type="INTEGER" required="true"/>
@@ -61,6 +81,27 @@
     <column name="direction_id" phpName="DirectionId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="designation" phpName="Designation" type="VARCHAR" size="250" required="true"/>
     <column name="description" phpName="Description" type="LONGVARCHAR"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="embauche" idMethod="native" phpName="Embauche">
+    <column name="embauche_id" phpName="EmbaucheId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="civilite" phpName="Civilite" type="VARCHAR" size="10"/>
+    <column name="ref_interne" phpName="RefInterne" type="VARCHAR" size="250" required="true"/>
+    <column name="nom_prenom" phpName="NomPrenom" type="VARCHAR" size="250" required="true"/>
+    <column name="photo_link" phpName="PhotoLink" type="VARCHAR" size="250"/>
+    <column name="fonction" phpName="Fonction" type="VARCHAR" size="250" required="true"/>
+    <column name="departement_id" phpName="DepartementId" type="INTEGER"/>
+    <column name="date_debut" phpName="DateDebut" type="DATE" required="true"/>
+    <column name="date_fin" phpName="DateFin" type="DATE"/>
+    <column name="status" phpName="Status" type="INTEGER" required="true" defaultValue="1"/>
+    <foreign-key foreignTable="departement" name="fk_fk_embauche_departement">
+      <reference local="departement_id" foreign="departement_id"/>
+    </foreign-key>
+    <index name="fk_fk_embauche_departement">
+      <index-column name="departement_id"/>
+    </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>

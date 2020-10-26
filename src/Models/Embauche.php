@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Services\GeneralService;
-use App\Models\Base\Service as BaseService;
+use App\Models\Base\Embauche as BaseEmbauche;
 
 /**
- * Skeleton subclass for representing a row from the 'service' table.
+ * Skeleton subclass for representing a row from the 'embauche' table.
  *
  *
  *
@@ -14,7 +14,7 @@ use App\Models\Base\Service as BaseService;
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  */
-class Service extends BaseService
+class Embauche extends BaseEmbauche
 {
     private $addmore = true;
 
@@ -25,22 +25,17 @@ class Service extends BaseService
 
     public function getTitle()
     {
-        return "Service";
+        return "Embauche";
     }
 
     public function joinOtherColummns(&$query)
     {
         $query   
                 ->useDepartementQuery()
-                ->withColumn('Departement.designation','departement')
-                    ->useDirectionQuery()
-                    ->withColumn('Direction.designation', 'direction')
-                    ->endUse()
+                ->withColumn('Departement.designation','departement')            
                 ->endUse();
             
     }
-
-
 
     public function keyCrud()
     {
@@ -48,53 +43,87 @@ class Service extends BaseService
         return [
             
             [
-                "path" => "designation",
-                "key" => "Désignation"
+                "path" => "civilite",
+                "key" => "Civilité"
             ],
             [
-                "path" => "description",
-                "key" => "Déscription"
-            ],[
+                "path" => "ref_interne",
+                "key" => "N° matricule"
+            ],
+            [
+                "path" => "nom_prenom",
+                "key" => "Nom & prénoms"
+            ],
+            [
+                "path" => "fonction",
+                "key" => "Fonction"
+            ],
+            [
                 "path" => "departement_id",
                 "key" => "Département",
                 "value" => $departement,
                 "type" => 'select',
+            ],
+            [
+                "path" => "date_debut",
+                "key" => "Date de début",
+                "type" => "date"
+            ],
+            [
+                "path" => "date_fin",
+                "key" => "Date fin",
+                "type" => "date"
             ]
             ];
     }
 
     public function getKeySearch()
     {
-        $direction = GeneralService::getTargetAsChoice('direction','designation');
         $departement = GeneralService::getTargetAsChoice('departement','designation');
         return [
+            
             [
-                "path" => "designation",
-                "key" => "designation",
-                
-            ],[
+                "path" => "civilite",
+                "key" => "Civilité"
+            ],
+            [
+                "path" => "ref_interne",
+                "key" => "N° matricule"
+            ],
+            [
+                "path" => "nom_prenom",
+                "key" => "Nom & prénoms"
+            ],
+            [
+                "path" => "fonction",
+                "key" => "Fonction"
+            ],
+            [
                 "path" => "departement_id",
-                "key" => "Départment",
-                "type"  => "select",
-                "value" => $departement
-            ],[
-                "path" => "Departement%direction_id",
-                "key" => "Direction",
-                "type"  => "select",
-                "value" => $direction
+                "key" => "Département",
+                "value" => $departement,
+                "type" => 'select',
+            ],
+            [
+                "path" => "date_debut",
+                "key" => "Date de début",
+                "type" => "date"
             ]
         ];
     }
 
     private $keyToShow =[
-        "designation","departement","direction", "description"
+        "ref_interne","civilite","nom_prenom", "fonction", "departement_id", "date_debut"
    ];
 
    private $keyText = [
-       "Désignation",
+       
+       "N° matricule",
+       "Civilité",
+       "Nom & prénoms",
+       "fonction",
        "Département",
-       "Direction",
-       "Description"
+       "date début"
 
    ];
 

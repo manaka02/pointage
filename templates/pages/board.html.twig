@@ -23,12 +23,12 @@
     <div class="row mt-2">
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box">
-          <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+          <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
 
           <div class="info-box-content">
             <span class="info-box-text">Effectif total</span>
-            <span class="info-box-number">
-              2096
+            <span class="info-box-number h2 text-muted">
+              2 096
             </span>
           </div>
           <!-- /.info-box-content -->
@@ -38,11 +38,11 @@
       <!-- /.col -->
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
-          <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
+          <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-users-cog"></i></span>
 
           <div class="info-box-content">
             <span class="info-box-text">MC Effectif</span>
-            <span class="info-box-number">1420</span>
+            <span class="info-box-number h2 text-muted">1 420</span>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -55,11 +55,11 @@
 
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
-          <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+          <span class="info-box-icon bg-success elevation-1"><i class="fas fa-users"></i></span>
 
           <div class="info-box-content">
             <span class="info-box-text">Total Présent</span>
-            <span class="info-box-number">2025</span>
+            <span class="info-box-number h2 text-muted">2 025</span>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -68,11 +68,11 @@
       <!-- /.col -->
       <div class="col-12 col-sm-6 col-md-3">
         <div class="info-box mb-3">
-          <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+          <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users-cog"></i></span>
 
           <div class="info-box-content">
             <span class="info-box-text">MC Présent</span>
-            <span class="info-box-number">1345</span>
+            <span class="info-box-number h2 text-muted">1 345</span>
           </div>
           <!-- /.info-box-content -->
         </div>
@@ -90,13 +90,13 @@
       <div class="card-tools">
         <div class="btn-group btn-group-toggle  text-right" data-toggle="buttons">
           <label class="btn  btn-flat btn-default  font-weight-normal">
-            <input type="radio" name="options" id="randomizeData" autocomplete="off" checked=""> 30 derniers jours
+            <input type="radio" name="options" id="30_days" autocomplete="off" checked=""> 30 derniers jours
           </label>
           <label class="btn btn-flat btn-default  font-weight-normal">
-            <input type="radio" name="options" id="addDataset" autocomplete="off"> 15 derniers jours
+            <input type="radio" name="options" id="15_days" autocomplete="off"> 15 derniers jours
           </label>
           <label class="btn  btn-flat btn-default font-weight-normal">
-            <input type="radio" name="options" id="removeDataset" autocomplete="off"> 7 derniers jours
+            <input type="radio" name="options" id="7_days" autocomplete="off"> 7 derniers jours
           </label>
         </div>
       </div>
@@ -120,7 +120,7 @@
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Par département (7 derniers jours)</h3>
+          <h3 class="card-title">Par département (Mois Octobre)</h3>
         </div>
         <!-- /.card-header -->
         <div class="card-body">
@@ -211,18 +211,13 @@
 
   (function (global) {
     var MONTHS = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
+      '17 oct 2020',
+      '18 oct 2020',
+      '19 oct 2020',
+      '20 oct 2020',
+      '21 oct 2020',
+      '22 oct 2020',
+      '23 oct 2020',
     ];
 
     var COLORS = [
@@ -347,11 +342,24 @@
 
   }(this));
 
-  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var MONTHS = 
+  ['17 oct 2020',
+  '18 oct 2020',
+  '19 oct 2020',
+  '20 oct 2020',
+  '21 oct 2020',
+  '22 oct 2020',
+  '23 oct 2020'];
   var config = {
     type: 'line',
     data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels: ['17 oct 2020',
+      '18 oct 2020',
+      '19 oct 2020',
+      '20 oct 2020',
+      '21 oct 2020',
+      '22 oct 2020',
+      '23 oct 2020'],
       datasets: [{
         label: 'Congés',
         backgroundColor: window.chartColors.red,
@@ -428,9 +436,9 @@
 		var configradar = {
 			type: 'radar',
 			data: {
-				labels: [['Eating', 'Dinner'], ['Drinking', 'Water'], 'Sleeping', ['Designing', 'Graphics'], 'Coding', 'Cycling', 'Running'],
+				labels: ['Congé','Retard','Permission','Absence','heure Sup'],
 				datasets: [{
-					label: 'My First dataset',
+					label: 'Mois d\'Octobre',
 					backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
 					borderColor: window.chartColors.red,
 					pointBackgroundColor: window.chartColors.red,
@@ -439,12 +447,11 @@
 						randomScalingFactor(),
 						randomScalingFactor(),
 						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
 						randomScalingFactor()
+						
 					]
 				}, {
-					label: 'My Second dataset',
+					label: 'Mois de Séptembre',
 					backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
 					borderColor: window.chartColors.blue,
 					pointBackgroundColor: window.chartColors.blue,
@@ -453,9 +460,8 @@
 						randomScalingFactor(),
 						randomScalingFactor(),
 						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
 						randomScalingFactor()
+
 					]
 				}]
 			},
