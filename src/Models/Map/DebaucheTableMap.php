@@ -58,7 +58,7 @@ class DebaucheTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 11;
 
     /**
      * The number of lazy-loaded columns
@@ -68,12 +68,17 @@ class DebaucheTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
+    const NUM_HYDRATE_COLUMNS = 11;
 
     /**
      * the column name for the debauche_id field
      */
     const COL_DEBAUCHE_ID = 'debauche.debauche_id';
+
+    /**
+     * the column name for the civilite field
+     */
+    const COL_CIVILITE = 'debauche.civilite';
 
     /**
      * the column name for the ref_interne field
@@ -94,6 +99,11 @@ class DebaucheTableMap extends TableMap
      * the column name for the departement_id field
      */
     const COL_DEPARTEMENT_ID = 'debauche.departement_id';
+
+    /**
+     * the column name for the photo_link field
+     */
+    const COL_PHOTO_LINK = 'debauche.photo_link';
 
     /**
      * the column name for the date_embauche field
@@ -127,11 +137,11 @@ class DebaucheTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('DebaucheId', 'RefInterne', 'NomPrenom', 'Fonction', 'DepartementId', 'DateEmbauche', 'DateDepart', 'Raisons', 'Motif', ),
-        self::TYPE_CAMELNAME     => array('debaucheId', 'refInterne', 'nomPrenom', 'fonction', 'departementId', 'dateEmbauche', 'dateDepart', 'raisons', 'motif', ),
-        self::TYPE_COLNAME       => array(DebaucheTableMap::COL_DEBAUCHE_ID, DebaucheTableMap::COL_REF_INTERNE, DebaucheTableMap::COL_NOM_PRENOM, DebaucheTableMap::COL_FONCTION, DebaucheTableMap::COL_DEPARTEMENT_ID, DebaucheTableMap::COL_DATE_EMBAUCHE, DebaucheTableMap::COL_DATE_DEPART, DebaucheTableMap::COL_RAISONS, DebaucheTableMap::COL_MOTIF, ),
-        self::TYPE_FIELDNAME     => array('debauche_id', 'ref_interne', 'nom_prenom', 'fonction', 'departement_id', 'date_embauche', 'date_depart', 'raisons', 'motif', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('DebaucheId', 'Civilite', 'RefInterne', 'NomPrenom', 'Fonction', 'DepartementId', 'PhotoLink', 'DateEmbauche', 'DateDepart', 'Raisons', 'Motif', ),
+        self::TYPE_CAMELNAME     => array('debaucheId', 'civilite', 'refInterne', 'nomPrenom', 'fonction', 'departementId', 'photoLink', 'dateEmbauche', 'dateDepart', 'raisons', 'motif', ),
+        self::TYPE_COLNAME       => array(DebaucheTableMap::COL_DEBAUCHE_ID, DebaucheTableMap::COL_CIVILITE, DebaucheTableMap::COL_REF_INTERNE, DebaucheTableMap::COL_NOM_PRENOM, DebaucheTableMap::COL_FONCTION, DebaucheTableMap::COL_DEPARTEMENT_ID, DebaucheTableMap::COL_PHOTO_LINK, DebaucheTableMap::COL_DATE_EMBAUCHE, DebaucheTableMap::COL_DATE_DEPART, DebaucheTableMap::COL_RAISONS, DebaucheTableMap::COL_MOTIF, ),
+        self::TYPE_FIELDNAME     => array('debauche_id', 'civilite', 'ref_interne', 'nom_prenom', 'fonction', 'departement_id', 'photo_link', 'date_embauche', 'date_depart', 'raisons', 'motif', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -141,11 +151,11 @@ class DebaucheTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('DebaucheId' => 0, 'RefInterne' => 1, 'NomPrenom' => 2, 'Fonction' => 3, 'DepartementId' => 4, 'DateEmbauche' => 5, 'DateDepart' => 6, 'Raisons' => 7, 'Motif' => 8, ),
-        self::TYPE_CAMELNAME     => array('debaucheId' => 0, 'refInterne' => 1, 'nomPrenom' => 2, 'fonction' => 3, 'departementId' => 4, 'dateEmbauche' => 5, 'dateDepart' => 6, 'raisons' => 7, 'motif' => 8, ),
-        self::TYPE_COLNAME       => array(DebaucheTableMap::COL_DEBAUCHE_ID => 0, DebaucheTableMap::COL_REF_INTERNE => 1, DebaucheTableMap::COL_NOM_PRENOM => 2, DebaucheTableMap::COL_FONCTION => 3, DebaucheTableMap::COL_DEPARTEMENT_ID => 4, DebaucheTableMap::COL_DATE_EMBAUCHE => 5, DebaucheTableMap::COL_DATE_DEPART => 6, DebaucheTableMap::COL_RAISONS => 7, DebaucheTableMap::COL_MOTIF => 8, ),
-        self::TYPE_FIELDNAME     => array('debauche_id' => 0, 'ref_interne' => 1, 'nom_prenom' => 2, 'fonction' => 3, 'departement_id' => 4, 'date_embauche' => 5, 'date_depart' => 6, 'raisons' => 7, 'motif' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('DebaucheId' => 0, 'Civilite' => 1, 'RefInterne' => 2, 'NomPrenom' => 3, 'Fonction' => 4, 'DepartementId' => 5, 'PhotoLink' => 6, 'DateEmbauche' => 7, 'DateDepart' => 8, 'Raisons' => 9, 'Motif' => 10, ),
+        self::TYPE_CAMELNAME     => array('debaucheId' => 0, 'civilite' => 1, 'refInterne' => 2, 'nomPrenom' => 3, 'fonction' => 4, 'departementId' => 5, 'photoLink' => 6, 'dateEmbauche' => 7, 'dateDepart' => 8, 'raisons' => 9, 'motif' => 10, ),
+        self::TYPE_COLNAME       => array(DebaucheTableMap::COL_DEBAUCHE_ID => 0, DebaucheTableMap::COL_CIVILITE => 1, DebaucheTableMap::COL_REF_INTERNE => 2, DebaucheTableMap::COL_NOM_PRENOM => 3, DebaucheTableMap::COL_FONCTION => 4, DebaucheTableMap::COL_DEPARTEMENT_ID => 5, DebaucheTableMap::COL_PHOTO_LINK => 6, DebaucheTableMap::COL_DATE_EMBAUCHE => 7, DebaucheTableMap::COL_DATE_DEPART => 8, DebaucheTableMap::COL_RAISONS => 9, DebaucheTableMap::COL_MOTIF => 10, ),
+        self::TYPE_FIELDNAME     => array('debauche_id' => 0, 'civilite' => 1, 'ref_interne' => 2, 'nom_prenom' => 3, 'fonction' => 4, 'departement_id' => 5, 'photo_link' => 6, 'date_embauche' => 7, 'date_depart' => 8, 'raisons' => 9, 'motif' => 10, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -166,14 +176,16 @@ class DebaucheTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('debauche_id', 'DebaucheId', 'INTEGER', true, null, null);
-        $this->addColumn('ref_interne', 'RefInterne', 'INTEGER', true, null, null);
-        $this->addColumn('nom_prenom', 'NomPrenom', 'INTEGER', true, null, null);
-        $this->addColumn('fonction', 'Fonction', 'INTEGER', true, null, null);
+        $this->addColumn('civilite', 'Civilite', 'VARCHAR', true, 10, null);
+        $this->addColumn('ref_interne', 'RefInterne', 'VARCHAR', true, 250, null);
+        $this->addColumn('nom_prenom', 'NomPrenom', 'VARCHAR', true, 250, null);
+        $this->addColumn('fonction', 'Fonction', 'VARCHAR', true, 250, null);
         $this->addForeignKey('departement_id', 'DepartementId', 'INTEGER', 'departement', 'departement_id', false, null, null);
-        $this->addColumn('date_embauche', 'DateEmbauche', 'INTEGER', false, null, null);
-        $this->addColumn('date_depart', 'DateDepart', 'INTEGER', true, null, null);
-        $this->addColumn('raisons', 'Raisons', 'INTEGER', true, null, null);
-        $this->addColumn('motif', 'Motif', 'INTEGER', false, null, null);
+        $this->addColumn('photo_link', 'PhotoLink', 'VARCHAR', true, 250, null);
+        $this->addColumn('date_embauche', 'DateEmbauche', 'DATE', false, null, null);
+        $this->addColumn('date_depart', 'DateDepart', 'DATE', true, null, null);
+        $this->addColumn('raisons', 'Raisons', 'VARCHAR', true, 250, null);
+        $this->addColumn('motif', 'Motif', 'VARCHAR', false, 250, null);
     } // initialize()
 
     /**
@@ -332,20 +344,24 @@ class DebaucheTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(DebaucheTableMap::COL_DEBAUCHE_ID);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_CIVILITE);
             $criteria->addSelectColumn(DebaucheTableMap::COL_REF_INTERNE);
             $criteria->addSelectColumn(DebaucheTableMap::COL_NOM_PRENOM);
             $criteria->addSelectColumn(DebaucheTableMap::COL_FONCTION);
             $criteria->addSelectColumn(DebaucheTableMap::COL_DEPARTEMENT_ID);
+            $criteria->addSelectColumn(DebaucheTableMap::COL_PHOTO_LINK);
             $criteria->addSelectColumn(DebaucheTableMap::COL_DATE_EMBAUCHE);
             $criteria->addSelectColumn(DebaucheTableMap::COL_DATE_DEPART);
             $criteria->addSelectColumn(DebaucheTableMap::COL_RAISONS);
             $criteria->addSelectColumn(DebaucheTableMap::COL_MOTIF);
         } else {
             $criteria->addSelectColumn($alias . '.debauche_id');
+            $criteria->addSelectColumn($alias . '.civilite');
             $criteria->addSelectColumn($alias . '.ref_interne');
             $criteria->addSelectColumn($alias . '.nom_prenom');
             $criteria->addSelectColumn($alias . '.fonction');
             $criteria->addSelectColumn($alias . '.departement_id');
+            $criteria->addSelectColumn($alias . '.photo_link');
             $criteria->addSelectColumn($alias . '.date_embauche');
             $criteria->addSelectColumn($alias . '.date_depart');
             $criteria->addSelectColumn($alias . '.raisons');

@@ -89,11 +89,7 @@ class Debauche extends BaseDebauche
     {
         $departement = GeneralService::getTargetAsChoice('departement','designation');
         return [
-            
-            [
-                "path" => "civilite",
-                "key" => "Civilité"
-            ],
+
             [
                 "path" => "ref_interne",
                 "key" => "N° matricule"

@@ -2,6 +2,7 @@
 
 namespace App\Models\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use App\Models\DebaucheQuery as ChildDebaucheQuery;
@@ -19,6 +20,7 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
  * Base class that represents a row from the 'debauche' table.
@@ -69,23 +71,30 @@ abstract class Debauche implements ActiveRecordInterface
     protected $debauche_id;
 
     /**
+     * The value for the civilite field.
+     *
+     * @var        string
+     */
+    protected $civilite;
+
+    /**
      * The value for the ref_interne field.
      *
-     * @var        int
+     * @var        string
      */
     protected $ref_interne;
 
     /**
      * The value for the nom_prenom field.
      *
-     * @var        int
+     * @var        string
      */
     protected $nom_prenom;
 
     /**
      * The value for the fonction field.
      *
-     * @var        int
+     * @var        string
      */
     protected $fonction;
 
@@ -97,30 +106,37 @@ abstract class Debauche implements ActiveRecordInterface
     protected $departement_id;
 
     /**
+     * The value for the photo_link field.
+     *
+     * @var        string
+     */
+    protected $photo_link;
+
+    /**
      * The value for the date_embauche field.
      *
-     * @var        int
+     * @var        DateTime
      */
     protected $date_embauche;
 
     /**
      * The value for the date_depart field.
      *
-     * @var        int
+     * @var        DateTime
      */
     protected $date_depart;
 
     /**
      * The value for the raisons field.
      *
-     * @var        int
+     * @var        string
      */
     protected $raisons;
 
     /**
      * The value for the motif field.
      *
-     * @var        int
+     * @var        string
      */
     protected $motif;
 
@@ -373,9 +389,19 @@ abstract class Debauche implements ActiveRecordInterface
     }
 
     /**
+     * Get the [civilite] column value.
+     *
+     * @return string
+     */
+    public function getCivilite()
+    {
+        return $this->civilite;
+    }
+
+    /**
      * Get the [ref_interne] column value.
      *
-     * @return int
+     * @return string
      */
     public function getRefInterne()
     {
@@ -385,7 +411,7 @@ abstract class Debauche implements ActiveRecordInterface
     /**
      * Get the [nom_prenom] column value.
      *
-     * @return int
+     * @return string
      */
     public function getNomPrenom()
     {
@@ -395,7 +421,7 @@ abstract class Debauche implements ActiveRecordInterface
     /**
      * Get the [fonction] column value.
      *
-     * @return int
+     * @return string
      */
     public function getFonction()
     {
@@ -413,29 +439,59 @@ abstract class Debauche implements ActiveRecordInterface
     }
 
     /**
-     * Get the [date_embauche] column value.
+     * Get the [photo_link] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getDateEmbauche()
+    public function getPhotoLink()
     {
-        return $this->date_embauche;
+        return $this->photo_link;
     }
 
     /**
-     * Get the [date_depart] column value.
+     * Get the [optionally formatted] temporal [date_embauche] column value.
      *
-     * @return int
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getDateDepart()
+    public function getDateEmbauche($format = NULL)
     {
-        return $this->date_depart;
+        if ($format === null) {
+            return $this->date_embauche;
+        } else {
+            return $this->date_embauche instanceof \DateTimeInterface ? $this->date_embauche->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [date_depart] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getDateDepart($format = NULL)
+    {
+        if ($format === null) {
+            return $this->date_depart;
+        } else {
+            return $this->date_depart instanceof \DateTimeInterface ? $this->date_depart->format($format) : null;
+        }
     }
 
     /**
      * Get the [raisons] column value.
      *
-     * @return int
+     * @return string
      */
     public function getRaisons()
     {
@@ -445,7 +501,7 @@ abstract class Debauche implements ActiveRecordInterface
     /**
      * Get the [motif] column value.
      *
-     * @return int
+     * @return string
      */
     public function getMotif()
     {
@@ -473,15 +529,35 @@ abstract class Debauche implements ActiveRecordInterface
     } // setDebaucheId()
 
     /**
+     * Set the value of [civilite] column.
+     *
+     * @param string $v New value
+     * @return $this|\App\Models\Debauche The current object (for fluent API support)
+     */
+    public function setCivilite($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->civilite !== $v) {
+            $this->civilite = $v;
+            $this->modifiedColumns[DebaucheTableMap::COL_CIVILITE] = true;
+        }
+
+        return $this;
+    } // setCivilite()
+
+    /**
      * Set the value of [ref_interne] column.
      *
-     * @param int $v New value
+     * @param string $v New value
      * @return $this|\App\Models\Debauche The current object (for fluent API support)
      */
     public function setRefInterne($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
         if ($this->ref_interne !== $v) {
@@ -495,13 +571,13 @@ abstract class Debauche implements ActiveRecordInterface
     /**
      * Set the value of [nom_prenom] column.
      *
-     * @param int $v New value
+     * @param string $v New value
      * @return $this|\App\Models\Debauche The current object (for fluent API support)
      */
     public function setNomPrenom($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
         if ($this->nom_prenom !== $v) {
@@ -515,13 +591,13 @@ abstract class Debauche implements ActiveRecordInterface
     /**
      * Set the value of [fonction] column.
      *
-     * @param int $v New value
+     * @param string $v New value
      * @return $this|\App\Models\Debauche The current object (for fluent API support)
      */
     public function setFonction($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
         if ($this->fonction !== $v) {
@@ -557,41 +633,61 @@ abstract class Debauche implements ActiveRecordInterface
     } // setDepartementId()
 
     /**
-     * Set the value of [date_embauche] column.
+     * Set the value of [photo_link] column.
      *
-     * @param int|null $v New value
+     * @param string $v New value
+     * @return $this|\App\Models\Debauche The current object (for fluent API support)
+     */
+    public function setPhotoLink($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->photo_link !== $v) {
+            $this->photo_link = $v;
+            $this->modifiedColumns[DebaucheTableMap::COL_PHOTO_LINK] = true;
+        }
+
+        return $this;
+    } // setPhotoLink()
+
+    /**
+     * Sets the value of [date_embauche] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
      * @return $this|\App\Models\Debauche The current object (for fluent API support)
      */
     public function setDateEmbauche($v)
     {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->date_embauche !== $v) {
-            $this->date_embauche = $v;
-            $this->modifiedColumns[DebaucheTableMap::COL_DATE_EMBAUCHE] = true;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->date_embauche !== null || $dt !== null) {
+            if ($this->date_embauche === null || $dt === null || $dt->format("Y-m-d") !== $this->date_embauche->format("Y-m-d")) {
+                $this->date_embauche = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[DebaucheTableMap::COL_DATE_EMBAUCHE] = true;
+            }
+        } // if either are not null
 
         return $this;
     } // setDateEmbauche()
 
     /**
-     * Set the value of [date_depart] column.
+     * Sets the value of [date_depart] column to a normalized version of the date/time value specified.
      *
-     * @param int $v New value
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
      * @return $this|\App\Models\Debauche The current object (for fluent API support)
      */
     public function setDateDepart($v)
     {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->date_depart !== $v) {
-            $this->date_depart = $v;
-            $this->modifiedColumns[DebaucheTableMap::COL_DATE_DEPART] = true;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->date_depart !== null || $dt !== null) {
+            if ($this->date_depart === null || $dt === null || $dt->format("Y-m-d") !== $this->date_depart->format("Y-m-d")) {
+                $this->date_depart = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[DebaucheTableMap::COL_DATE_DEPART] = true;
+            }
+        } // if either are not null
 
         return $this;
     } // setDateDepart()
@@ -599,13 +695,13 @@ abstract class Debauche implements ActiveRecordInterface
     /**
      * Set the value of [raisons] column.
      *
-     * @param int $v New value
+     * @param string $v New value
      * @return $this|\App\Models\Debauche The current object (for fluent API support)
      */
     public function setRaisons($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
         if ($this->raisons !== $v) {
@@ -619,13 +715,13 @@ abstract class Debauche implements ActiveRecordInterface
     /**
      * Set the value of [motif] column.
      *
-     * @param int|null $v New value
+     * @param string|null $v New value
      * @return $this|\App\Models\Debauche The current object (for fluent API support)
      */
     public function setMotif($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
         if ($this->motif !== $v) {
@@ -675,29 +771,41 @@ abstract class Debauche implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : DebaucheTableMap::translateFieldName('DebaucheId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->debauche_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DebaucheTableMap::translateFieldName('RefInterne', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->ref_interne = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DebaucheTableMap::translateFieldName('Civilite', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->civilite = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DebaucheTableMap::translateFieldName('NomPrenom', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->nom_prenom = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DebaucheTableMap::translateFieldName('RefInterne', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->ref_interne = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DebaucheTableMap::translateFieldName('Fonction', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->fonction = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DebaucheTableMap::translateFieldName('NomPrenom', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->nom_prenom = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : DebaucheTableMap::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : DebaucheTableMap::translateFieldName('Fonction', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->fonction = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : DebaucheTableMap::translateFieldName('DepartementId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->departement_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : DebaucheTableMap::translateFieldName('DateEmbauche', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->date_embauche = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : DebaucheTableMap::translateFieldName('PhotoLink', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->photo_link = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : DebaucheTableMap::translateFieldName('DateDepart', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->date_depart = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : DebaucheTableMap::translateFieldName('DateEmbauche', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00') {
+                $col = null;
+            }
+            $this->date_embauche = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : DebaucheTableMap::translateFieldName('Raisons', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->raisons = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : DebaucheTableMap::translateFieldName('DateDepart', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00') {
+                $col = null;
+            }
+            $this->date_depart = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : DebaucheTableMap::translateFieldName('Motif', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->motif = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : DebaucheTableMap::translateFieldName('Raisons', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->raisons = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : DebaucheTableMap::translateFieldName('Motif', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->motif = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -706,7 +814,7 @@ abstract class Debauche implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = DebaucheTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 11; // 11 = DebaucheTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Debauche'), 0, $e);
@@ -926,6 +1034,9 @@ abstract class Debauche implements ActiveRecordInterface
         if ($this->isColumnModified(DebaucheTableMap::COL_DEBAUCHE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'debauche_id';
         }
+        if ($this->isColumnModified(DebaucheTableMap::COL_CIVILITE)) {
+            $modifiedColumns[':p' . $index++]  = 'civilite';
+        }
         if ($this->isColumnModified(DebaucheTableMap::COL_REF_INTERNE)) {
             $modifiedColumns[':p' . $index++]  = 'ref_interne';
         }
@@ -937,6 +1048,9 @@ abstract class Debauche implements ActiveRecordInterface
         }
         if ($this->isColumnModified(DebaucheTableMap::COL_DEPARTEMENT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'departement_id';
+        }
+        if ($this->isColumnModified(DebaucheTableMap::COL_PHOTO_LINK)) {
+            $modifiedColumns[':p' . $index++]  = 'photo_link';
         }
         if ($this->isColumnModified(DebaucheTableMap::COL_DATE_EMBAUCHE)) {
             $modifiedColumns[':p' . $index++]  = 'date_embauche';
@@ -964,29 +1078,35 @@ abstract class Debauche implements ActiveRecordInterface
                     case 'debauche_id':
                         $stmt->bindValue($identifier, $this->debauche_id, PDO::PARAM_INT);
                         break;
+                    case 'civilite':
+                        $stmt->bindValue($identifier, $this->civilite, PDO::PARAM_STR);
+                        break;
                     case 'ref_interne':
-                        $stmt->bindValue($identifier, $this->ref_interne, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->ref_interne, PDO::PARAM_STR);
                         break;
                     case 'nom_prenom':
-                        $stmt->bindValue($identifier, $this->nom_prenom, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->nom_prenom, PDO::PARAM_STR);
                         break;
                     case 'fonction':
-                        $stmt->bindValue($identifier, $this->fonction, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->fonction, PDO::PARAM_STR);
                         break;
                     case 'departement_id':
                         $stmt->bindValue($identifier, $this->departement_id, PDO::PARAM_INT);
                         break;
+                    case 'photo_link':
+                        $stmt->bindValue($identifier, $this->photo_link, PDO::PARAM_STR);
+                        break;
                     case 'date_embauche':
-                        $stmt->bindValue($identifier, $this->date_embauche, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->date_embauche ? $this->date_embauche->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                     case 'date_depart':
-                        $stmt->bindValue($identifier, $this->date_depart, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->date_depart ? $this->date_depart->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                     case 'raisons':
-                        $stmt->bindValue($identifier, $this->raisons, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->raisons, PDO::PARAM_STR);
                         break;
                     case 'motif':
-                        $stmt->bindValue($identifier, $this->motif, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->motif, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1054,27 +1174,33 @@ abstract class Debauche implements ActiveRecordInterface
                 return $this->getDebaucheId();
                 break;
             case 1:
-                return $this->getRefInterne();
+                return $this->getCivilite();
                 break;
             case 2:
-                return $this->getNomPrenom();
+                return $this->getRefInterne();
                 break;
             case 3:
-                return $this->getFonction();
+                return $this->getNomPrenom();
                 break;
             case 4:
-                return $this->getDepartementId();
+                return $this->getFonction();
                 break;
             case 5:
-                return $this->getDateEmbauche();
+                return $this->getDepartementId();
                 break;
             case 6:
-                return $this->getDateDepart();
+                return $this->getPhotoLink();
                 break;
             case 7:
-                return $this->getRaisons();
+                return $this->getDateEmbauche();
                 break;
             case 8:
+                return $this->getDateDepart();
+                break;
+            case 9:
+                return $this->getRaisons();
+                break;
+            case 10:
                 return $this->getMotif();
                 break;
             default:
@@ -1108,15 +1234,25 @@ abstract class Debauche implements ActiveRecordInterface
         $keys = DebaucheTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getDebaucheId(),
-            $keys[1] => $this->getRefInterne(),
-            $keys[2] => $this->getNomPrenom(),
-            $keys[3] => $this->getFonction(),
-            $keys[4] => $this->getDepartementId(),
-            $keys[5] => $this->getDateEmbauche(),
-            $keys[6] => $this->getDateDepart(),
-            $keys[7] => $this->getRaisons(),
-            $keys[8] => $this->getMotif(),
+            $keys[1] => $this->getCivilite(),
+            $keys[2] => $this->getRefInterne(),
+            $keys[3] => $this->getNomPrenom(),
+            $keys[4] => $this->getFonction(),
+            $keys[5] => $this->getDepartementId(),
+            $keys[6] => $this->getPhotoLink(),
+            $keys[7] => $this->getDateEmbauche(),
+            $keys[8] => $this->getDateDepart(),
+            $keys[9] => $this->getRaisons(),
+            $keys[10] => $this->getMotif(),
         );
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
+        }
+
+        if ($result[$keys[8]] instanceof \DateTimeInterface) {
+            $result[$keys[8]] = $result[$keys[8]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
@@ -1176,27 +1312,33 @@ abstract class Debauche implements ActiveRecordInterface
                 $this->setDebaucheId($value);
                 break;
             case 1:
-                $this->setRefInterne($value);
+                $this->setCivilite($value);
                 break;
             case 2:
-                $this->setNomPrenom($value);
+                $this->setRefInterne($value);
                 break;
             case 3:
-                $this->setFonction($value);
+                $this->setNomPrenom($value);
                 break;
             case 4:
-                $this->setDepartementId($value);
+                $this->setFonction($value);
                 break;
             case 5:
-                $this->setDateEmbauche($value);
+                $this->setDepartementId($value);
                 break;
             case 6:
-                $this->setDateDepart($value);
+                $this->setPhotoLink($value);
                 break;
             case 7:
-                $this->setRaisons($value);
+                $this->setDateEmbauche($value);
                 break;
             case 8:
+                $this->setDateDepart($value);
+                break;
+            case 9:
+                $this->setRaisons($value);
+                break;
+            case 10:
                 $this->setMotif($value);
                 break;
         } // switch()
@@ -1229,28 +1371,34 @@ abstract class Debauche implements ActiveRecordInterface
             $this->setDebaucheId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setRefInterne($arr[$keys[1]]);
+            $this->setCivilite($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setNomPrenom($arr[$keys[2]]);
+            $this->setRefInterne($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setFonction($arr[$keys[3]]);
+            $this->setNomPrenom($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setDepartementId($arr[$keys[4]]);
+            $this->setFonction($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setDateEmbauche($arr[$keys[5]]);
+            $this->setDepartementId($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setDateDepart($arr[$keys[6]]);
+            $this->setPhotoLink($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setRaisons($arr[$keys[7]]);
+            $this->setDateEmbauche($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setMotif($arr[$keys[8]]);
+            $this->setDateDepart($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setRaisons($arr[$keys[9]]);
+        }
+        if (array_key_exists($keys[10], $arr)) {
+            $this->setMotif($arr[$keys[10]]);
         }
     }
 
@@ -1296,6 +1444,9 @@ abstract class Debauche implements ActiveRecordInterface
         if ($this->isColumnModified(DebaucheTableMap::COL_DEBAUCHE_ID)) {
             $criteria->add(DebaucheTableMap::COL_DEBAUCHE_ID, $this->debauche_id);
         }
+        if ($this->isColumnModified(DebaucheTableMap::COL_CIVILITE)) {
+            $criteria->add(DebaucheTableMap::COL_CIVILITE, $this->civilite);
+        }
         if ($this->isColumnModified(DebaucheTableMap::COL_REF_INTERNE)) {
             $criteria->add(DebaucheTableMap::COL_REF_INTERNE, $this->ref_interne);
         }
@@ -1307,6 +1458,9 @@ abstract class Debauche implements ActiveRecordInterface
         }
         if ($this->isColumnModified(DebaucheTableMap::COL_DEPARTEMENT_ID)) {
             $criteria->add(DebaucheTableMap::COL_DEPARTEMENT_ID, $this->departement_id);
+        }
+        if ($this->isColumnModified(DebaucheTableMap::COL_PHOTO_LINK)) {
+            $criteria->add(DebaucheTableMap::COL_PHOTO_LINK, $this->photo_link);
         }
         if ($this->isColumnModified(DebaucheTableMap::COL_DATE_EMBAUCHE)) {
             $criteria->add(DebaucheTableMap::COL_DATE_EMBAUCHE, $this->date_embauche);
@@ -1406,10 +1560,12 @@ abstract class Debauche implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setCivilite($this->getCivilite());
         $copyObj->setRefInterne($this->getRefInterne());
         $copyObj->setNomPrenom($this->getNomPrenom());
         $copyObj->setFonction($this->getFonction());
         $copyObj->setDepartementId($this->getDepartementId());
+        $copyObj->setPhotoLink($this->getPhotoLink());
         $copyObj->setDateEmbauche($this->getDateEmbauche());
         $copyObj->setDateDepart($this->getDateDepart());
         $copyObj->setRaisons($this->getRaisons());
@@ -1504,10 +1660,12 @@ abstract class Debauche implements ActiveRecordInterface
             $this->aDepartement->removeDebauche($this);
         }
         $this->debauche_id = null;
+        $this->civilite = null;
         $this->ref_interne = null;
         $this->nom_prenom = null;
         $this->fonction = null;
         $this->departement_id = null;
+        $this->photo_link = null;
         $this->date_embauche = null;
         $this->date_depart = null;
         $this->raisons = null;

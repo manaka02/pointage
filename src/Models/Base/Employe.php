@@ -11,8 +11,12 @@ use App\Models\Conge as ChildConge;
 use App\Models\CongeQuery as ChildCongeQuery;
 use App\Models\Employe as ChildEmploye;
 use App\Models\EmployeQuery as ChildEmployeQuery;
+use App\Models\Permission as ChildPermission;
+use App\Models\PermissionQuery as ChildPermissionQuery;
 use App\Models\Pointage as ChildPointage;
 use App\Models\PointageQuery as ChildPointageQuery;
+use App\Models\Presence as ChildPresence;
+use App\Models\PresenceQuery as ChildPresenceQuery;
 use App\Models\Retard as ChildRetard;
 use App\Models\RetardQuery as ChildRetardQuery;
 use App\Models\Unite as ChildUnite;
@@ -20,7 +24,9 @@ use App\Models\UniteQuery as ChildUniteQuery;
 use App\Models\Map\AbsenceTableMap;
 use App\Models\Map\CongeTableMap;
 use App\Models\Map\EmployeTableMap;
+use App\Models\Map\PermissionTableMap;
 use App\Models\Map\PointageTableMap;
+use App\Models\Map\PresenceTableMap;
 use App\Models\Map\RetardTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -127,12 +133,12 @@ abstract class Employe implements ActiveRecordInterface
     protected $date_embauche;
 
     /**
-     * The value for the presence field.
+     * The value for the present field.
      *
-     * Note: this column has a database default value of: true
-     * @var        boolean
+     * Note: this column has a database default value of: 1
+     * @var        int
      */
-    protected $presence;
+    protected $present;
 
     /**
      * The value for the status field.
@@ -160,10 +166,22 @@ abstract class Employe implements ActiveRecordInterface
     protected $collCongesPartial;
 
     /**
+     * @var        ObjectCollection|ChildPermission[] Collection to store aggregation of ChildPermission objects.
+     */
+    protected $collPermissions;
+    protected $collPermissionsPartial;
+
+    /**
      * @var        ObjectCollection|ChildPointage[] Collection to store aggregation of ChildPointage objects.
      */
     protected $collPointages;
     protected $collPointagesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildPresence[] Collection to store aggregation of ChildPresence objects.
+     */
+    protected $collPresences;
+    protected $collPresencesPartial;
 
     /**
      * @var        ObjectCollection|ChildRetard[] Collection to store aggregation of ChildRetard objects.
@@ -193,9 +211,21 @@ abstract class Employe implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPermission[]
+     */
+    protected $permissionsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildPointage[]
      */
     protected $pointagesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildPresence[]
+     */
+    protected $presencesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -211,7 +241,7 @@ abstract class Employe implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->presence = true;
+        $this->present = 1;
         $this->status = 1;
     }
 
@@ -523,23 +553,13 @@ abstract class Employe implements ActiveRecordInterface
     }
 
     /**
-     * Get the [presence] column value.
+     * Get the [present] column value.
      *
-     * @return boolean
+     * @return int
      */
-    public function getPresence()
+    public function getPresent()
     {
-        return $this->presence;
-    }
-
-    /**
-     * Get the [presence] column value.
-     *
-     * @return boolean
-     */
-    public function isPresence()
-    {
-        return $this->getPresence();
+        return $this->present;
     }
 
     /**
@@ -697,32 +717,24 @@ abstract class Employe implements ActiveRecordInterface
     } // setDateEmbauche()
 
     /**
-     * Sets the value of the [presence] column.
-     * Non-boolean arguments are converted using the following rules:
-     *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * Set the value of [present] column.
      *
-     * @param  boolean|integer|string $v The new value
+     * @param int|null $v New value
      * @return $this|\App\Models\Employe The current object (for fluent API support)
      */
-    public function setPresence($v)
+    public function setPresent($v)
     {
         if ($v !== null) {
-            if (is_string($v)) {
-                $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
-            } else {
-                $v = (boolean) $v;
-            }
+            $v = (int) $v;
         }
 
-        if ($this->presence !== $v) {
-            $this->presence = $v;
-            $this->modifiedColumns[EmployeTableMap::COL_PRESENCE] = true;
+        if ($this->present !== $v) {
+            $this->present = $v;
+            $this->modifiedColumns[EmployeTableMap::COL_PRESENT] = true;
         }
 
         return $this;
-    } // setPresence()
+    } // setPresent()
 
     /**
      * Set the value of [status] column.
@@ -754,7 +766,7 @@ abstract class Employe implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->presence !== true) {
+            if ($this->present !== 1) {
                 return false;
             }
 
@@ -812,8 +824,8 @@ abstract class Employe implements ActiveRecordInterface
             }
             $this->date_embauche = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmployeTableMap::translateFieldName('Presence', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->presence = (null !== $col) ? (boolean) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : EmployeTableMap::translateFieldName('Present', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->present = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : EmployeTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
             $this->status = (null !== $col) ? (int) $col : null;
@@ -894,7 +906,11 @@ abstract class Employe implements ActiveRecordInterface
 
             $this->collConges = null;
 
+            $this->collPermissions = null;
+
             $this->collPointages = null;
+
+            $this->collPresences = null;
 
             $this->collRetards = null;
 
@@ -1058,6 +1074,23 @@ abstract class Employe implements ActiveRecordInterface
                 }
             }
 
+            if ($this->permissionsScheduledForDeletion !== null) {
+                if (!$this->permissionsScheduledForDeletion->isEmpty()) {
+                    \App\Models\PermissionQuery::create()
+                        ->filterByPrimaryKeys($this->permissionsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->permissionsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPermissions !== null) {
+                foreach ($this->collPermissions as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             if ($this->pointagesScheduledForDeletion !== null) {
                 if (!$this->pointagesScheduledForDeletion->isEmpty()) {
                     \App\Models\PointageQuery::create()
@@ -1069,6 +1102,23 @@ abstract class Employe implements ActiveRecordInterface
 
             if ($this->collPointages !== null) {
                 foreach ($this->collPointages as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->presencesScheduledForDeletion !== null) {
+                if (!$this->presencesScheduledForDeletion->isEmpty()) {
+                    \App\Models\PresenceQuery::create()
+                        ->filterByPrimaryKeys($this->presencesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->presencesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPresences !== null) {
+                foreach ($this->collPresences as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1139,8 +1189,8 @@ abstract class Employe implements ActiveRecordInterface
         if ($this->isColumnModified(EmployeTableMap::COL_DATE_EMBAUCHE)) {
             $modifiedColumns[':p' . $index++]  = 'date_embauche';
         }
-        if ($this->isColumnModified(EmployeTableMap::COL_PRESENCE)) {
-            $modifiedColumns[':p' . $index++]  = 'presence';
+        if ($this->isColumnModified(EmployeTableMap::COL_PRESENT)) {
+            $modifiedColumns[':p' . $index++]  = 'present';
         }
         if ($this->isColumnModified(EmployeTableMap::COL_STATUS)) {
             $modifiedColumns[':p' . $index++]  = 'status';
@@ -1177,8 +1227,8 @@ abstract class Employe implements ActiveRecordInterface
                     case 'date_embauche':
                         $stmt->bindValue($identifier, $this->date_embauche ? $this->date_embauche->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
-                    case 'presence':
-                        $stmt->bindValue($identifier, (int) $this->presence, PDO::PARAM_INT);
+                    case 'present':
+                        $stmt->bindValue($identifier, $this->present, PDO::PARAM_INT);
                         break;
                     case 'status':
                         $stmt->bindValue($identifier, $this->status, PDO::PARAM_INT);
@@ -1267,7 +1317,7 @@ abstract class Employe implements ActiveRecordInterface
                 return $this->getDateEmbauche();
                 break;
             case 7:
-                return $this->getPresence();
+                return $this->getPresent();
                 break;
             case 8:
                 return $this->getStatus();
@@ -1309,7 +1359,7 @@ abstract class Employe implements ActiveRecordInterface
             $keys[4] => $this->getPoste(),
             $keys[5] => $this->getGenre(),
             $keys[6] => $this->getDateEmbauche(),
-            $keys[7] => $this->getPresence(),
+            $keys[7] => $this->getPresent(),
             $keys[8] => $this->getStatus(),
         );
         if ($result[$keys[6]] instanceof \DateTimeInterface) {
@@ -1367,6 +1417,21 @@ abstract class Employe implements ActiveRecordInterface
 
                 $result[$key] = $this->collConges->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
+            if (null !== $this->collPermissions) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'permissions';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'permissions';
+                        break;
+                    default:
+                        $key = 'Permissions';
+                }
+
+                $result[$key] = $this->collPermissions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collPointages) {
 
                 switch ($keyType) {
@@ -1381,6 +1446,21 @@ abstract class Employe implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collPointages->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collPresences) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'presences';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'presences';
+                        break;
+                    default:
+                        $key = 'Presences';
+                }
+
+                $result[$key] = $this->collPresences->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collRetards) {
 
@@ -1453,7 +1533,7 @@ abstract class Employe implements ActiveRecordInterface
                 $this->setDateEmbauche($value);
                 break;
             case 7:
-                $this->setPresence($value);
+                $this->setPresent($value);
                 break;
             case 8:
                 $this->setStatus($value);
@@ -1506,7 +1586,7 @@ abstract class Employe implements ActiveRecordInterface
             $this->setDateEmbauche($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setPresence($arr[$keys[7]]);
+            $this->setPresent($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
             $this->setStatus($arr[$keys[8]]);
@@ -1573,8 +1653,8 @@ abstract class Employe implements ActiveRecordInterface
         if ($this->isColumnModified(EmployeTableMap::COL_DATE_EMBAUCHE)) {
             $criteria->add(EmployeTableMap::COL_DATE_EMBAUCHE, $this->date_embauche);
         }
-        if ($this->isColumnModified(EmployeTableMap::COL_PRESENCE)) {
-            $criteria->add(EmployeTableMap::COL_PRESENCE, $this->presence);
+        if ($this->isColumnModified(EmployeTableMap::COL_PRESENT)) {
+            $criteria->add(EmployeTableMap::COL_PRESENT, $this->present);
         }
         if ($this->isColumnModified(EmployeTableMap::COL_STATUS)) {
             $criteria->add(EmployeTableMap::COL_STATUS, $this->status);
@@ -1671,7 +1751,7 @@ abstract class Employe implements ActiveRecordInterface
         $copyObj->setPoste($this->getPoste());
         $copyObj->setGenre($this->getGenre());
         $copyObj->setDateEmbauche($this->getDateEmbauche());
-        $copyObj->setPresence($this->getPresence());
+        $copyObj->setPresent($this->getPresent());
         $copyObj->setStatus($this->getStatus());
 
         if ($deepCopy) {
@@ -1691,9 +1771,21 @@ abstract class Employe implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getPermissions() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPermission($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getPointages() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addPointage($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getPresences() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPresence($relObj->copy($deepCopy));
                 }
             }
 
@@ -1803,8 +1895,16 @@ abstract class Employe implements ActiveRecordInterface
             $this->initConges();
             return;
         }
+        if ('Permission' === $relationName) {
+            $this->initPermissions();
+            return;
+        }
         if ('Pointage' === $relationName) {
             $this->initPointages();
+            return;
+        }
+        if ('Presence' === $relationName) {
+            $this->initPresences();
             return;
         }
         if ('Retard' === $relationName) {
@@ -2282,6 +2382,240 @@ abstract class Employe implements ActiveRecordInterface
     }
 
     /**
+     * Clears out the collPermissions collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPermissions()
+     */
+    public function clearPermissions()
+    {
+        $this->collPermissions = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPermissions collection loaded partially.
+     */
+    public function resetPartialPermissions($v = true)
+    {
+        $this->collPermissionsPartial = $v;
+    }
+
+    /**
+     * Initializes the collPermissions collection.
+     *
+     * By default this just sets the collPermissions collection to an empty array (like clearcollPermissions());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPermissions($overrideExisting = true)
+    {
+        if (null !== $this->collPermissions && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = PermissionTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPermissions = new $collectionClassName;
+        $this->collPermissions->setModel('\App\Models\Permission');
+    }
+
+    /**
+     * Gets an array of ChildPermission objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildEmploye is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildPermission[] List of ChildPermission objects
+     * @throws PropelException
+     */
+    public function getPermissions(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPermissionsPartial && !$this->isNew();
+        if (null === $this->collPermissions || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collPermissions) {
+                    $this->initPermissions();
+                } else {
+                    $collectionClassName = PermissionTableMap::getTableMap()->getCollectionClassName();
+
+                    $collPermissions = new $collectionClassName;
+                    $collPermissions->setModel('\App\Models\Permission');
+
+                    return $collPermissions;
+                }
+            } else {
+                $collPermissions = ChildPermissionQuery::create(null, $criteria)
+                    ->filterByEmploye($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPermissionsPartial && count($collPermissions)) {
+                        $this->initPermissions(false);
+
+                        foreach ($collPermissions as $obj) {
+                            if (false == $this->collPermissions->contains($obj)) {
+                                $this->collPermissions->append($obj);
+                            }
+                        }
+
+                        $this->collPermissionsPartial = true;
+                    }
+
+                    return $collPermissions;
+                }
+
+                if ($partial && $this->collPermissions) {
+                    foreach ($this->collPermissions as $obj) {
+                        if ($obj->isNew()) {
+                            $collPermissions[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPermissions = $collPermissions;
+                $this->collPermissionsPartial = false;
+            }
+        }
+
+        return $this->collPermissions;
+    }
+
+    /**
+     * Sets a collection of ChildPermission objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $permissions A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function setPermissions(Collection $permissions, ConnectionInterface $con = null)
+    {
+        /** @var ChildPermission[] $permissionsToDelete */
+        $permissionsToDelete = $this->getPermissions(new Criteria(), $con)->diff($permissions);
+
+
+        $this->permissionsScheduledForDeletion = $permissionsToDelete;
+
+        foreach ($permissionsToDelete as $permissionRemoved) {
+            $permissionRemoved->setEmploye(null);
+        }
+
+        $this->collPermissions = null;
+        foreach ($permissions as $permission) {
+            $this->addPermission($permission);
+        }
+
+        $this->collPermissions = $permissions;
+        $this->collPermissionsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Permission objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Permission objects.
+     * @throws PropelException
+     */
+    public function countPermissions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPermissionsPartial && !$this->isNew();
+        if (null === $this->collPermissions || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPermissions) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPermissions());
+            }
+
+            $query = ChildPermissionQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByEmploye($this)
+                ->count($con);
+        }
+
+        return count($this->collPermissions);
+    }
+
+    /**
+     * Method called to associate a ChildPermission object to this object
+     * through the ChildPermission foreign key attribute.
+     *
+     * @param  ChildPermission $l ChildPermission
+     * @return $this|\App\Models\Employe The current object (for fluent API support)
+     */
+    public function addPermission(ChildPermission $l)
+    {
+        if ($this->collPermissions === null) {
+            $this->initPermissions();
+            $this->collPermissionsPartial = true;
+        }
+
+        if (!$this->collPermissions->contains($l)) {
+            $this->doAddPermission($l);
+
+            if ($this->permissionsScheduledForDeletion and $this->permissionsScheduledForDeletion->contains($l)) {
+                $this->permissionsScheduledForDeletion->remove($this->permissionsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildPermission $permission The ChildPermission object to add.
+     */
+    protected function doAddPermission(ChildPermission $permission)
+    {
+        $this->collPermissions[]= $permission;
+        $permission->setEmploye($this);
+    }
+
+    /**
+     * @param  ChildPermission $permission The ChildPermission object to remove.
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function removePermission(ChildPermission $permission)
+    {
+        if ($this->getPermissions()->contains($permission)) {
+            $pos = $this->collPermissions->search($permission);
+            $this->collPermissions->remove($pos);
+            if (null === $this->permissionsScheduledForDeletion) {
+                $this->permissionsScheduledForDeletion = clone $this->collPermissions;
+                $this->permissionsScheduledForDeletion->clear();
+            }
+            $this->permissionsScheduledForDeletion[]= clone $permission;
+            $permission->setEmploye(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Clears out the collPointages collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -2510,6 +2844,240 @@ abstract class Employe implements ActiveRecordInterface
             }
             $this->pointagesScheduledForDeletion[]= clone $pointage;
             $pointage->setEmploye(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collPresences collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addPresences()
+     */
+    public function clearPresences()
+    {
+        $this->collPresences = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collPresences collection loaded partially.
+     */
+    public function resetPartialPresences($v = true)
+    {
+        $this->collPresencesPartial = $v;
+    }
+
+    /**
+     * Initializes the collPresences collection.
+     *
+     * By default this just sets the collPresences collection to an empty array (like clearcollPresences());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPresences($overrideExisting = true)
+    {
+        if (null !== $this->collPresences && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = PresenceTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collPresences = new $collectionClassName;
+        $this->collPresences->setModel('\App\Models\Presence');
+    }
+
+    /**
+     * Gets an array of ChildPresence objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildEmploye is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildPresence[] List of ChildPresence objects
+     * @throws PropelException
+     */
+    public function getPresences(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPresencesPartial && !$this->isNew();
+        if (null === $this->collPresences || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collPresences) {
+                    $this->initPresences();
+                } else {
+                    $collectionClassName = PresenceTableMap::getTableMap()->getCollectionClassName();
+
+                    $collPresences = new $collectionClassName;
+                    $collPresences->setModel('\App\Models\Presence');
+
+                    return $collPresences;
+                }
+            } else {
+                $collPresences = ChildPresenceQuery::create(null, $criteria)
+                    ->filterByEmploye($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collPresencesPartial && count($collPresences)) {
+                        $this->initPresences(false);
+
+                        foreach ($collPresences as $obj) {
+                            if (false == $this->collPresences->contains($obj)) {
+                                $this->collPresences->append($obj);
+                            }
+                        }
+
+                        $this->collPresencesPartial = true;
+                    }
+
+                    return $collPresences;
+                }
+
+                if ($partial && $this->collPresences) {
+                    foreach ($this->collPresences as $obj) {
+                        if ($obj->isNew()) {
+                            $collPresences[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPresences = $collPresences;
+                $this->collPresencesPartial = false;
+            }
+        }
+
+        return $this->collPresences;
+    }
+
+    /**
+     * Sets a collection of ChildPresence objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $presences A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function setPresences(Collection $presences, ConnectionInterface $con = null)
+    {
+        /** @var ChildPresence[] $presencesToDelete */
+        $presencesToDelete = $this->getPresences(new Criteria(), $con)->diff($presences);
+
+
+        $this->presencesScheduledForDeletion = $presencesToDelete;
+
+        foreach ($presencesToDelete as $presenceRemoved) {
+            $presenceRemoved->setEmploye(null);
+        }
+
+        $this->collPresences = null;
+        foreach ($presences as $presence) {
+            $this->addPresence($presence);
+        }
+
+        $this->collPresences = $presences;
+        $this->collPresencesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Presence objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Presence objects.
+     * @throws PropelException
+     */
+    public function countPresences(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collPresencesPartial && !$this->isNew();
+        if (null === $this->collPresences || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPresences) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getPresences());
+            }
+
+            $query = ChildPresenceQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByEmploye($this)
+                ->count($con);
+        }
+
+        return count($this->collPresences);
+    }
+
+    /**
+     * Method called to associate a ChildPresence object to this object
+     * through the ChildPresence foreign key attribute.
+     *
+     * @param  ChildPresence $l ChildPresence
+     * @return $this|\App\Models\Employe The current object (for fluent API support)
+     */
+    public function addPresence(ChildPresence $l)
+    {
+        if ($this->collPresences === null) {
+            $this->initPresences();
+            $this->collPresencesPartial = true;
+        }
+
+        if (!$this->collPresences->contains($l)) {
+            $this->doAddPresence($l);
+
+            if ($this->presencesScheduledForDeletion and $this->presencesScheduledForDeletion->contains($l)) {
+                $this->presencesScheduledForDeletion->remove($this->presencesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildPresence $presence The ChildPresence object to add.
+     */
+    protected function doAddPresence(ChildPresence $presence)
+    {
+        $this->collPresences[]= $presence;
+        $presence->setEmploye($this);
+    }
+
+    /**
+     * @param  ChildPresence $presence The ChildPresence object to remove.
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function removePresence(ChildPresence $presence)
+    {
+        if ($this->getPresences()->contains($presence)) {
+            $pos = $this->collPresences->search($presence);
+            $this->collPresences->remove($pos);
+            if (null === $this->presencesScheduledForDeletion) {
+                $this->presencesScheduledForDeletion = clone $this->collPresences;
+                $this->presencesScheduledForDeletion->clear();
+            }
+            $this->presencesScheduledForDeletion[]= clone $presence;
+            $presence->setEmploye(null);
         }
 
         return $this;
@@ -2766,7 +3334,7 @@ abstract class Employe implements ActiveRecordInterface
         $this->poste = null;
         $this->genre = null;
         $this->date_embauche = null;
-        $this->presence = null;
+        $this->present = null;
         $this->status = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
@@ -2797,8 +3365,18 @@ abstract class Employe implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collPermissions) {
+                foreach ($this->collPermissions as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collPointages) {
                 foreach ($this->collPointages as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collPresences) {
+                foreach ($this->collPresences as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -2811,7 +3389,9 @@ abstract class Employe implements ActiveRecordInterface
 
         $this->collAbsences = null;
         $this->collConges = null;
+        $this->collPermissions = null;
         $this->collPointages = null;
+        $this->collPresences = null;
         $this->collRetards = null;
         $this->aUnite = null;
     }

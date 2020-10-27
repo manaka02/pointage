@@ -27,7 +27,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmployeQuery orderByPoste($order = Criteria::ASC) Order by the poste column
  * @method     ChildEmployeQuery orderByGenre($order = Criteria::ASC) Order by the genre column
  * @method     ChildEmployeQuery orderByDateEmbauche($order = Criteria::ASC) Order by the date_embauche column
- * @method     ChildEmployeQuery orderByPresence($order = Criteria::ASC) Order by the presence column
+ * @method     ChildEmployeQuery orderByPresent($order = Criteria::ASC) Order by the present column
  * @method     ChildEmployeQuery orderByStatus($order = Criteria::ASC) Order by the status column
  *
  * @method     ChildEmployeQuery groupByEmployeId() Group by the employe_id column
@@ -37,7 +37,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmployeQuery groupByPoste() Group by the poste column
  * @method     ChildEmployeQuery groupByGenre() Group by the genre column
  * @method     ChildEmployeQuery groupByDateEmbauche() Group by the date_embauche column
- * @method     ChildEmployeQuery groupByPresence() Group by the presence column
+ * @method     ChildEmployeQuery groupByPresent() Group by the present column
  * @method     ChildEmployeQuery groupByStatus() Group by the status column
  *
  * @method     ChildEmployeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -78,6 +78,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmployeQuery rightJoinWithConge() Adds a RIGHT JOIN clause and with to the query using the Conge relation
  * @method     ChildEmployeQuery innerJoinWithConge() Adds a INNER JOIN clause and with to the query using the Conge relation
  *
+ * @method     ChildEmployeQuery leftJoinPermission($relationAlias = null) Adds a LEFT JOIN clause to the query using the Permission relation
+ * @method     ChildEmployeQuery rightJoinPermission($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Permission relation
+ * @method     ChildEmployeQuery innerJoinPermission($relationAlias = null) Adds a INNER JOIN clause to the query using the Permission relation
+ *
+ * @method     ChildEmployeQuery joinWithPermission($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Permission relation
+ *
+ * @method     ChildEmployeQuery leftJoinWithPermission() Adds a LEFT JOIN clause and with to the query using the Permission relation
+ * @method     ChildEmployeQuery rightJoinWithPermission() Adds a RIGHT JOIN clause and with to the query using the Permission relation
+ * @method     ChildEmployeQuery innerJoinWithPermission() Adds a INNER JOIN clause and with to the query using the Permission relation
+ *
  * @method     ChildEmployeQuery leftJoinPointage($relationAlias = null) Adds a LEFT JOIN clause to the query using the Pointage relation
  * @method     ChildEmployeQuery rightJoinPointage($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pointage relation
  * @method     ChildEmployeQuery innerJoinPointage($relationAlias = null) Adds a INNER JOIN clause to the query using the Pointage relation
@@ -87,6 +97,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmployeQuery leftJoinWithPointage() Adds a LEFT JOIN clause and with to the query using the Pointage relation
  * @method     ChildEmployeQuery rightJoinWithPointage() Adds a RIGHT JOIN clause and with to the query using the Pointage relation
  * @method     ChildEmployeQuery innerJoinWithPointage() Adds a INNER JOIN clause and with to the query using the Pointage relation
+ *
+ * @method     ChildEmployeQuery leftJoinPresence($relationAlias = null) Adds a LEFT JOIN clause to the query using the Presence relation
+ * @method     ChildEmployeQuery rightJoinPresence($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Presence relation
+ * @method     ChildEmployeQuery innerJoinPresence($relationAlias = null) Adds a INNER JOIN clause to the query using the Presence relation
+ *
+ * @method     ChildEmployeQuery joinWithPresence($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Presence relation
+ *
+ * @method     ChildEmployeQuery leftJoinWithPresence() Adds a LEFT JOIN clause and with to the query using the Presence relation
+ * @method     ChildEmployeQuery rightJoinWithPresence() Adds a RIGHT JOIN clause and with to the query using the Presence relation
+ * @method     ChildEmployeQuery innerJoinWithPresence() Adds a INNER JOIN clause and with to the query using the Presence relation
  *
  * @method     ChildEmployeQuery leftJoinRetard($relationAlias = null) Adds a LEFT JOIN clause to the query using the Retard relation
  * @method     ChildEmployeQuery rightJoinRetard($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Retard relation
@@ -98,7 +118,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmployeQuery rightJoinWithRetard() Adds a RIGHT JOIN clause and with to the query using the Retard relation
  * @method     ChildEmployeQuery innerJoinWithRetard() Adds a INNER JOIN clause and with to the query using the Retard relation
  *
- * @method     \App\Models\UniteQuery|\App\Models\AbsenceQuery|\App\Models\CongeQuery|\App\Models\PointageQuery|\App\Models\RetardQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \App\Models\UniteQuery|\App\Models\AbsenceQuery|\App\Models\CongeQuery|\App\Models\PermissionQuery|\App\Models\PointageQuery|\App\Models\PresenceQuery|\App\Models\RetardQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildEmploye findOne(ConnectionInterface $con = null) Return the first ChildEmploye matching the query
  * @method     ChildEmploye findOneOrCreate(ConnectionInterface $con = null) Return the first ChildEmploye matching the query, or a new ChildEmploye object populated from the query conditions when no match is found
@@ -110,7 +130,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmploye findOneByPoste(string $poste) Return the first ChildEmploye filtered by the poste column
  * @method     ChildEmploye findOneByGenre(string $genre) Return the first ChildEmploye filtered by the genre column
  * @method     ChildEmploye findOneByDateEmbauche(string $date_embauche) Return the first ChildEmploye filtered by the date_embauche column
- * @method     ChildEmploye findOneByPresence(boolean $presence) Return the first ChildEmploye filtered by the presence column
+ * @method     ChildEmploye findOneByPresent(int $present) Return the first ChildEmploye filtered by the present column
  * @method     ChildEmploye findOneByStatus(int $status) Return the first ChildEmploye filtered by the status column *
 
  * @method     ChildEmploye requirePk($key, ConnectionInterface $con = null) Return the ChildEmploye by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -123,7 +143,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmploye requireOneByPoste(string $poste) Return the first ChildEmploye filtered by the poste column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByGenre(string $genre) Return the first ChildEmploye filtered by the genre column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByDateEmbauche(string $date_embauche) Return the first ChildEmploye filtered by the date_embauche column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildEmploye requireOneByPresence(boolean $presence) Return the first ChildEmploye filtered by the presence column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildEmploye requireOneByPresent(int $present) Return the first ChildEmploye filtered by the present column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildEmploye requireOneByStatus(int $status) Return the first ChildEmploye filtered by the status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildEmploye[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildEmploye objects based on current ModelCriteria
@@ -134,7 +154,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildEmploye[]|ObjectCollection findByPoste(string $poste) Return ChildEmploye objects filtered by the poste column
  * @method     ChildEmploye[]|ObjectCollection findByGenre(string $genre) Return ChildEmploye objects filtered by the genre column
  * @method     ChildEmploye[]|ObjectCollection findByDateEmbauche(string $date_embauche) Return ChildEmploye objects filtered by the date_embauche column
- * @method     ChildEmploye[]|ObjectCollection findByPresence(boolean $presence) Return ChildEmploye objects filtered by the presence column
+ * @method     ChildEmploye[]|ObjectCollection findByPresent(int $present) Return ChildEmploye objects filtered by the present column
  * @method     ChildEmploye[]|ObjectCollection findByStatus(int $status) Return ChildEmploye objects filtered by the status column
  * @method     ChildEmploye[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -234,7 +254,7 @@ abstract class EmployeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT employe_id, ref_interne, unite_id, nom_prenom, poste, genre, date_embauche, presence, status FROM employe WHERE employe_id = :p0';
+        $sql = 'SELECT employe_id, ref_interne, unite_id, nom_prenom, poste, genre, date_embauche, present, status FROM employe WHERE employe_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -568,30 +588,44 @@ abstract class EmployeQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the presence column
+     * Filter the query on the present column
      *
      * Example usage:
      * <code>
-     * $query->filterByPresence(true); // WHERE presence = true
-     * $query->filterByPresence('yes'); // WHERE presence = true
+     * $query->filterByPresent(1234); // WHERE present = 1234
+     * $query->filterByPresent(array(12, 34)); // WHERE present IN (12, 34)
+     * $query->filterByPresent(array('min' => 12)); // WHERE present > 12
      * </code>
      *
-     * @param     boolean|string $presence The value to use as filter.
-     *              Non-boolean arguments are converted using the following rules:
-     *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
-     *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
-     *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
+     * @param     mixed $present The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildEmployeQuery The current query, for fluid interface
      */
-    public function filterByPresence($presence = null, $comparison = null)
+    public function filterByPresent($present = null, $comparison = null)
     {
-        if (is_string($presence)) {
-            $presence = in_array(strtolower($presence), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
+        if (is_array($present)) {
+            $useMinMax = false;
+            if (isset($present['min'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_PRESENT, $present['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($present['max'])) {
+                $this->addUsingAlias(EmployeTableMap::COL_PRESENT, $present['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
         }
 
-        return $this->addUsingAlias(EmployeTableMap::COL_PRESENCE, $presence, $comparison);
+        return $this->addUsingAlias(EmployeTableMap::COL_PRESENT, $present, $comparison);
     }
 
     /**
@@ -859,6 +893,79 @@ abstract class EmployeQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \App\Models\Permission object
+     *
+     * @param \App\Models\Permission|ObjectCollection $permission the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmployeQuery The current query, for fluid interface
+     */
+    public function filterByPermission($permission, $comparison = null)
+    {
+        if ($permission instanceof \App\Models\Permission) {
+            return $this
+                ->addUsingAlias(EmployeTableMap::COL_EMPLOYE_ID, $permission->getEmployeId(), $comparison);
+        } elseif ($permission instanceof ObjectCollection) {
+            return $this
+                ->usePermissionQuery()
+                ->filterByPrimaryKeys($permission->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPermission() only accepts arguments of type \App\Models\Permission or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Permission relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildEmployeQuery The current query, for fluid interface
+     */
+    public function joinPermission($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Permission');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Permission');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Permission relation Permission object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \App\Models\PermissionQuery A secondary query class using the current class as primary query
+     */
+    public function usePermissionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinPermission($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Permission', '\App\Models\PermissionQuery');
+    }
+
+    /**
      * Filter the query by a related \App\Models\Pointage object
      *
      * @param \App\Models\Pointage|ObjectCollection $pointage the related object to use as filter
@@ -929,6 +1036,79 @@ abstract class EmployeQuery extends ModelCriteria
         return $this
             ->joinPointage($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Pointage', '\App\Models\PointageQuery');
+    }
+
+    /**
+     * Filter the query by a related \App\Models\Presence object
+     *
+     * @param \App\Models\Presence|ObjectCollection $presence the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildEmployeQuery The current query, for fluid interface
+     */
+    public function filterByPresence($presence, $comparison = null)
+    {
+        if ($presence instanceof \App\Models\Presence) {
+            return $this
+                ->addUsingAlias(EmployeTableMap::COL_EMPLOYE_ID, $presence->getEmployeId(), $comparison);
+        } elseif ($presence instanceof ObjectCollection) {
+            return $this
+                ->usePresenceQuery()
+                ->filterByPrimaryKeys($presence->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPresence() only accepts arguments of type \App\Models\Presence or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Presence relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildEmployeQuery The current query, for fluid interface
+     */
+    public function joinPresence($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Presence');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Presence');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Presence relation Presence object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \App\Models\PresenceQuery A secondary query class using the current class as primary query
+     */
+    public function usePresenceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinPresence($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Presence', '\App\Models\PresenceQuery');
     }
 
     /**

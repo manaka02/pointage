@@ -44,14 +44,16 @@
   </table>
   <table name="debauche" idMethod="native" phpName="Debauche">
     <column name="debauche_id" phpName="DebaucheId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="ref_interne" phpName="RefInterne" type="INTEGER" required="true"/>
-    <column name="nom_prenom" phpName="NomPrenom" type="INTEGER" required="true"/>
-    <column name="fonction" phpName="Fonction" type="INTEGER" required="true"/>
+    <column name="civilite" phpName="Civilite" type="VARCHAR" size="10" required="true"/>
+    <column name="ref_interne" phpName="RefInterne" type="VARCHAR" size="250" required="true"/>
+    <column name="nom_prenom" phpName="NomPrenom" type="VARCHAR" size="250" required="true"/>
+    <column name="fonction" phpName="Fonction" type="VARCHAR" size="250" required="true"/>
     <column name="departement_id" phpName="DepartementId" type="INTEGER"/>
-    <column name="date_embauche" phpName="DateEmbauche" type="INTEGER"/>
-    <column name="date_depart" phpName="DateDepart" type="INTEGER" required="true"/>
-    <column name="raisons" phpName="Raisons" type="INTEGER" required="true"/>
-    <column name="motif" phpName="Motif" type="INTEGER"/>
+    <column name="photo_link" phpName="PhotoLink" type="VARCHAR" size="250" required="true"/>
+    <column name="date_embauche" phpName="DateEmbauche" type="DATE"/>
+    <column name="date_depart" phpName="DateDepart" type="DATE" required="true"/>
+    <column name="raisons" phpName="Raisons" type="VARCHAR" size="250" required="true"/>
+    <column name="motif" phpName="Motif" type="VARCHAR" size="250"/>
     <foreign-key foreignTable="departement" name="fk_fk_debauche_departement">
       <reference local="departement_id" foreign="departement_id"/>
     </foreign-key>
@@ -114,7 +116,7 @@
     <column name="poste" phpName="Poste" type="VARCHAR" size="100"/>
     <column name="genre" phpName="Genre" type="VARCHAR" size="40"/>
     <column name="date_embauche" phpName="DateEmbauche" type="DATE"/>
-    <column name="presence" phpName="Presence" type="BOOLEAN" size="1" defaultValue="true"/>
+    <column name="present" phpName="Present" type="INTEGER" defaultValue="1"/>
     <column name="status" phpName="Status" type="INTEGER" required="true" defaultValue="1"/>
     <foreign-key foreignTable="unite" name="fk_employe_unite">
       <reference local="unite_id" foreign="unite_id"/>
@@ -124,6 +126,18 @@
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
+  <table name="heure_sup" idMethod="native" phpName="HeureSup">
+    <column name="heure_sup_id" phpName="HeureSupId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="employe_id" phpName="EmployeId" type="INTEGER" required="true"/>
+    <column name="date_heure_sup" phpName="DateHeureSup" type="DATE" required="true"/>
+    <column name="heure_entree" phpName="HeureEntree" type="TIME" required="true"/>
+    <column name="heure_sortie" phpName="HeureSortie" type="TIME" required="true"/>
+    <column name="heure_travail" phpName="HeureTravail" type="TIME" required="true"/>
+    <column name="heure_supp" phpName="HeureSupp" type="TIME" required="true"/>
+    <vendor type="mysql">
+      <parameter name="Engine" value="MyISAM"/>
     </vendor>
   </table>
   <table name="import" idMethod="native" phpName="Import">
@@ -142,6 +156,12 @@
     <column name="heure_sortie" phpName="HeureSortie" type="TIME" required="true"/>
     <column name="heure_travail" phpName="HeureTravail" type="TIME" required="true"/>
     <column name="heure_manque" phpName="HeureManque" type="TIME" required="true"/>
+    <foreign-key foreignTable="employe" name="fk_permission_employe" onDelete="CASCADE">
+      <reference local="employe_id" foreign="employe_id"/>
+    </foreign-key>
+    <index name="fk_permission_employe">
+      <index-column name="employe_id"/>
+    </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
@@ -161,11 +181,28 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
+  <table name="presence" idMethod="native" phpName="Presence">
+    <column name="presence_id" phpName="PresenceId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="employe_id" phpName="EmployeId" type="INTEGER" required="true"/>
+    <column name="date_presence" phpName="DatePresence" type="DATE" required="true"/>
+    <column name="heure_arrive" phpName="HeureArrive" type="TIME" required="true"/>
+    <column name="heure_sortie" phpName="HeureSortie" type="TIME" required="true"/>
+    <column name="heure_travail" phpName="HeureTravail" type="TIME" required="true"/>
+    <foreign-key foreignTable="employe" name="fk_fk_presence_employe" onDelete="CASCADE">
+      <reference local="employe_id" foreign="employe_id"/>
+    </foreign-key>
+    <index name="fk_fk_presence_employe">
+      <index-column name="employe_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
   <table name="retard" idMethod="native" phpName="Retard">
     <column name="retard_id" phpName="RetardId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="employe_id" phpName="EmployeId" type="INTEGER" required="true"/>
     <column name="date_retard" phpName="DateRetard" type="INTEGER" required="true"/>
-    <column name="duree" phpName="Duree" type="TIMESTAMP" required="true"/>
+    <column name="duree" phpName="Duree" type="TIME" required="true"/>
     <foreign-key foreignTable="employe" name="fk_fk_reatard_employe" onDelete="CASCADE">
       <reference local="employe_id" foreign="employe_id"/>
     </foreign-key>

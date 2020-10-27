@@ -2,8 +2,8 @@
 
 namespace App\Models\Map;
 
-use App\Models\Retard;
-use App\Models\RetardQuery;
+use App\Models\Presence;
+use App\Models\PresenceQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'retard' table.
+ * This class defines the structure of the 'presence' table.
  *
  *
  *
@@ -25,7 +25,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * ORDER BY clause to know whether it needs to apply SQL to make the ORDER BY case-insensitive
  * (i.e. if it's a text column type).
  */
-class RetardTableMap extends TableMap
+class PresenceTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -33,7 +33,7 @@ class RetardTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.RetardTableMap';
+    const CLASS_NAME = '.Map.PresenceTableMap';
 
     /**
      * The default database name for this class
@@ -43,22 +43,22 @@ class RetardTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'retard';
+    const TABLE_NAME = 'presence';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\App\\Models\\Retard';
+    const OM_CLASS = '\\App\\Models\\Presence';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Retard';
+    const CLASS_DEFAULT = 'Presence';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -68,27 +68,37 @@ class RetardTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
-     * the column name for the retard_id field
+     * the column name for the presence_id field
      */
-    const COL_RETARD_ID = 'retard.retard_id';
+    const COL_PRESENCE_ID = 'presence.presence_id';
 
     /**
      * the column name for the employe_id field
      */
-    const COL_EMPLOYE_ID = 'retard.employe_id';
+    const COL_EMPLOYE_ID = 'presence.employe_id';
 
     /**
-     * the column name for the date_retard field
+     * the column name for the date_presence field
      */
-    const COL_DATE_RETARD = 'retard.date_retard';
+    const COL_DATE_PRESENCE = 'presence.date_presence';
 
     /**
-     * the column name for the duree field
+     * the column name for the heure_arrive field
      */
-    const COL_DUREE = 'retard.duree';
+    const COL_HEURE_ARRIVE = 'presence.heure_arrive';
+
+    /**
+     * the column name for the heure_sortie field
+     */
+    const COL_HEURE_SORTIE = 'presence.heure_sortie';
+
+    /**
+     * the column name for the heure_travail field
+     */
+    const COL_HEURE_TRAVAIL = 'presence.heure_travail';
 
     /**
      * The default string format for model objects of the related table
@@ -102,11 +112,11 @@ class RetardTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('RetardId', 'EmployeId', 'DateRetard', 'Duree', ),
-        self::TYPE_CAMELNAME     => array('retardId', 'employeId', 'dateRetard', 'duree', ),
-        self::TYPE_COLNAME       => array(RetardTableMap::COL_RETARD_ID, RetardTableMap::COL_EMPLOYE_ID, RetardTableMap::COL_DATE_RETARD, RetardTableMap::COL_DUREE, ),
-        self::TYPE_FIELDNAME     => array('retard_id', 'employe_id', 'date_retard', 'duree', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('PresenceId', 'EmployeId', 'DatePresence', 'HeureArrive', 'HeureSortie', 'HeureTravail', ),
+        self::TYPE_CAMELNAME     => array('presenceId', 'employeId', 'datePresence', 'heureArrive', 'heureSortie', 'heureTravail', ),
+        self::TYPE_COLNAME       => array(PresenceTableMap::COL_PRESENCE_ID, PresenceTableMap::COL_EMPLOYE_ID, PresenceTableMap::COL_DATE_PRESENCE, PresenceTableMap::COL_HEURE_ARRIVE, PresenceTableMap::COL_HEURE_SORTIE, PresenceTableMap::COL_HEURE_TRAVAIL, ),
+        self::TYPE_FIELDNAME     => array('presence_id', 'employe_id', 'date_presence', 'heure_arrive', 'heure_sortie', 'heure_travail', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -116,11 +126,11 @@ class RetardTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('RetardId' => 0, 'EmployeId' => 1, 'DateRetard' => 2, 'Duree' => 3, ),
-        self::TYPE_CAMELNAME     => array('retardId' => 0, 'employeId' => 1, 'dateRetard' => 2, 'duree' => 3, ),
-        self::TYPE_COLNAME       => array(RetardTableMap::COL_RETARD_ID => 0, RetardTableMap::COL_EMPLOYE_ID => 1, RetardTableMap::COL_DATE_RETARD => 2, RetardTableMap::COL_DUREE => 3, ),
-        self::TYPE_FIELDNAME     => array('retard_id' => 0, 'employe_id' => 1, 'date_retard' => 2, 'duree' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('PresenceId' => 0, 'EmployeId' => 1, 'DatePresence' => 2, 'HeureArrive' => 3, 'HeureSortie' => 4, 'HeureTravail' => 5, ),
+        self::TYPE_CAMELNAME     => array('presenceId' => 0, 'employeId' => 1, 'datePresence' => 2, 'heureArrive' => 3, 'heureSortie' => 4, 'heureTravail' => 5, ),
+        self::TYPE_COLNAME       => array(PresenceTableMap::COL_PRESENCE_ID => 0, PresenceTableMap::COL_EMPLOYE_ID => 1, PresenceTableMap::COL_DATE_PRESENCE => 2, PresenceTableMap::COL_HEURE_ARRIVE => 3, PresenceTableMap::COL_HEURE_SORTIE => 4, PresenceTableMap::COL_HEURE_TRAVAIL => 5, ),
+        self::TYPE_FIELDNAME     => array('presence_id' => 0, 'employe_id' => 1, 'date_presence' => 2, 'heure_arrive' => 3, 'heure_sortie' => 4, 'heure_travail' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -133,17 +143,19 @@ class RetardTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('retard');
-        $this->setPhpName('Retard');
+        $this->setName('presence');
+        $this->setPhpName('Presence');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\App\\Models\\Retard');
+        $this->setClassName('\\App\\Models\\Presence');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('retard_id', 'RetardId', 'INTEGER', true, null, null);
+        $this->addPrimaryKey('presence_id', 'PresenceId', 'INTEGER', true, null, null);
         $this->addForeignKey('employe_id', 'EmployeId', 'INTEGER', 'employe', 'employe_id', true, null, null);
-        $this->addColumn('date_retard', 'DateRetard', 'INTEGER', true, null, null);
-        $this->addColumn('duree', 'Duree', 'TIME', true, null, null);
+        $this->addColumn('date_presence', 'DatePresence', 'DATE', true, null, null);
+        $this->addColumn('heure_arrive', 'HeureArrive', 'TIME', true, null, null);
+        $this->addColumn('heure_sortie', 'HeureSortie', 'TIME', true, null, null);
+        $this->addColumn('heure_travail', 'HeureTravail', 'TIME', true, null, null);
     } // initialize()
 
     /**
@@ -176,11 +188,11 @@ class RetardTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RetardId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PresenceId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RetardId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RetardId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RetardId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RetardId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RetardId', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PresenceId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PresenceId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PresenceId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PresenceId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PresenceId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -200,7 +212,7 @@ class RetardTableMap extends TableMap
         return (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('RetardId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('PresenceId', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
 
@@ -217,7 +229,7 @@ class RetardTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? RetardTableMap::CLASS_DEFAULT : RetardTableMap::OM_CLASS;
+        return $withPrefix ? PresenceTableMap::CLASS_DEFAULT : PresenceTableMap::OM_CLASS;
     }
 
     /**
@@ -231,22 +243,22 @@ class RetardTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Retard object, last column rank)
+     * @return array           (Presence object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = RetardTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = RetardTableMap::getInstanceFromPool($key))) {
+        $key = PresenceTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = PresenceTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + RetardTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + PresenceTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = RetardTableMap::OM_CLASS;
-            /** @var Retard $obj */
+            $cls = PresenceTableMap::OM_CLASS;
+            /** @var Presence $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            RetardTableMap::addInstanceToPool($obj, $key);
+            PresenceTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -269,18 +281,18 @@ class RetardTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = RetardTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = RetardTableMap::getInstanceFromPool($key))) {
+            $key = PresenceTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = PresenceTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Retard $obj */
+                /** @var Presence $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                RetardTableMap::addInstanceToPool($obj, $key);
+                PresenceTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -301,15 +313,19 @@ class RetardTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(RetardTableMap::COL_RETARD_ID);
-            $criteria->addSelectColumn(RetardTableMap::COL_EMPLOYE_ID);
-            $criteria->addSelectColumn(RetardTableMap::COL_DATE_RETARD);
-            $criteria->addSelectColumn(RetardTableMap::COL_DUREE);
+            $criteria->addSelectColumn(PresenceTableMap::COL_PRESENCE_ID);
+            $criteria->addSelectColumn(PresenceTableMap::COL_EMPLOYE_ID);
+            $criteria->addSelectColumn(PresenceTableMap::COL_DATE_PRESENCE);
+            $criteria->addSelectColumn(PresenceTableMap::COL_HEURE_ARRIVE);
+            $criteria->addSelectColumn(PresenceTableMap::COL_HEURE_SORTIE);
+            $criteria->addSelectColumn(PresenceTableMap::COL_HEURE_TRAVAIL);
         } else {
-            $criteria->addSelectColumn($alias . '.retard_id');
+            $criteria->addSelectColumn($alias . '.presence_id');
             $criteria->addSelectColumn($alias . '.employe_id');
-            $criteria->addSelectColumn($alias . '.date_retard');
-            $criteria->addSelectColumn($alias . '.duree');
+            $criteria->addSelectColumn($alias . '.date_presence');
+            $criteria->addSelectColumn($alias . '.heure_arrive');
+            $criteria->addSelectColumn($alias . '.heure_sortie');
+            $criteria->addSelectColumn($alias . '.heure_travail');
         }
     }
 
@@ -322,7 +338,7 @@ class RetardTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(RetardTableMap::DATABASE_NAME)->getTable(RetardTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(PresenceTableMap::DATABASE_NAME)->getTable(PresenceTableMap::TABLE_NAME);
     }
 
     /**
@@ -330,16 +346,16 @@ class RetardTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(RetardTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(RetardTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new RetardTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PresenceTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(PresenceTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new PresenceTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Retard or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Presence or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Retard object or primary key or array of primary keys
+     * @param mixed               $values Criteria or Presence object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -350,27 +366,27 @@ class RetardTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RetardTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PresenceTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \App\Models\Retard) { // it's a model object
+        } elseif ($values instanceof \App\Models\Presence) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(RetardTableMap::DATABASE_NAME);
-            $criteria->add(RetardTableMap::COL_RETARD_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(PresenceTableMap::DATABASE_NAME);
+            $criteria->add(PresenceTableMap::COL_PRESENCE_ID, (array) $values, Criteria::IN);
         }
 
-        $query = RetardQuery::create()->mergeWith($criteria);
+        $query = PresenceQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            RetardTableMap::clearInstancePool();
+            PresenceTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                RetardTableMap::removeInstanceFromPool($singleval);
+                PresenceTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -378,20 +394,20 @@ class RetardTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the retard table.
+     * Deletes all rows from the presence table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return RetardQuery::create()->doDeleteAll($con);
+        return PresenceQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Retard or Criteria object.
+     * Performs an INSERT on the database, given a Presence or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Retard object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or Presence object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -400,22 +416,22 @@ class RetardTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RetardTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PresenceTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Retard object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Presence object
         }
 
-        if ($criteria->containsKey(RetardTableMap::COL_RETARD_ID) && $criteria->keyContainsValue(RetardTableMap::COL_RETARD_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.RetardTableMap::COL_RETARD_ID.')');
+        if ($criteria->containsKey(PresenceTableMap::COL_PRESENCE_ID) && $criteria->keyContainsValue(PresenceTableMap::COL_PRESENCE_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.PresenceTableMap::COL_PRESENCE_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = RetardQuery::create()->mergeWith($criteria);
+        $query = PresenceQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -424,7 +440,7 @@ class RetardTableMap extends TableMap
         });
     }
 
-} // RetardTableMap
+} // PresenceTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-RetardTableMap::buildTableMap();
+PresenceTableMap::buildTableMap();

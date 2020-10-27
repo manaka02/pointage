@@ -11,29 +11,29 @@ propel:
 
         # The directory where Propel should output generated object model classes.
         phpDir: src\Models
-    database:
-        connections:
-            default:
-                adapter: mysql
-                dsn: mysql:host=localhost;port=3308;dbname=pointage
-                user: root
-                password: 
-                settings:
-                    charset: utf8
-    generator:
-        namespaceAutoPackage: false
-
-    #     database:
+    # database:
     #     connections:
     #         default:
     #             adapter: mysql
-    #             dsn: mysql:host=qn0cquuabmqczee2.cbetxkdyhwsb.us-east-1.rds.amazonaws.com;port=3306;dbname=okfs9ath8xb32yss
-    #             user: jkg4un05cwmf8wle
-    #             password: j24qa3m0rvar7x14
+    #             dsn: mysql:host=localhost;port=3308;dbname=pointage
+    #             user: root
+    #             password: 
     #             settings:
     #                 charset: utf8
     # generator:
     #     namespaceAutoPackage: false
+
+        database:
+        connections:
+            default:
+                adapter: mysql
+                dsn: mysql:host=qn0cquuabmqczee2.cbetxkdyhwsb.us-east-1.rds.amazonaws.com;port=3306;dbname=okfs9ath8xb32yss
+                user: jkg4un05cwmf8wle
+                password: j24qa3m0rvar7x14
+                settings:
+                    charset: utf8
+    generator:
+        namespaceAutoPackage: false
 
     
         # ./vendor/bin/propel reverse "mysql:host=localhost;dbname=pointage;user=root;port=3308"

@@ -5,10 +5,8 @@ namespace App\Models\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
-use App\Models\Employe as ChildEmploye;
-use App\Models\EmployeQuery as ChildEmployeQuery;
-use App\Models\PermissionQuery as ChildPermissionQuery;
-use App\Models\Map\PermissionTableMap;
+use App\Models\HeureSupQuery as ChildHeureSupQuery;
+use App\Models\Map\HeureSupTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -23,18 +21,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'permission' table.
+ * Base class that represents a row from the 'heure_sup' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Permission implements ActiveRecordInterface
+abstract class HeureSup implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\App\\Models\\Map\\PermissionTableMap';
+    const TABLE_MAP = '\\App\\Models\\Map\\HeureSupTableMap';
 
 
     /**
@@ -64,11 +62,11 @@ abstract class Permission implements ActiveRecordInterface
     protected $virtualColumns = array();
 
     /**
-     * The value for the permission_id field.
+     * The value for the heure_sup_id field.
      *
      * @var        int
      */
-    protected $permission_id;
+    protected $heure_sup_id;
 
     /**
      * The value for the employe_id field.
@@ -78,11 +76,11 @@ abstract class Permission implements ActiveRecordInterface
     protected $employe_id;
 
     /**
-     * The value for the date_permission field.
+     * The value for the date_heure_sup field.
      *
      * @var        DateTime
      */
-    protected $date_permission;
+    protected $date_heure_sup;
 
     /**
      * The value for the heure_entree field.
@@ -106,16 +104,11 @@ abstract class Permission implements ActiveRecordInterface
     protected $heure_travail;
 
     /**
-     * The value for the heure_manque field.
+     * The value for the heure_supp field.
      *
      * @var        DateTime
      */
-    protected $heure_manque;
-
-    /**
-     * @var        ChildEmploye
-     */
-    protected $aEmploye;
+    protected $heure_supp;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -126,7 +119,7 @@ abstract class Permission implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of App\Models\Base\Permission object.
+     * Initializes internal state of App\Models\Base\HeureSup object.
      */
     public function __construct()
     {
@@ -221,9 +214,9 @@ abstract class Permission implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Permission</code> instance.  If
-     * <code>obj</code> is an instance of <code>Permission</code>, delegates to
-     * <code>equals(Permission)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>HeureSup</code> instance.  If
+     * <code>obj</code> is an instance of <code>HeureSup</code>, delegates to
+     * <code>equals(HeureSup)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -351,13 +344,13 @@ abstract class Permission implements ActiveRecordInterface
     }
 
     /**
-     * Get the [permission_id] column value.
+     * Get the [heure_sup_id] column value.
      *
      * @return int
      */
-    public function getPermissionId()
+    public function getHeureSupId()
     {
-        return $this->permission_id;
+        return $this->heure_sup_id;
     }
 
     /**
@@ -371,7 +364,7 @@ abstract class Permission implements ActiveRecordInterface
     }
 
     /**
-     * Get the [optionally formatted] temporal [date_permission] column value.
+     * Get the [optionally formatted] temporal [date_heure_sup] column value.
      *
      *
      * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
@@ -381,12 +374,12 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getDatePermission($format = NULL)
+    public function getDateHeureSup($format = NULL)
     {
         if ($format === null) {
-            return $this->date_permission;
+            return $this->date_heure_sup;
         } else {
-            return $this->date_permission instanceof \DateTimeInterface ? $this->date_permission->format($format) : null;
+            return $this->date_heure_sup instanceof \DateTimeInterface ? $this->date_heure_sup->format($format) : null;
         }
     }
 
@@ -451,7 +444,7 @@ abstract class Permission implements ActiveRecordInterface
     }
 
     /**
-     * Get the [optionally formatted] temporal [heure_manque] column value.
+     * Get the [optionally formatted] temporal [heure_supp] column value.
      *
      *
      * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
@@ -461,40 +454,40 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getHeureManque($format = NULL)
+    public function getHeureSupp($format = NULL)
     {
         if ($format === null) {
-            return $this->heure_manque;
+            return $this->heure_supp;
         } else {
-            return $this->heure_manque instanceof \DateTimeInterface ? $this->heure_manque->format($format) : null;
+            return $this->heure_supp instanceof \DateTimeInterface ? $this->heure_supp->format($format) : null;
         }
     }
 
     /**
-     * Set the value of [permission_id] column.
+     * Set the value of [heure_sup_id] column.
      *
      * @param int $v New value
-     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
      */
-    public function setPermissionId($v)
+    public function setHeureSupId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->permission_id !== $v) {
-            $this->permission_id = $v;
-            $this->modifiedColumns[PermissionTableMap::COL_PERMISSION_ID] = true;
+        if ($this->heure_sup_id !== $v) {
+            $this->heure_sup_id = $v;
+            $this->modifiedColumns[HeureSupTableMap::COL_HEURE_SUP_ID] = true;
         }
 
         return $this;
-    } // setPermissionId()
+    } // setHeureSupId()
 
     /**
      * Set the value of [employe_id] column.
      *
      * @param int $v New value
-     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
      */
     public function setEmployeId($v)
     {
@@ -504,42 +497,38 @@ abstract class Permission implements ActiveRecordInterface
 
         if ($this->employe_id !== $v) {
             $this->employe_id = $v;
-            $this->modifiedColumns[PermissionTableMap::COL_EMPLOYE_ID] = true;
-        }
-
-        if ($this->aEmploye !== null && $this->aEmploye->getEmployeId() !== $v) {
-            $this->aEmploye = null;
+            $this->modifiedColumns[HeureSupTableMap::COL_EMPLOYE_ID] = true;
         }
 
         return $this;
     } // setEmployeId()
 
     /**
-     * Sets the value of [date_permission] column to a normalized version of the date/time value specified.
+     * Sets the value of [date_heure_sup] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
      */
-    public function setDatePermission($v)
+    public function setDateHeureSup($v)
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->date_permission !== null || $dt !== null) {
-            if ($this->date_permission === null || $dt === null || $dt->format("Y-m-d") !== $this->date_permission->format("Y-m-d")) {
-                $this->date_permission = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[PermissionTableMap::COL_DATE_PERMISSION] = true;
+        if ($this->date_heure_sup !== null || $dt !== null) {
+            if ($this->date_heure_sup === null || $dt === null || $dt->format("Y-m-d") !== $this->date_heure_sup->format("Y-m-d")) {
+                $this->date_heure_sup = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[HeureSupTableMap::COL_DATE_HEURE_SUP] = true;
             }
         } // if either are not null
 
         return $this;
-    } // setDatePermission()
+    } // setDateHeureSup()
 
     /**
      * Sets the value of [heure_entree] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
      */
     public function setHeureEntree($v)
     {
@@ -547,7 +536,7 @@ abstract class Permission implements ActiveRecordInterface
         if ($this->heure_entree !== null || $dt !== null) {
             if ($this->heure_entree === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_entree->format("H:i:s.u")) {
                 $this->heure_entree = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[PermissionTableMap::COL_HEURE_ENTREE] = true;
+                $this->modifiedColumns[HeureSupTableMap::COL_HEURE_ENTREE] = true;
             }
         } // if either are not null
 
@@ -559,7 +548,7 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
      */
     public function setHeureSortie($v)
     {
@@ -567,7 +556,7 @@ abstract class Permission implements ActiveRecordInterface
         if ($this->heure_sortie !== null || $dt !== null) {
             if ($this->heure_sortie === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_sortie->format("H:i:s.u")) {
                 $this->heure_sortie = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[PermissionTableMap::COL_HEURE_SORTIE] = true;
+                $this->modifiedColumns[HeureSupTableMap::COL_HEURE_SORTIE] = true;
             }
         } // if either are not null
 
@@ -579,7 +568,7 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
      */
     public function setHeureTravail($v)
     {
@@ -587,7 +576,7 @@ abstract class Permission implements ActiveRecordInterface
         if ($this->heure_travail !== null || $dt !== null) {
             if ($this->heure_travail === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_travail->format("H:i:s.u")) {
                 $this->heure_travail = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[PermissionTableMap::COL_HEURE_TRAVAIL] = true;
+                $this->modifiedColumns[HeureSupTableMap::COL_HEURE_TRAVAIL] = true;
             }
         } // if either are not null
 
@@ -595,24 +584,24 @@ abstract class Permission implements ActiveRecordInterface
     } // setHeureTravail()
 
     /**
-     * Sets the value of [heure_manque] column to a normalized version of the date/time value specified.
+     * Sets the value of [heure_supp] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\App\Models\Permission The current object (for fluent API support)
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
      */
-    public function setHeureManque($v)
+    public function setHeureSupp($v)
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->heure_manque !== null || $dt !== null) {
-            if ($this->heure_manque === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_manque->format("H:i:s.u")) {
-                $this->heure_manque = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[PermissionTableMap::COL_HEURE_MANQUE] = true;
+        if ($this->heure_supp !== null || $dt !== null) {
+            if ($this->heure_supp === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_supp->format("H:i:s.u")) {
+                $this->heure_supp = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[HeureSupTableMap::COL_HEURE_SUPP] = true;
             }
         } // if either are not null
 
         return $this;
-    } // setHeureManque()
+    } // setHeureSupp()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -650,29 +639,29 @@ abstract class Permission implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PermissionTableMap::translateFieldName('PermissionId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->permission_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : HeureSupTableMap::translateFieldName('HeureSupId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->heure_sup_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PermissionTableMap::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : HeureSupTableMap::translateFieldName('EmployeId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->employe_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PermissionTableMap::translateFieldName('DatePermission', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : HeureSupTableMap::translateFieldName('DateHeureSup', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00') {
                 $col = null;
             }
-            $this->date_permission = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $this->date_heure_sup = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PermissionTableMap::translateFieldName('HeureEntree', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : HeureSupTableMap::translateFieldName('HeureEntree', TableMap::TYPE_PHPNAME, $indexType)];
             $this->heure_entree = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PermissionTableMap::translateFieldName('HeureSortie', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : HeureSupTableMap::translateFieldName('HeureSortie', TableMap::TYPE_PHPNAME, $indexType)];
             $this->heure_sortie = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : PermissionTableMap::translateFieldName('HeureTravail', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : HeureSupTableMap::translateFieldName('HeureTravail', TableMap::TYPE_PHPNAME, $indexType)];
             $this->heure_travail = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : PermissionTableMap::translateFieldName('HeureManque', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->heure_manque = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : HeureSupTableMap::translateFieldName('HeureSupp', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->heure_supp = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -681,10 +670,10 @@ abstract class Permission implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = PermissionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = HeureSupTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\Permission'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\HeureSup'), 0, $e);
         }
     }
 
@@ -703,9 +692,6 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aEmploye !== null && $this->employe_id !== $this->aEmploye->getEmployeId()) {
-            $this->aEmploye = null;
-        }
     } // ensureConsistency
 
     /**
@@ -729,13 +715,13 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(PermissionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(HeureSupTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildPermissionQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildHeureSupQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -745,7 +731,6 @@ abstract class Permission implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aEmploye = null;
         } // if (deep)
     }
 
@@ -755,8 +740,8 @@ abstract class Permission implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Permission::setDeleted()
-     * @see Permission::isDeleted()
+     * @see HeureSup::setDeleted()
+     * @see HeureSup::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -765,11 +750,11 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PermissionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HeureSupTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildPermissionQuery::create()
+            $deleteQuery = ChildHeureSupQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -804,7 +789,7 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PermissionTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(HeureSupTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -823,7 +808,7 @@ abstract class Permission implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                PermissionTableMap::addInstanceToPool($this);
+                HeureSupTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -848,18 +833,6 @@ abstract class Permission implements ActiveRecordInterface
         $affectedRows = 0; // initialize var to track total num of affected rows
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
-
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aEmploye !== null) {
-                if ($this->aEmploye->isModified() || $this->aEmploye->isNew()) {
-                    $affectedRows += $this->aEmploye->save($con);
-                }
-                $this->setEmploye($this->aEmploye);
-            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -892,36 +865,36 @@ abstract class Permission implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[PermissionTableMap::COL_PERMISSION_ID] = true;
-        if (null !== $this->permission_id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . PermissionTableMap::COL_PERMISSION_ID . ')');
+        $this->modifiedColumns[HeureSupTableMap::COL_HEURE_SUP_ID] = true;
+        if (null !== $this->heure_sup_id) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . HeureSupTableMap::COL_HEURE_SUP_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(PermissionTableMap::COL_PERMISSION_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'permission_id';
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUP_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'heure_sup_id';
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_EMPLOYE_ID)) {
+        if ($this->isColumnModified(HeureSupTableMap::COL_EMPLOYE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'employe_id';
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_DATE_PERMISSION)) {
-            $modifiedColumns[':p' . $index++]  = 'date_permission';
+        if ($this->isColumnModified(HeureSupTableMap::COL_DATE_HEURE_SUP)) {
+            $modifiedColumns[':p' . $index++]  = 'date_heure_sup';
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_ENTREE)) {
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_ENTREE)) {
             $modifiedColumns[':p' . $index++]  = 'heure_entree';
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_SORTIE)) {
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SORTIE)) {
             $modifiedColumns[':p' . $index++]  = 'heure_sortie';
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_TRAVAIL)) {
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_TRAVAIL)) {
             $modifiedColumns[':p' . $index++]  = 'heure_travail';
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_MANQUE)) {
-            $modifiedColumns[':p' . $index++]  = 'heure_manque';
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUPP)) {
+            $modifiedColumns[':p' . $index++]  = 'heure_supp';
         }
 
         $sql = sprintf(
-            'INSERT INTO permission (%s) VALUES (%s)',
+            'INSERT INTO heure_sup (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -930,14 +903,14 @@ abstract class Permission implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'permission_id':
-                        $stmt->bindValue($identifier, $this->permission_id, PDO::PARAM_INT);
+                    case 'heure_sup_id':
+                        $stmt->bindValue($identifier, $this->heure_sup_id, PDO::PARAM_INT);
                         break;
                     case 'employe_id':
                         $stmt->bindValue($identifier, $this->employe_id, PDO::PARAM_INT);
                         break;
-                    case 'date_permission':
-                        $stmt->bindValue($identifier, $this->date_permission ? $this->date_permission->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                    case 'date_heure_sup':
+                        $stmt->bindValue($identifier, $this->date_heure_sup ? $this->date_heure_sup->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                     case 'heure_entree':
                         $stmt->bindValue($identifier, $this->heure_entree ? $this->heure_entree->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -948,8 +921,8 @@ abstract class Permission implements ActiveRecordInterface
                     case 'heure_travail':
                         $stmt->bindValue($identifier, $this->heure_travail ? $this->heure_travail->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
-                    case 'heure_manque':
-                        $stmt->bindValue($identifier, $this->heure_manque ? $this->heure_manque->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                    case 'heure_supp':
+                        $stmt->bindValue($identifier, $this->heure_supp ? $this->heure_supp->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -964,7 +937,7 @@ abstract class Permission implements ActiveRecordInterface
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', 0, $e);
         }
-        $this->setPermissionId($pk);
+        $this->setHeureSupId($pk);
 
         $this->setNew(false);
     }
@@ -997,7 +970,7 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = PermissionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = HeureSupTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1014,13 +987,13 @@ abstract class Permission implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getPermissionId();
+                return $this->getHeureSupId();
                 break;
             case 1:
                 return $this->getEmployeId();
                 break;
             case 2:
-                return $this->getDatePermission();
+                return $this->getDateHeureSup();
                 break;
             case 3:
                 return $this->getHeureEntree();
@@ -1032,7 +1005,7 @@ abstract class Permission implements ActiveRecordInterface
                 return $this->getHeureTravail();
                 break;
             case 6:
-                return $this->getHeureManque();
+                return $this->getHeureSupp();
                 break;
             default:
                 return null;
@@ -1051,26 +1024,25 @@ abstract class Permission implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['Permission'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['HeureSup'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Permission'][$this->hashCode()] = true;
-        $keys = PermissionTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['HeureSup'][$this->hashCode()] = true;
+        $keys = HeureSupTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getPermissionId(),
+            $keys[0] => $this->getHeureSupId(),
             $keys[1] => $this->getEmployeId(),
-            $keys[2] => $this->getDatePermission(),
+            $keys[2] => $this->getDateHeureSup(),
             $keys[3] => $this->getHeureEntree(),
             $keys[4] => $this->getHeureSortie(),
             $keys[5] => $this->getHeureTravail(),
-            $keys[6] => $this->getHeureManque(),
+            $keys[6] => $this->getHeureSupp(),
         );
         if ($result[$keys[2]] instanceof \DateTimeInterface) {
             $result[$keys[2]] = $result[$keys[2]]->format('c');
@@ -1097,23 +1069,6 @@ abstract class Permission implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aEmploye) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'employe';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'employe';
-                        break;
-                    default:
-                        $key = 'Employe';
-                }
-
-                $result[$key] = $this->aEmploye->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-        }
 
         return $result;
     }
@@ -1127,11 +1082,11 @@ abstract class Permission implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\App\Models\Permission
+     * @return $this|\App\Models\HeureSup
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = PermissionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = HeureSupTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1142,19 +1097,19 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\App\Models\Permission
+     * @return $this|\App\Models\HeureSup
      */
     public function setByPosition($pos, $value)
     {
         switch ($pos) {
             case 0:
-                $this->setPermissionId($value);
+                $this->setHeureSupId($value);
                 break;
             case 1:
                 $this->setEmployeId($value);
                 break;
             case 2:
-                $this->setDatePermission($value);
+                $this->setDateHeureSup($value);
                 break;
             case 3:
                 $this->setHeureEntree($value);
@@ -1166,7 +1121,7 @@ abstract class Permission implements ActiveRecordInterface
                 $this->setHeureTravail($value);
                 break;
             case 6:
-                $this->setHeureManque($value);
+                $this->setHeureSupp($value);
                 break;
         } // switch()
 
@@ -1192,16 +1147,16 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = PermissionTableMap::getFieldNames($keyType);
+        $keys = HeureSupTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
-            $this->setPermissionId($arr[$keys[0]]);
+            $this->setHeureSupId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
             $this->setEmployeId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setDatePermission($arr[$keys[2]]);
+            $this->setDateHeureSup($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setHeureEntree($arr[$keys[3]]);
@@ -1213,7 +1168,7 @@ abstract class Permission implements ActiveRecordInterface
             $this->setHeureTravail($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setHeureManque($arr[$keys[6]]);
+            $this->setHeureSupp($arr[$keys[6]]);
         }
     }
 
@@ -1234,7 +1189,7 @@ abstract class Permission implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\App\Models\Permission The current object, for fluid interface
+     * @return $this|\App\Models\HeureSup The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1254,28 +1209,28 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(PermissionTableMap::DATABASE_NAME);
+        $criteria = new Criteria(HeureSupTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(PermissionTableMap::COL_PERMISSION_ID)) {
-            $criteria->add(PermissionTableMap::COL_PERMISSION_ID, $this->permission_id);
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUP_ID)) {
+            $criteria->add(HeureSupTableMap::COL_HEURE_SUP_ID, $this->heure_sup_id);
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_EMPLOYE_ID)) {
-            $criteria->add(PermissionTableMap::COL_EMPLOYE_ID, $this->employe_id);
+        if ($this->isColumnModified(HeureSupTableMap::COL_EMPLOYE_ID)) {
+            $criteria->add(HeureSupTableMap::COL_EMPLOYE_ID, $this->employe_id);
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_DATE_PERMISSION)) {
-            $criteria->add(PermissionTableMap::COL_DATE_PERMISSION, $this->date_permission);
+        if ($this->isColumnModified(HeureSupTableMap::COL_DATE_HEURE_SUP)) {
+            $criteria->add(HeureSupTableMap::COL_DATE_HEURE_SUP, $this->date_heure_sup);
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_ENTREE)) {
-            $criteria->add(PermissionTableMap::COL_HEURE_ENTREE, $this->heure_entree);
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_ENTREE)) {
+            $criteria->add(HeureSupTableMap::COL_HEURE_ENTREE, $this->heure_entree);
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_SORTIE)) {
-            $criteria->add(PermissionTableMap::COL_HEURE_SORTIE, $this->heure_sortie);
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SORTIE)) {
+            $criteria->add(HeureSupTableMap::COL_HEURE_SORTIE, $this->heure_sortie);
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_TRAVAIL)) {
-            $criteria->add(PermissionTableMap::COL_HEURE_TRAVAIL, $this->heure_travail);
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_TRAVAIL)) {
+            $criteria->add(HeureSupTableMap::COL_HEURE_TRAVAIL, $this->heure_travail);
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_HEURE_MANQUE)) {
-            $criteria->add(PermissionTableMap::COL_HEURE_MANQUE, $this->heure_manque);
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUPP)) {
+            $criteria->add(HeureSupTableMap::COL_HEURE_SUPP, $this->heure_supp);
         }
 
         return $criteria;
@@ -1293,8 +1248,8 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildPermissionQuery::create();
-        $criteria->add(PermissionTableMap::COL_PERMISSION_ID, $this->permission_id);
+        $criteria = ChildHeureSupQuery::create();
+        $criteria->add(HeureSupTableMap::COL_HEURE_SUP_ID, $this->heure_sup_id);
 
         return $criteria;
     }
@@ -1307,7 +1262,7 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getPermissionId();
+        $validPk = null !== $this->getHeureSupId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1327,18 +1282,18 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function getPrimaryKey()
     {
-        return $this->getPermissionId();
+        return $this->getHeureSupId();
     }
 
     /**
-     * Generic method to set the primary key (permission_id column).
+     * Generic method to set the primary key (heure_sup_id column).
      *
      * @param       int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setPermissionId($key);
+        $this->setHeureSupId($key);
     }
 
     /**
@@ -1347,7 +1302,7 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getPermissionId();
+        return null === $this->getHeureSupId();
     }
 
     /**
@@ -1356,7 +1311,7 @@ abstract class Permission implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \App\Models\Permission (or compatible) type.
+     * @param      object $copyObj An object of \App\Models\HeureSup (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1364,14 +1319,14 @@ abstract class Permission implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setEmployeId($this->getEmployeId());
-        $copyObj->setDatePermission($this->getDatePermission());
+        $copyObj->setDateHeureSup($this->getDateHeureSup());
         $copyObj->setHeureEntree($this->getHeureEntree());
         $copyObj->setHeureSortie($this->getHeureSortie());
         $copyObj->setHeureTravail($this->getHeureTravail());
-        $copyObj->setHeureManque($this->getHeureManque());
+        $copyObj->setHeureSupp($this->getHeureSupp());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setPermissionId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setHeureSupId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1384,7 +1339,7 @@ abstract class Permission implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \App\Models\Permission Clone of current object.
+     * @return \App\Models\HeureSup Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1398,73 +1353,19 @@ abstract class Permission implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildEmploye object.
-     *
-     * @param  ChildEmploye $v
-     * @return $this|\App\Models\Permission The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setEmploye(ChildEmploye $v = null)
-    {
-        if ($v === null) {
-            $this->setEmployeId(NULL);
-        } else {
-            $this->setEmployeId($v->getEmployeId());
-        }
-
-        $this->aEmploye = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildEmploye object, it will not be re-added.
-        if ($v !== null) {
-            $v->addPermission($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildEmploye object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildEmploye The associated ChildEmploye object.
-     * @throws PropelException
-     */
-    public function getEmploye(ConnectionInterface $con = null)
-    {
-        if ($this->aEmploye === null && ($this->employe_id != 0)) {
-            $this->aEmploye = ChildEmployeQuery::create()->findPk($this->employe_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aEmploye->addPermissions($this);
-             */
-        }
-
-        return $this->aEmploye;
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aEmploye) {
-            $this->aEmploye->removePermission($this);
-        }
-        $this->permission_id = null;
+        $this->heure_sup_id = null;
         $this->employe_id = null;
-        $this->date_permission = null;
+        $this->date_heure_sup = null;
         $this->heure_entree = null;
         $this->heure_sortie = null;
         $this->heure_travail = null;
-        $this->heure_manque = null;
+        $this->heure_supp = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1485,7 +1386,6 @@ abstract class Permission implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aEmploye = null;
     }
 
     /**
@@ -1495,7 +1395,7 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(PermissionTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(HeureSupTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

@@ -156,7 +156,7 @@ class PermissionTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('permission_id', 'PermissionId', 'INTEGER', true, null, null);
-        $this->addColumn('employe_id', 'EmployeId', 'INTEGER', true, null, null);
+        $this->addForeignKey('employe_id', 'EmployeId', 'INTEGER', 'employe', 'employe_id', true, null, null);
         $this->addColumn('date_permission', 'DatePermission', 'DATE', true, null, null);
         $this->addColumn('heure_entree', 'HeureEntree', 'TIME', true, null, null);
         $this->addColumn('heure_sortie', 'HeureSortie', 'TIME', true, null, null);
@@ -169,6 +169,13 @@ class PermissionTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Employe', '\\App\\Models\\Employe', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':employe_id',
+    1 => ':employe_id',
+  ),
+), 'CASCADE', null, null, false);
     } // buildRelations()
 
     /**

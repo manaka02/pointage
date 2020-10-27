@@ -106,9 +106,9 @@ class EmployeTableMap extends TableMap
     const COL_DATE_EMBAUCHE = 'employe.date_embauche';
 
     /**
-     * the column name for the presence field
+     * the column name for the present field
      */
-    const COL_PRESENCE = 'employe.presence';
+    const COL_PRESENT = 'employe.present';
 
     /**
      * the column name for the status field
@@ -127,10 +127,10 @@ class EmployeTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('EmployeId', 'RefInterne', 'UniteId', 'NomPrenom', 'Poste', 'Genre', 'DateEmbauche', 'Presence', 'Status', ),
-        self::TYPE_CAMELNAME     => array('employeId', 'refInterne', 'uniteId', 'nomPrenom', 'poste', 'genre', 'dateEmbauche', 'presence', 'status', ),
-        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID, EmployeTableMap::COL_REF_INTERNE, EmployeTableMap::COL_UNITE_ID, EmployeTableMap::COL_NOM_PRENOM, EmployeTableMap::COL_POSTE, EmployeTableMap::COL_GENRE, EmployeTableMap::COL_DATE_EMBAUCHE, EmployeTableMap::COL_PRESENCE, EmployeTableMap::COL_STATUS, ),
-        self::TYPE_FIELDNAME     => array('employe_id', 'ref_interne', 'unite_id', 'nom_prenom', 'poste', 'genre', 'date_embauche', 'presence', 'status', ),
+        self::TYPE_PHPNAME       => array('EmployeId', 'RefInterne', 'UniteId', 'NomPrenom', 'Poste', 'Genre', 'DateEmbauche', 'Present', 'Status', ),
+        self::TYPE_CAMELNAME     => array('employeId', 'refInterne', 'uniteId', 'nomPrenom', 'poste', 'genre', 'dateEmbauche', 'present', 'status', ),
+        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID, EmployeTableMap::COL_REF_INTERNE, EmployeTableMap::COL_UNITE_ID, EmployeTableMap::COL_NOM_PRENOM, EmployeTableMap::COL_POSTE, EmployeTableMap::COL_GENRE, EmployeTableMap::COL_DATE_EMBAUCHE, EmployeTableMap::COL_PRESENT, EmployeTableMap::COL_STATUS, ),
+        self::TYPE_FIELDNAME     => array('employe_id', 'ref_interne', 'unite_id', 'nom_prenom', 'poste', 'genre', 'date_embauche', 'present', 'status', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
@@ -141,10 +141,10 @@ class EmployeTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('EmployeId' => 0, 'RefInterne' => 1, 'UniteId' => 2, 'NomPrenom' => 3, 'Poste' => 4, 'Genre' => 5, 'DateEmbauche' => 6, 'Presence' => 7, 'Status' => 8, ),
-        self::TYPE_CAMELNAME     => array('employeId' => 0, 'refInterne' => 1, 'uniteId' => 2, 'nomPrenom' => 3, 'poste' => 4, 'genre' => 5, 'dateEmbauche' => 6, 'presence' => 7, 'status' => 8, ),
-        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID => 0, EmployeTableMap::COL_REF_INTERNE => 1, EmployeTableMap::COL_UNITE_ID => 2, EmployeTableMap::COL_NOM_PRENOM => 3, EmployeTableMap::COL_POSTE => 4, EmployeTableMap::COL_GENRE => 5, EmployeTableMap::COL_DATE_EMBAUCHE => 6, EmployeTableMap::COL_PRESENCE => 7, EmployeTableMap::COL_STATUS => 8, ),
-        self::TYPE_FIELDNAME     => array('employe_id' => 0, 'ref_interne' => 1, 'unite_id' => 2, 'nom_prenom' => 3, 'poste' => 4, 'genre' => 5, 'date_embauche' => 6, 'presence' => 7, 'status' => 8, ),
+        self::TYPE_PHPNAME       => array('EmployeId' => 0, 'RefInterne' => 1, 'UniteId' => 2, 'NomPrenom' => 3, 'Poste' => 4, 'Genre' => 5, 'DateEmbauche' => 6, 'Present' => 7, 'Status' => 8, ),
+        self::TYPE_CAMELNAME     => array('employeId' => 0, 'refInterne' => 1, 'uniteId' => 2, 'nomPrenom' => 3, 'poste' => 4, 'genre' => 5, 'dateEmbauche' => 6, 'present' => 7, 'status' => 8, ),
+        self::TYPE_COLNAME       => array(EmployeTableMap::COL_EMPLOYE_ID => 0, EmployeTableMap::COL_REF_INTERNE => 1, EmployeTableMap::COL_UNITE_ID => 2, EmployeTableMap::COL_NOM_PRENOM => 3, EmployeTableMap::COL_POSTE => 4, EmployeTableMap::COL_GENRE => 5, EmployeTableMap::COL_DATE_EMBAUCHE => 6, EmployeTableMap::COL_PRESENT => 7, EmployeTableMap::COL_STATUS => 8, ),
+        self::TYPE_FIELDNAME     => array('employe_id' => 0, 'ref_interne' => 1, 'unite_id' => 2, 'nom_prenom' => 3, 'poste' => 4, 'genre' => 5, 'date_embauche' => 6, 'present' => 7, 'status' => 8, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
@@ -172,7 +172,7 @@ class EmployeTableMap extends TableMap
         $this->addColumn('poste', 'Poste', 'VARCHAR', false, 100, null);
         $this->addColumn('genre', 'Genre', 'VARCHAR', false, 40, null);
         $this->addColumn('date_embauche', 'DateEmbauche', 'DATE', false, null, null);
-        $this->addColumn('presence', 'Presence', 'BOOLEAN', false, 1, true);
+        $this->addColumn('present', 'Present', 'INTEGER', false, null, 1);
         $this->addColumn('status', 'Status', 'INTEGER', true, null, 1);
     } // initialize()
 
@@ -202,6 +202,13 @@ class EmployeTableMap extends TableMap
     1 => ':employe_id',
   ),
 ), 'CASCADE', null, 'Conges', false);
+        $this->addRelation('Permission', '\\App\\Models\\Permission', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':employe_id',
+    1 => ':employe_id',
+  ),
+), 'CASCADE', null, 'Permissions', false);
         $this->addRelation('Pointage', '\\App\\Models\\Pointage', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -209,6 +216,13 @@ class EmployeTableMap extends TableMap
     1 => ':employe_id',
   ),
 ), 'CASCADE', null, 'Pointages', false);
+        $this->addRelation('Presence', '\\App\\Models\\Presence', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':employe_id',
+    1 => ':employe_id',
+  ),
+), 'CASCADE', null, 'Presences', false);
         $this->addRelation('Retard', '\\App\\Models\\Retard', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -226,7 +240,9 @@ class EmployeTableMap extends TableMap
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         AbsenceTableMap::clearInstancePool();
         CongeTableMap::clearInstancePool();
+        PermissionTableMap::clearInstancePool();
         PointageTableMap::clearInstancePool();
+        PresenceTableMap::clearInstancePool();
         RetardTableMap::clearInstancePool();
     }
 
@@ -378,7 +394,7 @@ class EmployeTableMap extends TableMap
             $criteria->addSelectColumn(EmployeTableMap::COL_POSTE);
             $criteria->addSelectColumn(EmployeTableMap::COL_GENRE);
             $criteria->addSelectColumn(EmployeTableMap::COL_DATE_EMBAUCHE);
-            $criteria->addSelectColumn(EmployeTableMap::COL_PRESENCE);
+            $criteria->addSelectColumn(EmployeTableMap::COL_PRESENT);
             $criteria->addSelectColumn(EmployeTableMap::COL_STATUS);
         } else {
             $criteria->addSelectColumn($alias . '.employe_id');
@@ -388,7 +404,7 @@ class EmployeTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.poste');
             $criteria->addSelectColumn($alias . '.genre');
             $criteria->addSelectColumn($alias . '.date_embauche');
-            $criteria->addSelectColumn($alias . '.presence');
+            $criteria->addSelectColumn($alias . '.present');
             $criteria->addSelectColumn($alias . '.status');
         }
     }

@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Services\GeneralService;
-use App\Models\Base\Retard as BaseRetard;
+use App\Models\Base\Presence as BasePresence;
 
 /**
- * Skeleton subclass for representing a row from the 'retard' table.
+ * Skeleton subclass for representing a row from the 'presence' table.
  *
  *
  *
@@ -14,7 +14,7 @@ use App\Models\Base\Retard as BaseRetard;
  * application requirements.  This class will only be generated as
  * long as it does not already exist in the output directory.
  */
-class Retard extends BaseRetard
+class Presence extends BasePresence
 {
     private $addmore = true;
 
@@ -25,7 +25,7 @@ class Retard extends BaseRetard
 
     public function getTitle()
     {
-        return "Retard";
+        return "Presence";
     }
 
     public function joinOtherColummns(&$query)
@@ -62,13 +62,13 @@ class Retard extends BaseRetard
                 "type" => 'select',
             ],
             [
-                "path" => "date_retard",
-                "key" => "Date de retard",
+                "path" => "date_presence",
+                "key" => "Date de presence",
                 "type" =>"date"
             ],
             [
-                "path" => "duree",
-                "key" => "Temps de retard",
+                "path" => "heure_arrive",
+                "key" => "Heure d'arrivée",
             ]
             ];
     }
@@ -109,8 +109,8 @@ class Retard extends BaseRetard
                 "value" => $direction
             ],
             [
-                "path" => "date_retard",
-                "key" => "Date de retard",
+                "path" => "date_presence",
+                "key" => "Date de presence",
                 "type"  => "date",
             ]
 
@@ -118,13 +118,16 @@ class Retard extends BaseRetard
     }
 
     private $keyToShow =[
-        "employe","date_retard","duree","service","departement","direction"
+        "employe","date_presence","heure_arrive","heure_sortie","heure_travail","service","departement","direction"
    ];
 
    private $keyText = [
        "Employé",
-       "Date de retard",
-       "Durée",
+       "Date de presence",
+       
+       "Heure d'arrivée",
+       "Heure de Sortie",
+       "Heure de travail",
        "Service",
        "Département",
        "Direction",

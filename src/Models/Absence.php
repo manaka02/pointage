@@ -71,15 +71,17 @@ class Absence extends BaseAbsence
 
     public function getKeySearch()
     {
+        $employes = GeneralService::getTargetAsChoice('employe','nom_prenom');
         $direction = GeneralService::getTargetAsChoice('direction','designation');
         $departement = GeneralService::getTargetAsChoice('departement','designation');
         $service = GeneralService::getTargetAsChoice('service','designation');
         $unite = GeneralService::getTargetAsChoice('unite','designation');
         return [
             [
-                "path" => "designation",
-                "key" => "designation",
-                
+                "path" => "employe_id",
+                "key" => "Employé",
+                "type"  => "select",
+                "value" => $employes
             ],[
                 "path" => "Employe%unite_id",
                 "key" => "Unité",
