@@ -23,7 +23,7 @@ propel:
     # generator:
     #     namespaceAutoPackage: false
 
-        database:
+    database:
         connections:
             default:
                 adapter: mysql
