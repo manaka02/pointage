@@ -1,72 +1,157 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>
-			{% block title %}Welcome!
-			{% endblock %}
-		</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		{{ encore_entry_link_tags('app') }}
-		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
-	</head>
-	<body>
+<head>
+	<meta charset="UTF-8">
+	<title>
+		{% block title %}Welcome!
+		{% endblock %}
+	</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{{ encore_entry_link_tags('app') }}
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+</head>
+
+<body>
+
+	<div class="sidenav maincolor">
+		<div class="login-main-text">
+		   <h2>Epsilon (démo)</h2>
+		   <p>Logiciel de gestion de pointage</p>
+		</div>
+	 </div>
+	 <div class="main">
 		<div class="login-page">
 			<div class="login-box">
 				<div class="login-logo">
 					<a href="../../index2.html">
-						<b>Pointage</b>
+						<b>Bienvenue</b>
 					</a>
 				</div>
 				<div class="card">
 					<div class="card-body login-card-body">
 						<p class="login-box-msg">Veuillez vous connecter avant de commencer</p>
-                        <form method="post">
-			{% if error %}
-				<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-			{% endif %}
-
-			{% if app.user %}
-				<div class="mb-3">
-					Vous êtes connecté en tant que
-					{{ app.user.username }},
-					<a href="{{ path('app_logout') }}">Se déconnecter</a>
-				</div>
-			{% endif %}
-			<label for="inputMail">Email</label>
-			<input type="text" value="{{ last_username }}" name="mail" id="inputMail" class="form-control" required autofocus>
-			<label for="inputPassword">Mot de passe</label>
-			<input type="password" name="password" id="inputPassword" class="form-control" required>
-
-			<input
-			type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-
-			{# Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-						        See https://symfony.com/doc/current/security/remember_me.html #}
-
-			<div class="checkbox mb-3 mt-2">
-				<label>
-					<input type="checkbox" name="_remember_me">
-					Se souvenir de moi
-				</label>
-			</div>
-
-
-			<button class="btn btn-primary" type="submit">
-				Se connecter
-			</button>
-		</form>
+						<form method="post">
+							{% if error %}
+							<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}
+							</div>
+							{% endif %}
+	
+							{% if app.user %}
+							<div class="mb-3">
+								Vous êtes connecté en tant que
+								{{ app.user.username }},
+								<a href="{{ path('app_logout') }}">Se déconnecter</a>
+							</div>
+							{% endif %}
+							<label for="inputMail">Email</label>
+							<input type="text" value="{{ last_username }}" name="mail" id="inputMail" class="form-control"
+								required autofocus>
+							<label for="inputPassword">Mot de passe</label>
+							<input type="password" name="password" id="inputPassword" class="form-control" required>
+	
+							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+	
+	
+							{# Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+									See https://symfony.com/doc/current/security/remember_me.html #}
+	
+							<div class="checkbox mb-3 mt-2">
+								<label>
+									<input type="checkbox" name="_remember_me">
+									Se souvenir de moi
+								</label>
+							</div>
+	
+	
+							<button class="btn btn-block btn-secondary btn-flat" type="submit">
+								Se connecter
+							</button>
+						</form>
 					</div>
 				</div>
 				<!-- /.login-card-body -->
 			</div>
 		</div>
-		
+	 </div>
 
-	</body>
+
+	 <style>
+		.main-head{
+			height: 150px;
+			background: #FFF;
+		   
+		}
+		
+		.sidenav {
+			height: 100%;
+			overflow-x: hidden;
+			padding-top: 5%;
+		}
+		
+		
+		.main {
+			padding: 0px 10px;
+		}
+		
+		@media screen and (max-height: 450px) {
+			.sidenav {padding-top: 15px;}
+		}
+		
+		@media screen and (max-width: 450px) {
+			.login-form{
+				margin-top: 10%;
+			}
+		
+			.register-form{
+				margin-top: 10%;
+			}
+		}
+		
+		@media screen and (min-width: 768px){
+			.main{
+				margin-left: 40%; 
+			}
+		
+			.sidenav{
+				width: 40%;
+				position: fixed;
+				z-index: 1;
+				top: 0;
+				left: 0;
+			}
+		
+			.login-form{
+				margin-top: 80%;
+			}
+		
+			.register-form{
+				margin-top: 20%;
+			}
+		}
+		
+		
+		.login-main-text{
+			margin-top: 20%;
+			padding: 60px;
+			color: #fff;
+		}
+		
+		.login-main-text h2{
+			font-weight: 300;
+		}
+		
+		.btn-black{
+			background-color: #000 !important;
+			color: #fff;
+		}
+	 </style>
+	
+
+
+</body>
 
 
 </html>
