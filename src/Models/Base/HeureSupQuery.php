@@ -10,6 +10,7 @@ use App\Models\Map\HeureSupTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
+use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -26,6 +27,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHeureSupQuery orderByHeureSortie($order = Criteria::ASC) Order by the heure_sortie column
  * @method     ChildHeureSupQuery orderByHeureTravail($order = Criteria::ASC) Order by the heure_travail column
  * @method     ChildHeureSupQuery orderByHeureSupp($order = Criteria::ASC) Order by the heure_supp column
+ * @method     ChildHeureSupQuery orderByHeureSupNormal($order = Criteria::ASC) Order by the heure_sup_normal column
+ * @method     ChildHeureSupQuery orderByHeureSupExtra($order = Criteria::ASC) Order by the heure_sup_extra column
+ * @method     ChildHeureSupQuery orderByHeureSupSamedi($order = Criteria::ASC) Order by the heure_sup_samedi column
  *
  * @method     ChildHeureSupQuery groupByHeureSupId() Group by the heure_sup_id column
  * @method     ChildHeureSupQuery groupByEmployeId() Group by the employe_id column
@@ -34,6 +38,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHeureSupQuery groupByHeureSortie() Group by the heure_sortie column
  * @method     ChildHeureSupQuery groupByHeureTravail() Group by the heure_travail column
  * @method     ChildHeureSupQuery groupByHeureSupp() Group by the heure_supp column
+ * @method     ChildHeureSupQuery groupByHeureSupNormal() Group by the heure_sup_normal column
+ * @method     ChildHeureSupQuery groupByHeureSupExtra() Group by the heure_sup_extra column
+ * @method     ChildHeureSupQuery groupByHeureSupSamedi() Group by the heure_sup_samedi column
  *
  * @method     ChildHeureSupQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildHeureSupQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -42,6 +49,18 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHeureSupQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildHeureSupQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildHeureSupQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
+ * @method     ChildHeureSupQuery leftJoinEmploye($relationAlias = null) Adds a LEFT JOIN clause to the query using the Employe relation
+ * @method     ChildHeureSupQuery rightJoinEmploye($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Employe relation
+ * @method     ChildHeureSupQuery innerJoinEmploye($relationAlias = null) Adds a INNER JOIN clause to the query using the Employe relation
+ *
+ * @method     ChildHeureSupQuery joinWithEmploye($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Employe relation
+ *
+ * @method     ChildHeureSupQuery leftJoinWithEmploye() Adds a LEFT JOIN clause and with to the query using the Employe relation
+ * @method     ChildHeureSupQuery rightJoinWithEmploye() Adds a RIGHT JOIN clause and with to the query using the Employe relation
+ * @method     ChildHeureSupQuery innerJoinWithEmploye() Adds a INNER JOIN clause and with to the query using the Employe relation
+ *
+ * @method     \App\Models\EmployeQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildHeureSup findOne(ConnectionInterface $con = null) Return the first ChildHeureSup matching the query
  * @method     ChildHeureSup findOneOrCreate(ConnectionInterface $con = null) Return the first ChildHeureSup matching the query, or a new ChildHeureSup object populated from the query conditions when no match is found
@@ -52,7 +71,10 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHeureSup findOneByHeureEntree(string $heure_entree) Return the first ChildHeureSup filtered by the heure_entree column
  * @method     ChildHeureSup findOneByHeureSortie(string $heure_sortie) Return the first ChildHeureSup filtered by the heure_sortie column
  * @method     ChildHeureSup findOneByHeureTravail(string $heure_travail) Return the first ChildHeureSup filtered by the heure_travail column
- * @method     ChildHeureSup findOneByHeureSupp(string $heure_supp) Return the first ChildHeureSup filtered by the heure_supp column *
+ * @method     ChildHeureSup findOneByHeureSupp(string $heure_supp) Return the first ChildHeureSup filtered by the heure_supp column
+ * @method     ChildHeureSup findOneByHeureSupNormal(string $heure_sup_normal) Return the first ChildHeureSup filtered by the heure_sup_normal column
+ * @method     ChildHeureSup findOneByHeureSupExtra(string $heure_sup_extra) Return the first ChildHeureSup filtered by the heure_sup_extra column
+ * @method     ChildHeureSup findOneByHeureSupSamedi(string $heure_sup_samedi) Return the first ChildHeureSup filtered by the heure_sup_samedi column *
 
  * @method     ChildHeureSup requirePk($key, ConnectionInterface $con = null) Return the ChildHeureSup by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHeureSup requireOne(ConnectionInterface $con = null) Return the first ChildHeureSup matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -64,6 +86,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHeureSup requireOneByHeureSortie(string $heure_sortie) Return the first ChildHeureSup filtered by the heure_sortie column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHeureSup requireOneByHeureTravail(string $heure_travail) Return the first ChildHeureSup filtered by the heure_travail column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildHeureSup requireOneByHeureSupp(string $heure_supp) Return the first ChildHeureSup filtered by the heure_supp column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildHeureSup requireOneByHeureSupNormal(string $heure_sup_normal) Return the first ChildHeureSup filtered by the heure_sup_normal column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildHeureSup requireOneByHeureSupExtra(string $heure_sup_extra) Return the first ChildHeureSup filtered by the heure_sup_extra column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildHeureSup requireOneByHeureSupSamedi(string $heure_sup_samedi) Return the first ChildHeureSup filtered by the heure_sup_samedi column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildHeureSup[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildHeureSup objects based on current ModelCriteria
  * @method     ChildHeureSup[]|ObjectCollection findByHeureSupId(int $heure_sup_id) Return ChildHeureSup objects filtered by the heure_sup_id column
@@ -73,6 +98,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildHeureSup[]|ObjectCollection findByHeureSortie(string $heure_sortie) Return ChildHeureSup objects filtered by the heure_sortie column
  * @method     ChildHeureSup[]|ObjectCollection findByHeureTravail(string $heure_travail) Return ChildHeureSup objects filtered by the heure_travail column
  * @method     ChildHeureSup[]|ObjectCollection findByHeureSupp(string $heure_supp) Return ChildHeureSup objects filtered by the heure_supp column
+ * @method     ChildHeureSup[]|ObjectCollection findByHeureSupNormal(string $heure_sup_normal) Return ChildHeureSup objects filtered by the heure_sup_normal column
+ * @method     ChildHeureSup[]|ObjectCollection findByHeureSupExtra(string $heure_sup_extra) Return ChildHeureSup objects filtered by the heure_sup_extra column
+ * @method     ChildHeureSup[]|ObjectCollection findByHeureSupSamedi(string $heure_sup_samedi) Return ChildHeureSup objects filtered by the heure_sup_samedi column
  * @method     ChildHeureSup[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -171,7 +199,7 @@ abstract class HeureSupQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT heure_sup_id, employe_id, date_heure_sup, heure_entree, heure_sortie, heure_travail, heure_supp FROM heure_sup WHERE heure_sup_id = :p0';
+        $sql = 'SELECT heure_sup_id, employe_id, date_heure_sup, heure_entree, heure_sortie, heure_travail, heure_supp, heure_sup_normal, heure_sup_extra, heure_sup_samedi FROM heure_sup WHERE heure_sup_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -311,6 +339,8 @@ abstract class HeureSupQuery extends ModelCriteria
      * $query->filterByEmployeId(array(12, 34)); // WHERE employe_id IN (12, 34)
      * $query->filterByEmployeId(array('min' => 12)); // WHERE employe_id > 12
      * </code>
+     *
+     * @see       filterByEmploye()
      *
      * @param     mixed $employeId The value to use as filter.
      *              Use scalar values for equality.
@@ -556,6 +586,212 @@ abstract class HeureSupQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUPP, $heureSupp, $comparison);
+    }
+
+    /**
+     * Filter the query on the heure_sup_normal column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByHeureSupNormal('2011-03-14'); // WHERE heure_sup_normal = '2011-03-14'
+     * $query->filterByHeureSupNormal('now'); // WHERE heure_sup_normal = '2011-03-14'
+     * $query->filterByHeureSupNormal(array('max' => 'yesterday')); // WHERE heure_sup_normal > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $heureSupNormal The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildHeureSupQuery The current query, for fluid interface
+     */
+    public function filterByHeureSupNormal($heureSupNormal = null, $comparison = null)
+    {
+        if (is_array($heureSupNormal)) {
+            $useMinMax = false;
+            if (isset($heureSupNormal['min'])) {
+                $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUP_NORMAL, $heureSupNormal['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($heureSupNormal['max'])) {
+                $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUP_NORMAL, $heureSupNormal['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUP_NORMAL, $heureSupNormal, $comparison);
+    }
+
+    /**
+     * Filter the query on the heure_sup_extra column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByHeureSupExtra('2011-03-14'); // WHERE heure_sup_extra = '2011-03-14'
+     * $query->filterByHeureSupExtra('now'); // WHERE heure_sup_extra = '2011-03-14'
+     * $query->filterByHeureSupExtra(array('max' => 'yesterday')); // WHERE heure_sup_extra > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $heureSupExtra The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildHeureSupQuery The current query, for fluid interface
+     */
+    public function filterByHeureSupExtra($heureSupExtra = null, $comparison = null)
+    {
+        if (is_array($heureSupExtra)) {
+            $useMinMax = false;
+            if (isset($heureSupExtra['min'])) {
+                $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUP_EXTRA, $heureSupExtra['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($heureSupExtra['max'])) {
+                $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUP_EXTRA, $heureSupExtra['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUP_EXTRA, $heureSupExtra, $comparison);
+    }
+
+    /**
+     * Filter the query on the heure_sup_samedi column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByHeureSupSamedi('2011-03-14'); // WHERE heure_sup_samedi = '2011-03-14'
+     * $query->filterByHeureSupSamedi('now'); // WHERE heure_sup_samedi = '2011-03-14'
+     * $query->filterByHeureSupSamedi(array('max' => 'yesterday')); // WHERE heure_sup_samedi > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $heureSupSamedi The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildHeureSupQuery The current query, for fluid interface
+     */
+    public function filterByHeureSupSamedi($heureSupSamedi = null, $comparison = null)
+    {
+        if (is_array($heureSupSamedi)) {
+            $useMinMax = false;
+            if (isset($heureSupSamedi['min'])) {
+                $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUP_SAMEDI, $heureSupSamedi['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($heureSupSamedi['max'])) {
+                $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUP_SAMEDI, $heureSupSamedi['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(HeureSupTableMap::COL_HEURE_SUP_SAMEDI, $heureSupSamedi, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \App\Models\Employe object
+     *
+     * @param \App\Models\Employe|ObjectCollection $employe The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildHeureSupQuery The current query, for fluid interface
+     */
+    public function filterByEmploye($employe, $comparison = null)
+    {
+        if ($employe instanceof \App\Models\Employe) {
+            return $this
+                ->addUsingAlias(HeureSupTableMap::COL_EMPLOYE_ID, $employe->getEmployeId(), $comparison);
+        } elseif ($employe instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(HeureSupTableMap::COL_EMPLOYE_ID, $employe->toKeyValue('PrimaryKey', 'EmployeId'), $comparison);
+        } else {
+            throw new PropelException('filterByEmploye() only accepts arguments of type \App\Models\Employe or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Employe relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildHeureSupQuery The current query, for fluid interface
+     */
+    public function joinEmploye($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Employe');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Employe');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Employe relation Employe object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \App\Models\EmployeQuery A secondary query class using the current class as primary query
+     */
+    public function useEmployeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinEmploye($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Employe', '\App\Models\EmployeQuery');
     }
 
     /**

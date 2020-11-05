@@ -11,6 +11,8 @@ use App\Models\Conge as ChildConge;
 use App\Models\CongeQuery as ChildCongeQuery;
 use App\Models\Employe as ChildEmploye;
 use App\Models\EmployeQuery as ChildEmployeQuery;
+use App\Models\HeureSup as ChildHeureSup;
+use App\Models\HeureSupQuery as ChildHeureSupQuery;
 use App\Models\Permission as ChildPermission;
 use App\Models\PermissionQuery as ChildPermissionQuery;
 use App\Models\Pointage as ChildPointage;
@@ -24,6 +26,7 @@ use App\Models\UniteQuery as ChildUniteQuery;
 use App\Models\Map\AbsenceTableMap;
 use App\Models\Map\CongeTableMap;
 use App\Models\Map\EmployeTableMap;
+use App\Models\Map\HeureSupTableMap;
 use App\Models\Map\PermissionTableMap;
 use App\Models\Map\PointageTableMap;
 use App\Models\Map\PresenceTableMap;
@@ -166,6 +169,12 @@ abstract class Employe implements ActiveRecordInterface
     protected $collCongesPartial;
 
     /**
+     * @var        ObjectCollection|ChildHeureSup[] Collection to store aggregation of ChildHeureSup objects.
+     */
+    protected $collHeureSups;
+    protected $collHeureSupsPartial;
+
+    /**
      * @var        ObjectCollection|ChildPermission[] Collection to store aggregation of ChildPermission objects.
      */
     protected $collPermissions;
@@ -208,6 +217,12 @@ abstract class Employe implements ActiveRecordInterface
      * @var ObjectCollection|ChildConge[]
      */
     protected $congesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildHeureSup[]
+     */
+    protected $heureSupsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -906,6 +921,8 @@ abstract class Employe implements ActiveRecordInterface
 
             $this->collConges = null;
 
+            $this->collHeureSups = null;
+
             $this->collPermissions = null;
 
             $this->collPointages = null;
@@ -1068,6 +1085,23 @@ abstract class Employe implements ActiveRecordInterface
 
             if ($this->collConges !== null) {
                 foreach ($this->collConges as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->heureSupsScheduledForDeletion !== null) {
+                if (!$this->heureSupsScheduledForDeletion->isEmpty()) {
+                    \App\Models\HeureSupQuery::create()
+                        ->filterByPrimaryKeys($this->heureSupsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->heureSupsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collHeureSups !== null) {
+                foreach ($this->collHeureSups as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1416,6 +1450,21 @@ abstract class Employe implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collConges->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collHeureSups) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'heureSups';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'heure_sups';
+                        break;
+                    default:
+                        $key = 'HeureSups';
+                }
+
+                $result[$key] = $this->collHeureSups->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collPermissions) {
 
@@ -1771,6 +1820,12 @@ abstract class Employe implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getHeureSups() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addHeureSup($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getPermissions() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addPermission($relObj->copy($deepCopy));
@@ -1893,6 +1948,10 @@ abstract class Employe implements ActiveRecordInterface
         }
         if ('Conge' === $relationName) {
             $this->initConges();
+            return;
+        }
+        if ('HeureSup' === $relationName) {
+            $this->initHeureSups();
             return;
         }
         if ('Permission' === $relationName) {
@@ -2376,6 +2435,240 @@ abstract class Employe implements ActiveRecordInterface
             }
             $this->congesScheduledForDeletion[]= clone $conge;
             $conge->setEmploye(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collHeureSups collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addHeureSups()
+     */
+    public function clearHeureSups()
+    {
+        $this->collHeureSups = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collHeureSups collection loaded partially.
+     */
+    public function resetPartialHeureSups($v = true)
+    {
+        $this->collHeureSupsPartial = $v;
+    }
+
+    /**
+     * Initializes the collHeureSups collection.
+     *
+     * By default this just sets the collHeureSups collection to an empty array (like clearcollHeureSups());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initHeureSups($overrideExisting = true)
+    {
+        if (null !== $this->collHeureSups && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = HeureSupTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collHeureSups = new $collectionClassName;
+        $this->collHeureSups->setModel('\App\Models\HeureSup');
+    }
+
+    /**
+     * Gets an array of ChildHeureSup objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildEmploye is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildHeureSup[] List of ChildHeureSup objects
+     * @throws PropelException
+     */
+    public function getHeureSups(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collHeureSupsPartial && !$this->isNew();
+        if (null === $this->collHeureSups || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collHeureSups) {
+                    $this->initHeureSups();
+                } else {
+                    $collectionClassName = HeureSupTableMap::getTableMap()->getCollectionClassName();
+
+                    $collHeureSups = new $collectionClassName;
+                    $collHeureSups->setModel('\App\Models\HeureSup');
+
+                    return $collHeureSups;
+                }
+            } else {
+                $collHeureSups = ChildHeureSupQuery::create(null, $criteria)
+                    ->filterByEmploye($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collHeureSupsPartial && count($collHeureSups)) {
+                        $this->initHeureSups(false);
+
+                        foreach ($collHeureSups as $obj) {
+                            if (false == $this->collHeureSups->contains($obj)) {
+                                $this->collHeureSups->append($obj);
+                            }
+                        }
+
+                        $this->collHeureSupsPartial = true;
+                    }
+
+                    return $collHeureSups;
+                }
+
+                if ($partial && $this->collHeureSups) {
+                    foreach ($this->collHeureSups as $obj) {
+                        if ($obj->isNew()) {
+                            $collHeureSups[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collHeureSups = $collHeureSups;
+                $this->collHeureSupsPartial = false;
+            }
+        }
+
+        return $this->collHeureSups;
+    }
+
+    /**
+     * Sets a collection of ChildHeureSup objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $heureSups A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function setHeureSups(Collection $heureSups, ConnectionInterface $con = null)
+    {
+        /** @var ChildHeureSup[] $heureSupsToDelete */
+        $heureSupsToDelete = $this->getHeureSups(new Criteria(), $con)->diff($heureSups);
+
+
+        $this->heureSupsScheduledForDeletion = $heureSupsToDelete;
+
+        foreach ($heureSupsToDelete as $heureSupRemoved) {
+            $heureSupRemoved->setEmploye(null);
+        }
+
+        $this->collHeureSups = null;
+        foreach ($heureSups as $heureSup) {
+            $this->addHeureSup($heureSup);
+        }
+
+        $this->collHeureSups = $heureSups;
+        $this->collHeureSupsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related HeureSup objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related HeureSup objects.
+     * @throws PropelException
+     */
+    public function countHeureSups(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collHeureSupsPartial && !$this->isNew();
+        if (null === $this->collHeureSups || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collHeureSups) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getHeureSups());
+            }
+
+            $query = ChildHeureSupQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByEmploye($this)
+                ->count($con);
+        }
+
+        return count($this->collHeureSups);
+    }
+
+    /**
+     * Method called to associate a ChildHeureSup object to this object
+     * through the ChildHeureSup foreign key attribute.
+     *
+     * @param  ChildHeureSup $l ChildHeureSup
+     * @return $this|\App\Models\Employe The current object (for fluent API support)
+     */
+    public function addHeureSup(ChildHeureSup $l)
+    {
+        if ($this->collHeureSups === null) {
+            $this->initHeureSups();
+            $this->collHeureSupsPartial = true;
+        }
+
+        if (!$this->collHeureSups->contains($l)) {
+            $this->doAddHeureSup($l);
+
+            if ($this->heureSupsScheduledForDeletion and $this->heureSupsScheduledForDeletion->contains($l)) {
+                $this->heureSupsScheduledForDeletion->remove($this->heureSupsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildHeureSup $heureSup The ChildHeureSup object to add.
+     */
+    protected function doAddHeureSup(ChildHeureSup $heureSup)
+    {
+        $this->collHeureSups[]= $heureSup;
+        $heureSup->setEmploye($this);
+    }
+
+    /**
+     * @param  ChildHeureSup $heureSup The ChildHeureSup object to remove.
+     * @return $this|ChildEmploye The current object (for fluent API support)
+     */
+    public function removeHeureSup(ChildHeureSup $heureSup)
+    {
+        if ($this->getHeureSups()->contains($heureSup)) {
+            $pos = $this->collHeureSups->search($heureSup);
+            $this->collHeureSups->remove($pos);
+            if (null === $this->heureSupsScheduledForDeletion) {
+                $this->heureSupsScheduledForDeletion = clone $this->collHeureSups;
+                $this->heureSupsScheduledForDeletion->clear();
+            }
+            $this->heureSupsScheduledForDeletion[]= clone $heureSup;
+            $heureSup->setEmploye(null);
         }
 
         return $this;
@@ -3365,6 +3658,11 @@ abstract class Employe implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collHeureSups) {
+                foreach ($this->collHeureSups as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collPermissions) {
                 foreach ($this->collPermissions as $o) {
                     $o->clearAllReferences($deep);
@@ -3389,6 +3687,7 @@ abstract class Employe implements ActiveRecordInterface
 
         $this->collAbsences = null;
         $this->collConges = null;
+        $this->collHeureSups = null;
         $this->collPermissions = null;
         $this->collPointages = null;
         $this->collPresences = null;

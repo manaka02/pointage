@@ -202,6 +202,13 @@ class EmployeTableMap extends TableMap
     1 => ':employe_id',
   ),
 ), 'CASCADE', null, 'Conges', false);
+        $this->addRelation('HeureSup', '\\App\\Models\\HeureSup', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':employe_id',
+    1 => ':employe_id',
+  ),
+), 'CASCADE', null, 'HeureSups', false);
         $this->addRelation('Permission', '\\App\\Models\\Permission', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -240,6 +247,7 @@ class EmployeTableMap extends TableMap
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         AbsenceTableMap::clearInstancePool();
         CongeTableMap::clearInstancePool();
+        HeureSupTableMap::clearInstancePool();
         PermissionTableMap::clearInstancePool();
         PointageTableMap::clearInstancePool();
         PresenceTableMap::clearInstancePool();

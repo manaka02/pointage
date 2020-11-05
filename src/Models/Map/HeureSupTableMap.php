@@ -58,7 +58,7 @@ class HeureSupTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 10;
 
     /**
      * The number of lazy-loaded columns
@@ -68,7 +68,7 @@ class HeureSupTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 10;
 
     /**
      * the column name for the heure_sup_id field
@@ -106,6 +106,21 @@ class HeureSupTableMap extends TableMap
     const COL_HEURE_SUPP = 'heure_sup.heure_supp';
 
     /**
+     * the column name for the heure_sup_normal field
+     */
+    const COL_HEURE_SUP_NORMAL = 'heure_sup.heure_sup_normal';
+
+    /**
+     * the column name for the heure_sup_extra field
+     */
+    const COL_HEURE_SUP_EXTRA = 'heure_sup.heure_sup_extra';
+
+    /**
+     * the column name for the heure_sup_samedi field
+     */
+    const COL_HEURE_SUP_SAMEDI = 'heure_sup.heure_sup_samedi';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -117,11 +132,11 @@ class HeureSupTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('HeureSupId', 'EmployeId', 'DateHeureSup', 'HeureEntree', 'HeureSortie', 'HeureTravail', 'HeureSupp', ),
-        self::TYPE_CAMELNAME     => array('heureSupId', 'employeId', 'dateHeureSup', 'heureEntree', 'heureSortie', 'heureTravail', 'heureSupp', ),
-        self::TYPE_COLNAME       => array(HeureSupTableMap::COL_HEURE_SUP_ID, HeureSupTableMap::COL_EMPLOYE_ID, HeureSupTableMap::COL_DATE_HEURE_SUP, HeureSupTableMap::COL_HEURE_ENTREE, HeureSupTableMap::COL_HEURE_SORTIE, HeureSupTableMap::COL_HEURE_TRAVAIL, HeureSupTableMap::COL_HEURE_SUPP, ),
-        self::TYPE_FIELDNAME     => array('heure_sup_id', 'employe_id', 'date_heure_sup', 'heure_entree', 'heure_sortie', 'heure_travail', 'heure_supp', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('HeureSupId', 'EmployeId', 'DateHeureSup', 'HeureEntree', 'HeureSortie', 'HeureTravail', 'HeureSupp', 'HeureSupNormal', 'HeureSupExtra', 'HeureSupSamedi', ),
+        self::TYPE_CAMELNAME     => array('heureSupId', 'employeId', 'dateHeureSup', 'heureEntree', 'heureSortie', 'heureTravail', 'heureSupp', 'heureSupNormal', 'heureSupExtra', 'heureSupSamedi', ),
+        self::TYPE_COLNAME       => array(HeureSupTableMap::COL_HEURE_SUP_ID, HeureSupTableMap::COL_EMPLOYE_ID, HeureSupTableMap::COL_DATE_HEURE_SUP, HeureSupTableMap::COL_HEURE_ENTREE, HeureSupTableMap::COL_HEURE_SORTIE, HeureSupTableMap::COL_HEURE_TRAVAIL, HeureSupTableMap::COL_HEURE_SUPP, HeureSupTableMap::COL_HEURE_SUP_NORMAL, HeureSupTableMap::COL_HEURE_SUP_EXTRA, HeureSupTableMap::COL_HEURE_SUP_SAMEDI, ),
+        self::TYPE_FIELDNAME     => array('heure_sup_id', 'employe_id', 'date_heure_sup', 'heure_entree', 'heure_sortie', 'heure_travail', 'heure_supp', 'heure_sup_normal', 'heure_sup_extra', 'heure_sup_samedi', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -131,11 +146,11 @@ class HeureSupTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('HeureSupId' => 0, 'EmployeId' => 1, 'DateHeureSup' => 2, 'HeureEntree' => 3, 'HeureSortie' => 4, 'HeureTravail' => 5, 'HeureSupp' => 6, ),
-        self::TYPE_CAMELNAME     => array('heureSupId' => 0, 'employeId' => 1, 'dateHeureSup' => 2, 'heureEntree' => 3, 'heureSortie' => 4, 'heureTravail' => 5, 'heureSupp' => 6, ),
-        self::TYPE_COLNAME       => array(HeureSupTableMap::COL_HEURE_SUP_ID => 0, HeureSupTableMap::COL_EMPLOYE_ID => 1, HeureSupTableMap::COL_DATE_HEURE_SUP => 2, HeureSupTableMap::COL_HEURE_ENTREE => 3, HeureSupTableMap::COL_HEURE_SORTIE => 4, HeureSupTableMap::COL_HEURE_TRAVAIL => 5, HeureSupTableMap::COL_HEURE_SUPP => 6, ),
-        self::TYPE_FIELDNAME     => array('heure_sup_id' => 0, 'employe_id' => 1, 'date_heure_sup' => 2, 'heure_entree' => 3, 'heure_sortie' => 4, 'heure_travail' => 5, 'heure_supp' => 6, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
+        self::TYPE_PHPNAME       => array('HeureSupId' => 0, 'EmployeId' => 1, 'DateHeureSup' => 2, 'HeureEntree' => 3, 'HeureSortie' => 4, 'HeureTravail' => 5, 'HeureSupp' => 6, 'HeureSupNormal' => 7, 'HeureSupExtra' => 8, 'HeureSupSamedi' => 9, ),
+        self::TYPE_CAMELNAME     => array('heureSupId' => 0, 'employeId' => 1, 'dateHeureSup' => 2, 'heureEntree' => 3, 'heureSortie' => 4, 'heureTravail' => 5, 'heureSupp' => 6, 'heureSupNormal' => 7, 'heureSupExtra' => 8, 'heureSupSamedi' => 9, ),
+        self::TYPE_COLNAME       => array(HeureSupTableMap::COL_HEURE_SUP_ID => 0, HeureSupTableMap::COL_EMPLOYE_ID => 1, HeureSupTableMap::COL_DATE_HEURE_SUP => 2, HeureSupTableMap::COL_HEURE_ENTREE => 3, HeureSupTableMap::COL_HEURE_SORTIE => 4, HeureSupTableMap::COL_HEURE_TRAVAIL => 5, HeureSupTableMap::COL_HEURE_SUPP => 6, HeureSupTableMap::COL_HEURE_SUP_NORMAL => 7, HeureSupTableMap::COL_HEURE_SUP_EXTRA => 8, HeureSupTableMap::COL_HEURE_SUP_SAMEDI => 9, ),
+        self::TYPE_FIELDNAME     => array('heure_sup_id' => 0, 'employe_id' => 1, 'date_heure_sup' => 2, 'heure_entree' => 3, 'heure_sortie' => 4, 'heure_travail' => 5, 'heure_supp' => 6, 'heure_sup_normal' => 7, 'heure_sup_extra' => 8, 'heure_sup_samedi' => 9, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -156,12 +171,15 @@ class HeureSupTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('heure_sup_id', 'HeureSupId', 'INTEGER', true, null, null);
-        $this->addColumn('employe_id', 'EmployeId', 'INTEGER', true, null, null);
+        $this->addForeignKey('employe_id', 'EmployeId', 'INTEGER', 'employe', 'employe_id', true, null, null);
         $this->addColumn('date_heure_sup', 'DateHeureSup', 'DATE', true, null, null);
         $this->addColumn('heure_entree', 'HeureEntree', 'TIME', true, null, null);
         $this->addColumn('heure_sortie', 'HeureSortie', 'TIME', true, null, null);
         $this->addColumn('heure_travail', 'HeureTravail', 'TIME', true, null, null);
         $this->addColumn('heure_supp', 'HeureSupp', 'TIME', true, null, null);
+        $this->addColumn('heure_sup_normal', 'HeureSupNormal', 'TIME', false, null, null);
+        $this->addColumn('heure_sup_extra', 'HeureSupExtra', 'TIME', false, null, null);
+        $this->addColumn('heure_sup_samedi', 'HeureSupSamedi', 'TIME', false, null, null);
     } // initialize()
 
     /**
@@ -169,6 +187,13 @@ class HeureSupTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Employe', '\\App\\Models\\Employe', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':employe_id',
+    1 => ':employe_id',
+  ),
+), 'CASCADE', null, null, false);
     } // buildRelations()
 
     /**
@@ -319,6 +344,9 @@ class HeureSupTableMap extends TableMap
             $criteria->addSelectColumn(HeureSupTableMap::COL_HEURE_SORTIE);
             $criteria->addSelectColumn(HeureSupTableMap::COL_HEURE_TRAVAIL);
             $criteria->addSelectColumn(HeureSupTableMap::COL_HEURE_SUPP);
+            $criteria->addSelectColumn(HeureSupTableMap::COL_HEURE_SUP_NORMAL);
+            $criteria->addSelectColumn(HeureSupTableMap::COL_HEURE_SUP_EXTRA);
+            $criteria->addSelectColumn(HeureSupTableMap::COL_HEURE_SUP_SAMEDI);
         } else {
             $criteria->addSelectColumn($alias . '.heure_sup_id');
             $criteria->addSelectColumn($alias . '.employe_id');
@@ -327,6 +355,9 @@ class HeureSupTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.heure_sortie');
             $criteria->addSelectColumn($alias . '.heure_travail');
             $criteria->addSelectColumn($alias . '.heure_supp');
+            $criteria->addSelectColumn($alias . '.heure_sup_normal');
+            $criteria->addSelectColumn($alias . '.heure_sup_extra');
+            $criteria->addSelectColumn($alias . '.heure_sup_samedi');
         }
     }
 

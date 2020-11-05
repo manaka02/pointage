@@ -5,6 +5,8 @@ namespace App\Models\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
+use App\Models\Employe as ChildEmploye;
+use App\Models\EmployeQuery as ChildEmployeQuery;
 use App\Models\HeureSupQuery as ChildHeureSupQuery;
 use App\Models\Map\HeureSupTableMap;
 use Propel\Runtime\Propel;
@@ -109,6 +111,32 @@ abstract class HeureSup implements ActiveRecordInterface
      * @var        DateTime
      */
     protected $heure_supp;
+
+    /**
+     * The value for the heure_sup_normal field.
+     *
+     * @var        DateTime
+     */
+    protected $heure_sup_normal;
+
+    /**
+     * The value for the heure_sup_extra field.
+     *
+     * @var        DateTime
+     */
+    protected $heure_sup_extra;
+
+    /**
+     * The value for the heure_sup_samedi field.
+     *
+     * @var        DateTime
+     */
+    protected $heure_sup_samedi;
+
+    /**
+     * @var        ChildEmploye
+     */
+    protected $aEmploye;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -464,6 +492,66 @@ abstract class HeureSup implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [heure_sup_normal] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getHeureSupNormal($format = NULL)
+    {
+        if ($format === null) {
+            return $this->heure_sup_normal;
+        } else {
+            return $this->heure_sup_normal instanceof \DateTimeInterface ? $this->heure_sup_normal->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [heure_sup_extra] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getHeureSupExtra($format = NULL)
+    {
+        if ($format === null) {
+            return $this->heure_sup_extra;
+        } else {
+            return $this->heure_sup_extra instanceof \DateTimeInterface ? $this->heure_sup_extra->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [heure_sup_samedi] column value.
+     *
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getHeureSupSamedi($format = NULL)
+    {
+        if ($format === null) {
+            return $this->heure_sup_samedi;
+        } else {
+            return $this->heure_sup_samedi instanceof \DateTimeInterface ? $this->heure_sup_samedi->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [heure_sup_id] column.
      *
      * @param int $v New value
@@ -498,6 +586,10 @@ abstract class HeureSup implements ActiveRecordInterface
         if ($this->employe_id !== $v) {
             $this->employe_id = $v;
             $this->modifiedColumns[HeureSupTableMap::COL_EMPLOYE_ID] = true;
+        }
+
+        if ($this->aEmploye !== null && $this->aEmploye->getEmployeId() !== $v) {
+            $this->aEmploye = null;
         }
 
         return $this;
@@ -604,6 +696,66 @@ abstract class HeureSup implements ActiveRecordInterface
     } // setHeureSupp()
 
     /**
+     * Sets the value of [heure_sup_normal] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
+     */
+    public function setHeureSupNormal($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->heure_sup_normal !== null || $dt !== null) {
+            if ($this->heure_sup_normal === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_sup_normal->format("H:i:s.u")) {
+                $this->heure_sup_normal = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[HeureSupTableMap::COL_HEURE_SUP_NORMAL] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setHeureSupNormal()
+
+    /**
+     * Sets the value of [heure_sup_extra] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
+     */
+    public function setHeureSupExtra($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->heure_sup_extra !== null || $dt !== null) {
+            if ($this->heure_sup_extra === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_sup_extra->format("H:i:s.u")) {
+                $this->heure_sup_extra = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[HeureSupTableMap::COL_HEURE_SUP_EXTRA] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setHeureSupExtra()
+
+    /**
+     * Sets the value of [heure_sup_samedi] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
+     */
+    public function setHeureSupSamedi($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->heure_sup_samedi !== null || $dt !== null) {
+            if ($this->heure_sup_samedi === null || $dt === null || $dt->format("H:i:s.u") !== $this->heure_sup_samedi->format("H:i:s.u")) {
+                $this->heure_sup_samedi = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[HeureSupTableMap::COL_HEURE_SUP_SAMEDI] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setHeureSupSamedi()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -662,6 +814,15 @@ abstract class HeureSup implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : HeureSupTableMap::translateFieldName('HeureSupp', TableMap::TYPE_PHPNAME, $indexType)];
             $this->heure_supp = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : HeureSupTableMap::translateFieldName('HeureSupNormal', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->heure_sup_normal = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : HeureSupTableMap::translateFieldName('HeureSupExtra', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->heure_sup_extra = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : HeureSupTableMap::translateFieldName('HeureSupSamedi', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->heure_sup_samedi = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -670,7 +831,7 @@ abstract class HeureSup implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 7; // 7 = HeureSupTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = HeureSupTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\App\\Models\\HeureSup'), 0, $e);
@@ -692,6 +853,9 @@ abstract class HeureSup implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aEmploye !== null && $this->employe_id !== $this->aEmploye->getEmployeId()) {
+            $this->aEmploye = null;
+        }
     } // ensureConsistency
 
     /**
@@ -731,6 +895,7 @@ abstract class HeureSup implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aEmploye = null;
         } // if (deep)
     }
 
@@ -834,6 +999,18 @@ abstract class HeureSup implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aEmploye !== null) {
+                if ($this->aEmploye->isModified() || $this->aEmploye->isNew()) {
+                    $affectedRows += $this->aEmploye->save($con);
+                }
+                $this->setEmploye($this->aEmploye);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -892,6 +1069,15 @@ abstract class HeureSup implements ActiveRecordInterface
         if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUPP)) {
             $modifiedColumns[':p' . $index++]  = 'heure_supp';
         }
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUP_NORMAL)) {
+            $modifiedColumns[':p' . $index++]  = 'heure_sup_normal';
+        }
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUP_EXTRA)) {
+            $modifiedColumns[':p' . $index++]  = 'heure_sup_extra';
+        }
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUP_SAMEDI)) {
+            $modifiedColumns[':p' . $index++]  = 'heure_sup_samedi';
+        }
 
         $sql = sprintf(
             'INSERT INTO heure_sup (%s) VALUES (%s)',
@@ -923,6 +1109,15 @@ abstract class HeureSup implements ActiveRecordInterface
                         break;
                     case 'heure_supp':
                         $stmt->bindValue($identifier, $this->heure_supp ? $this->heure_supp->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'heure_sup_normal':
+                        $stmt->bindValue($identifier, $this->heure_sup_normal ? $this->heure_sup_normal->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'heure_sup_extra':
+                        $stmt->bindValue($identifier, $this->heure_sup_extra ? $this->heure_sup_extra->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
+                    case 'heure_sup_samedi':
+                        $stmt->bindValue($identifier, $this->heure_sup_samedi ? $this->heure_sup_samedi->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1007,6 +1202,15 @@ abstract class HeureSup implements ActiveRecordInterface
             case 6:
                 return $this->getHeureSupp();
                 break;
+            case 7:
+                return $this->getHeureSupNormal();
+                break;
+            case 8:
+                return $this->getHeureSupExtra();
+                break;
+            case 9:
+                return $this->getHeureSupSamedi();
+                break;
             default:
                 return null;
                 break;
@@ -1024,10 +1228,11 @@ abstract class HeureSup implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['HeureSup'][$this->hashCode()])) {
@@ -1043,6 +1248,9 @@ abstract class HeureSup implements ActiveRecordInterface
             $keys[4] => $this->getHeureSortie(),
             $keys[5] => $this->getHeureTravail(),
             $keys[6] => $this->getHeureSupp(),
+            $keys[7] => $this->getHeureSupNormal(),
+            $keys[8] => $this->getHeureSupExtra(),
+            $keys[9] => $this->getHeureSupSamedi(),
         );
         if ($result[$keys[2]] instanceof \DateTimeInterface) {
             $result[$keys[2]] = $result[$keys[2]]->format('c');
@@ -1064,11 +1272,40 @@ abstract class HeureSup implements ActiveRecordInterface
             $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
 
+        if ($result[$keys[7]] instanceof \DateTimeInterface) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
+        }
+
+        if ($result[$keys[8]] instanceof \DateTimeInterface) {
+            $result[$keys[8]] = $result[$keys[8]]->format('c');
+        }
+
+        if ($result[$keys[9]] instanceof \DateTimeInterface) {
+            $result[$keys[9]] = $result[$keys[9]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aEmploye) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'employe';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'employe';
+                        break;
+                    default:
+                        $key = 'Employe';
+                }
+
+                $result[$key] = $this->aEmploye->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -1123,6 +1360,15 @@ abstract class HeureSup implements ActiveRecordInterface
             case 6:
                 $this->setHeureSupp($value);
                 break;
+            case 7:
+                $this->setHeureSupNormal($value);
+                break;
+            case 8:
+                $this->setHeureSupExtra($value);
+                break;
+            case 9:
+                $this->setHeureSupSamedi($value);
+                break;
         } // switch()
 
         return $this;
@@ -1169,6 +1415,15 @@ abstract class HeureSup implements ActiveRecordInterface
         }
         if (array_key_exists($keys[6], $arr)) {
             $this->setHeureSupp($arr[$keys[6]]);
+        }
+        if (array_key_exists($keys[7], $arr)) {
+            $this->setHeureSupNormal($arr[$keys[7]]);
+        }
+        if (array_key_exists($keys[8], $arr)) {
+            $this->setHeureSupExtra($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setHeureSupSamedi($arr[$keys[9]]);
         }
     }
 
@@ -1231,6 +1486,15 @@ abstract class HeureSup implements ActiveRecordInterface
         }
         if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUPP)) {
             $criteria->add(HeureSupTableMap::COL_HEURE_SUPP, $this->heure_supp);
+        }
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUP_NORMAL)) {
+            $criteria->add(HeureSupTableMap::COL_HEURE_SUP_NORMAL, $this->heure_sup_normal);
+        }
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUP_EXTRA)) {
+            $criteria->add(HeureSupTableMap::COL_HEURE_SUP_EXTRA, $this->heure_sup_extra);
+        }
+        if ($this->isColumnModified(HeureSupTableMap::COL_HEURE_SUP_SAMEDI)) {
+            $criteria->add(HeureSupTableMap::COL_HEURE_SUP_SAMEDI, $this->heure_sup_samedi);
         }
 
         return $criteria;
@@ -1324,6 +1588,9 @@ abstract class HeureSup implements ActiveRecordInterface
         $copyObj->setHeureSortie($this->getHeureSortie());
         $copyObj->setHeureTravail($this->getHeureTravail());
         $copyObj->setHeureSupp($this->getHeureSupp());
+        $copyObj->setHeureSupNormal($this->getHeureSupNormal());
+        $copyObj->setHeureSupExtra($this->getHeureSupExtra());
+        $copyObj->setHeureSupSamedi($this->getHeureSupSamedi());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setHeureSupId(NULL); // this is a auto-increment column, so set to default value
@@ -1353,12 +1620,66 @@ abstract class HeureSup implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildEmploye object.
+     *
+     * @param  ChildEmploye $v
+     * @return $this|\App\Models\HeureSup The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setEmploye(ChildEmploye $v = null)
+    {
+        if ($v === null) {
+            $this->setEmployeId(NULL);
+        } else {
+            $this->setEmployeId($v->getEmployeId());
+        }
+
+        $this->aEmploye = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildEmploye object, it will not be re-added.
+        if ($v !== null) {
+            $v->addHeureSup($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildEmploye object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildEmploye The associated ChildEmploye object.
+     * @throws PropelException
+     */
+    public function getEmploye(ConnectionInterface $con = null)
+    {
+        if ($this->aEmploye === null && ($this->employe_id != 0)) {
+            $this->aEmploye = ChildEmployeQuery::create()->findPk($this->employe_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aEmploye->addHeureSups($this);
+             */
+        }
+
+        return $this->aEmploye;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aEmploye) {
+            $this->aEmploye->removeHeureSup($this);
+        }
         $this->heure_sup_id = null;
         $this->employe_id = null;
         $this->date_heure_sup = null;
@@ -1366,6 +1687,9 @@ abstract class HeureSup implements ActiveRecordInterface
         $this->heure_sortie = null;
         $this->heure_travail = null;
         $this->heure_supp = null;
+        $this->heure_sup_normal = null;
+        $this->heure_sup_extra = null;
+        $this->heure_sup_samedi = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1386,6 +1710,7 @@ abstract class HeureSup implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aEmploye = null;
     }
 
     /**

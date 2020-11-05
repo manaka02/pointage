@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\GeneralService;
 use App\Models\Base\HeureSup as BaseHeureSup;
 
 /**
