@@ -15,8 +15,16 @@ class RecapController extends AbstractController
     /**
      * @Route("/recap-presence", name="recap-presence", methods="GET")
      */
-    public function list(Request $request) : Response
+    public function presence(Request $request) : Response
     {
         return $this->render("pages/recap/presence.html.twig");
+    }
+
+    /**
+     * @Route("/recap-absence", name="recap-absence", methods="GET")
+     */
+    public function absence(Request $request) : Response
+    {
+        return $this->render("pages/recap/absence.html.twig");
     }
 }

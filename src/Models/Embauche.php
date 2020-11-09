@@ -109,7 +109,7 @@ class Embauche extends BaseEmbauche
     }
 
     private $keyToShow =[
-        "ref_interne","civilite","nom_prenom", "fonction", "departement_id", "date_debut"
+        "ref_interne","civilite","nom_prenom", "fonction", "departement", "date_debut"
    ];
 
    private $keyText = [

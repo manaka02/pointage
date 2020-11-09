@@ -137,7 +137,7 @@ class AbsenceTableMap extends TableMap
         // columns
         $this->addPrimaryKey('absence_id', 'AbsenceId', 'INTEGER', true, null, null);
         $this->addForeignKey('employe_id', 'EmployeId', 'INTEGER', 'employe', 'employe_id', true, null, null);
-        $this->addColumn('date_absence', 'DateAbsence', 'INTEGER', true, null, null);
+        $this->addColumn('date_absence', 'DateAbsence', 'DATE', true, null, null);
     } // initialize()
 
     /**

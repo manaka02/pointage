@@ -3,7 +3,7 @@
   <table name="absence" idMethod="native" phpName="Absence">
     <column name="absence_id" phpName="AbsenceId" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="employe_id" phpName="EmployeId" type="INTEGER" required="true"/>
-    <column name="date_absence" phpName="DateAbsence" type="INTEGER" required="true"/>
+    <column name="date_absence" phpName="DateAbsence" type="DATE" required="true"/>
     <foreign-key foreignTable="employe" name="fk_fk_absence_employe" onDelete="CASCADE">
       <reference local="employe_id" foreign="employe_id"/>
     </foreign-key>

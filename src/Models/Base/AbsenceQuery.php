@@ -53,19 +53,19 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildAbsence findOneByAbsenceId(int $absence_id) Return the first ChildAbsence filtered by the absence_id column
  * @method     ChildAbsence findOneByEmployeId(int $employe_id) Return the first ChildAbsence filtered by the employe_id column
- * @method     ChildAbsence findOneByDateAbsence(int $date_absence) Return the first ChildAbsence filtered by the date_absence column *
+ * @method     ChildAbsence findOneByDateAbsence(string $date_absence) Return the first ChildAbsence filtered by the date_absence column *
 
  * @method     ChildAbsence requirePk($key, ConnectionInterface $con = null) Return the ChildAbsence by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAbsence requireOne(ConnectionInterface $con = null) Return the first ChildAbsence matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildAbsence requireOneByAbsenceId(int $absence_id) Return the first ChildAbsence filtered by the absence_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAbsence requireOneByEmployeId(int $employe_id) Return the first ChildAbsence filtered by the employe_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildAbsence requireOneByDateAbsence(int $date_absence) Return the first ChildAbsence filtered by the date_absence column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildAbsence requireOneByDateAbsence(string $date_absence) Return the first ChildAbsence filtered by the date_absence column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildAbsence[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildAbsence objects based on current ModelCriteria
  * @method     ChildAbsence[]|ObjectCollection findByAbsenceId(int $absence_id) Return ChildAbsence objects filtered by the absence_id column
  * @method     ChildAbsence[]|ObjectCollection findByEmployeId(int $employe_id) Return ChildAbsence objects filtered by the employe_id column
- * @method     ChildAbsence[]|ObjectCollection findByDateAbsence(int $date_absence) Return ChildAbsence objects filtered by the date_absence column
+ * @method     ChildAbsence[]|ObjectCollection findByDateAbsence(string $date_absence) Return ChildAbsence objects filtered by the date_absence column
  * @method     ChildAbsence[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -343,12 +343,14 @@ abstract class AbsenceQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByDateAbsence(1234); // WHERE date_absence = 1234
-     * $query->filterByDateAbsence(array(12, 34)); // WHERE date_absence IN (12, 34)
-     * $query->filterByDateAbsence(array('min' => 12)); // WHERE date_absence > 12
+     * $query->filterByDateAbsence('2011-03-14'); // WHERE date_absence = '2011-03-14'
+     * $query->filterByDateAbsence('now'); // WHERE date_absence = '2011-03-14'
+     * $query->filterByDateAbsence(array('max' => 'yesterday')); // WHERE date_absence > '2011-03-13'
      * </code>
      *
      * @param     mixed $dateAbsence The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.

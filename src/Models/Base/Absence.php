@@ -2,6 +2,7 @@
 
 namespace App\Models\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
 use App\Models\AbsenceQuery as ChildAbsenceQuery;
@@ -19,6 +20,7 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
  * Base class that represents a row from the 'absence' table.
@@ -78,7 +80,7 @@ abstract class Absence implements ActiveRecordInterface
     /**
      * The value for the date_absence field.
      *
-     * @var        int
+     * @var        DateTime
      */
     protected $date_absence;
 
@@ -341,13 +343,23 @@ abstract class Absence implements ActiveRecordInterface
     }
 
     /**
-     * Get the [date_absence] column value.
+     * Get the [optionally formatted] temporal [date_absence] column value.
      *
-     * @return int
+     *
+     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getDateAbsence()
+    public function getDateAbsence($format = NULL)
     {
-        return $this->date_absence;
+        if ($format === null) {
+            return $this->date_absence;
+        } else {
+            return $this->date_absence instanceof \DateTimeInterface ? $this->date_absence->format($format) : null;
+        }
     }
 
     /**
@@ -395,21 +407,21 @@ abstract class Absence implements ActiveRecordInterface
     } // setEmployeId()
 
     /**
-     * Set the value of [date_absence] column.
+     * Sets the value of [date_absence] column to a normalized version of the date/time value specified.
      *
-     * @param int $v New value
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
      * @return $this|\App\Models\Absence The current object (for fluent API support)
      */
     public function setDateAbsence($v)
     {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->date_absence !== $v) {
-            $this->date_absence = $v;
-            $this->modifiedColumns[AbsenceTableMap::COL_DATE_ABSENCE] = true;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->date_absence !== null || $dt !== null) {
+            if ($this->date_absence === null || $dt === null || $dt->format("Y-m-d") !== $this->date_absence->format("Y-m-d")) {
+                $this->date_absence = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[AbsenceTableMap::COL_DATE_ABSENCE] = true;
+            }
+        } // if either are not null
 
         return $this;
     } // setDateAbsence()
@@ -457,7 +469,10 @@ abstract class Absence implements ActiveRecordInterface
             $this->employe_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AbsenceTableMap::translateFieldName('DateAbsence', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->date_absence = (null !== $col) ? (int) $col : null;
+            if ($col === '0000-00-00') {
+                $col = null;
+            }
+            $this->date_absence = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -710,7 +725,7 @@ abstract class Absence implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->employe_id, PDO::PARAM_INT);
                         break;
                     case 'date_absence':
-                        $stmt->bindValue($identifier, $this->date_absence, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->date_absence ? $this->date_absence->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -817,6 +832,10 @@ abstract class Absence implements ActiveRecordInterface
             $keys[1] => $this->getEmployeId(),
             $keys[2] => $this->getDateAbsence(),
         );
+        if ($result[$keys[2]] instanceof \DateTimeInterface) {
+            $result[$keys[2]] = $result[$keys[2]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;

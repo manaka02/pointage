@@ -131,7 +131,7 @@ class Debauche extends BaseDebauche
     }
 
     private $keyToShow =[
-        "ref_interne","civilite","nom_prenom", "fonction", "departement_id", "date_embauche", "date_depart", "raisons", "motif"
+        "ref_interne","civilite","nom_prenom", "fonction", "departement", "date_embauche", "date_depart", "raisons", "motif"
    ];
 
    private $keyText = [
